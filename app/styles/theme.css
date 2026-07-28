@@ -1,0 +1,122 @@
+/*
+|--------------------------------------------------------------------------
+| MARKETPLACE DESIGN SYSTEM
+|--------------------------------------------------------------------------
+|
+| Do not hard-code brand colours inside components.
+| Change the design system here instead.
+|
+*/
+
+@theme {
+  /*
+  |--------------------------------------------------------------------------
+  | Brand colours
+  |--------------------------------------------------------------------------
+  */
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #eff6ff;
+
+  --color-secondary: #10b981;
+  --color-secondary-hover: #059669;
+  --color-secondary-soft: #ecfdf5;
+
+  --color-accent: #f97316;
+  --color-accent-hover: #ea580c;
+  --color-accent-soft: #fff7ed;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Surfaces
+  |--------------------------------------------------------------------------
+  */
+
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f5f9;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Typography
+  |--------------------------------------------------------------------------
+  */
+
+  --color-foreground: #1e293b;
+  --color-muted: #64748b;
+  --color-subtle: #94a3b8;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Borders
+  |--------------------------------------------------------------------------
+  */
+
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Status colours
+  |--------------------------------------------------------------------------
+  */
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Border radius
+  |--------------------------------------------------------------------------
+  */
+
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-modal: 1rem;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Semantic typography
+  |--------------------------------------------------------------------------
+  */
+
+  --text-page-title: 1.875rem;
+  --text-page-title--line-height: 2.25rem;
+  --text-page-title--font-weight: 700;
+
+  --text-section-title: 1.25rem;
+  --text-section-title--line-height: 1.75rem;
+  --text-section-title--font-weight: 600;
+
+  --text-card-title: 1rem;
+  --text-card-title--line-height: 1.5rem;
+  --text-card-title--font-weight: 600;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.25rem;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Font
+|--------------------------------------------------------------------------
+|
+| --font-inter is supplied by next/font in layout.tsx.
+|
+| Tailwind recommends @theme inline when one theme variable references
+| another CSS variable.
+|
+*/
+
+@theme inline {
+  --font-sans: var(--font-inter);
+}

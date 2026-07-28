@@ -1,0 +1,116 @@
+"use client";
+
+import Link from "next/link";
+import { type FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
+
+export function LoginForm() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState<string | null>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setError(null);
+
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      //api
+
+      console.log({ email, password });
+      router.replace("/dashboard");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <Input
+        label="Email address"
+        type="email"
+        name="email"
+        autoComplete="email"
+        placeholder="Enter your email"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+        required
+      />
+      <div>
+        <Input
+          label="Password"
+          type="password"
+          name="password"
+          autoComplete="current-password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
+
+        <div className="mt-1 flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-sm text-primary hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+      </div>
+
+      {/* Remember me */}
+
+      <label className="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          className="
+            size-4
+            rounded
+            border-border
+            accent-primary
+          "
+        />
+
+        <span className="text-sm text-muted">Keep me signed in</span>
+      </label>
+
+      {error && (
+        <div
+          role="alert"
+          className="
+            rounded-control
+            border
+            border-danger/20
+            bg-red-50
+            px-4
+            py-3
+            text-sm
+            text-danger
+          "
+        >
+          {error}
+        </div>
+      )}
+
+      <Button type="submit" fullWidth size="lg" disabled={isSubmitting}>
+        {isSubmitting ? "Signing in..." : "Sign in"}
+      </Button>
+    </form>
+  );
+}
