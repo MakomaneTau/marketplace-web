@@ -1,0 +1,68 @@
+import type { Product } from "@/app/types/product";
+
+export const featuredProducts: Product[] = [
+  {
+    id: "1",
+    name: "Casio Scientific Calculator",
+    price: 350,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Wits Main Campus",
+    condition: "Good",
+  },
+  {
+    id: "2",
+    name: "Introduction to Economics Textbook",
+    price: 250,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Braamfontein",
+    condition: "Like new",
+  },
+  {
+    id: "3",
+    name: "Wireless Headphones",
+    price: 500,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Wits Junction",
+    condition: "Good",
+  },
+  {
+    id: "4",
+    name: "Study Desk Lamp",
+    price: 180,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Parktown",
+    condition: "Like new",
+  },
+  {
+    id: "5",
+    name: "Mechanical Keyboard",
+    price: 650,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Braamfontein",
+    condition: "Good",
+  },
+  {
+    id: "6",
+    name: "Computer Science Algorithms Textbook",
+    price: 300,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Wits Main Campus",
+    condition: "Good",
+  },
+  {
+    id: "7",
+    name: "Student Office Chair",
+    price: 450,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Wits Junction",
+    condition: "Fair",
+  },
+  {
+    id: "8",
+    name: "Laptop Backpack",
+    price: 280,
+    imageUrl: "/images/product-placeholder.svg",
+    location: "Braamfontein",
+    condition: "Like new",
+  },
+];

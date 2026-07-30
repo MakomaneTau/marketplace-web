@@ -1,0 +1,89 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+
+import { formatZAR } from "@/app/libs/format";
+import type { Product } from "@/app/types/product";
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export function ProductCard({
+  product,
+}: ProductCardProps) {
+  return (
+    <article className="group min-w-0">
+      <div className="relative aspect-square overflow-hidden rounded-card bg-surface-muted">
+        <Link
+          href={`/products/${product.id}`}
+          aria-label={`View ${product.name}`}
+        >
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            sizes="
+              (max-width: 767px) 50vw,
+              (max-width: 1023px) 33vw,
+              25vw
+            "
+            className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+          />
+        </Link>
+
+        <button
+          type="button"
+          aria-label={`Add ${product.name} to favourites`}
+          className="
+            absolute
+            right-2
+            top-2
+            flex
+            size-10
+            items-center
+            justify-center
+            rounded-full
+            bg-white/90
+            text-foreground
+            shadow-sm
+            backdrop-blur
+            transition
+            hover:bg-white
+          "
+        >
+          <Heart className="size-5" />
+        </button>
+      </div>
+
+      <div className="pt-3">
+        <Link
+          href={`/products/${product.id}`}
+          className="block"
+        >
+          <h3 className="line-clamp-2 text-sm font-medium leading-5 text-foreground md:text-base">
+            {product.name}
+          </h3>
+        </Link>
+
+        <p className="mt-1 text-lg font-bold text-accent">
+          {formatZAR(product.price)}
+        </p>
+
+        <div className="mt-1 flex min-w-0 items-center gap-1 text-xs text-muted">
+          <span className="truncate">
+            {product.location}
+          </span>
+
+          <span aria-hidden="true">
+            •
+          </span>
+
+          <span className="shrink-0">
+            {product.condition}
+          </span>
+        </div>
+      </div>
+    </article>
+  );
+}
