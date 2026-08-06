@@ -1,19 +1,21 @@
-import type { LucideIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 interface PageHeaderProps {
   title: string;
   description: string;
-  icon?: LucideIcon;
 }
 
-export function PageHeader({ title, description, icon: Icon }: PageHeaderProps) {
+export function PageHeader({ title, description }: PageHeaderProps) {
   return (
     <header>
-      {Icon && (
-        <div className="flex size-12 items-center justify-center rounded-card bg-primary-soft text-primary">
-          <Icon aria-hidden="true" className="size-6" />
-        </div>
-      )}
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+      >
+        <ArrowLeft className="size-4" />
+        Back to marketplace
+      </Link>
 
       <h1 className="mt-4 text-2xl font-bold text-foreground sm:text-3xl">
         {title}

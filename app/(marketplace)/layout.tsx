@@ -2,13 +2,13 @@ import { Header } from "@/app/components/layout/Header";
 import { Footer } from "@/app/components/layout/Footer";
 
 
-interface PublicLayoutProps {
+interface MarketPlaceLayoutProps {
   children: React.ReactNode;
 }
 
-export default function PublicLayout({
+export default function MarketPlaceLayout({
   children,
-}: PublicLayoutProps) {
+}: MarketPlaceLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       <Header />

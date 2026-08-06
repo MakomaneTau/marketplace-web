@@ -4,7 +4,7 @@ import {
   Grid2X2,
   ShieldCheck,
 } from "lucide-react";
-
+import { PageHeader } from "@/app/components/layout/PageHeader";
 import { CategoriesExplorer } from "@/app/components/category/CategoriesExplorer";
 import { Container } from "@/app/components/layout/Container";
 
@@ -18,49 +18,11 @@ export default function CategoriesPage() {
   return (
     <Container className="py-6 md:py-8 lg:py-10">
       {/* Page heading */}
-
-      <section>
-        <div
-          className="
-            flex
-            size-12
-            items-center
-            justify-center
-            rounded-card
-            bg-primary-soft
-            text-primary
-          "
-        >
-          <Grid2X2 className="size-6" />
-        </div>
-
-        <h1
-          className="
-            mt-4
-            text-2xl
-            font-bold
-            text-foreground
-            sm:text-3xl
-          "
-        >
-          Browse categories
-        </h1>
-
-        <p
-          className="
-            mt-2
-            max-w-2xl
-            text-sm
-            leading-6
-            text-muted
-            sm:text-base
-          "
-        >
-          Explore products by category and find
-          useful items being sold around your
-          university community.
-        </p>
-      </section>
+    
+      <PageHeader
+        title="Browse categories"
+        description="Explore products by category and find useful items being sold around your university community."
+      />
 
       {/* Trust notice */}
 

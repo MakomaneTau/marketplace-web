@@ -23,7 +23,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <Container className="py-6 md:py-8 lg:py-10">
       <PageHeader
-        icon={Search}
         title="Search marketplace"
         description="Find products by name, category, condition and price order."
       />

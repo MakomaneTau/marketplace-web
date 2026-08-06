@@ -1,6 +1,7 @@
 import {
   Heart,
   Menu,
+  LogIn,
   Search,
   ShoppingBag,
   User,
@@ -112,13 +113,14 @@ export function Header() {
           </nav>
 
           <Link
-            href="sell"
+            href="login"
             className="
                 inline-flex
                 h-11
                 shrink-0
                 items-center
                 justify-center
+                gap-2
                 rounded-control
                 bg-primary
                 px-4
@@ -128,7 +130,8 @@ export function Header() {
                 hover:bg-primary-hover
             "
           >
-            Sell an Item
+            <LogIn className="size-5" />
+            Sign In
           </Link>
         </div>
       </Container>
