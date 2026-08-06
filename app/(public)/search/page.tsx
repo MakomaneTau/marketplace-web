@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Search } from "lucide-react";
 
 import { Container } from "@/app/components/layout/Container";
 import { PageHeader } from "@/app/components/layout/PageHeader";

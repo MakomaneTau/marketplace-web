@@ -121,7 +121,7 @@ export function SignupForm() {
           </legend>
 
           <p className="mt-1 text-sm text-muted">
-            Sellers don't have to be students.
+            Sellers do not have to be students.
           </p>
 
           <div className="mt-3 grid grid-cols-2 gap-3">

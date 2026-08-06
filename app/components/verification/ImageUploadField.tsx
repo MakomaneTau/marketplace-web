@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import Image from "next/image";
 import { Camera, ImagePlus, RotateCcw, X } from "lucide-react";
 
 import { cn } from "@/app/libs/utils";
@@ -28,6 +29,11 @@ interface ImageUploadFieldProps {
   variant?: "square" | "card";
 }
 
+interface FilePreview {
+  file: File;
+  url: string;
+}
+
 export function ImageUploadField({
   title,
   description,
@@ -38,24 +44,35 @@ export function ImageUploadField({
 }: ImageUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [preview, setPreview] = useState<FilePreview | null>(null);
 
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!value) {
-      setPreviewUrl(null);
-      return;
+    if (!value) return;
+
+    const file = value;
+    const reader = new FileReader();
+
+    function handleLoad() {
+      if (typeof reader.result === "string") {
+        setPreview({ file, url: reader.result });
+      }
     }
 
-    const objectUrl = URL.createObjectURL(value);
-
-    setPreviewUrl(objectUrl);
+    reader.addEventListener("load", handleLoad);
+    reader.readAsDataURL(file);
 
     return () => {
-      URL.revokeObjectURL(objectUrl);
+      reader.removeEventListener("load", handleLoad);
+
+      if (reader.readyState === FileReader.LOADING) {
+        reader.abort();
+      }
     };
   }, [value]);
+
+  const previewUrl = preview?.file === value ? preview.url : null;
 
   function validateFile(file: File): string | null {
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -201,9 +218,12 @@ export function ImageUploadField({
             variant === "square" ? "aspect-square max-h-72" : "aspect-8/5",
           )}
         >
-          <img
+          <Image
             src={previewUrl}
             alt={`${title} preview`}
+            fill
+            unoptimized
+            sizes={variant === "square" ? "18rem" : "(max-width: 768px) 100vw, 50vw"}
             className="h-full w-full object-cover"
           />
 

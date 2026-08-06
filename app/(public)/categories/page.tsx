@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import {
-  Grid2X2,
   ShieldCheck,
 } from "lucide-react";
 import { PageHeader } from "@/app/components/layout/PageHeader";

@@ -1,10 +1,8 @@
 import {
   Heart,
-  Menu,
   LogIn,
   Search,
   ShoppingBag,
-  User,
   UserRound,
 } from "lucide-react";
 import Link from "next/link";

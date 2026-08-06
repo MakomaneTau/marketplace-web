@@ -1,6 +1,7 @@
 "use client";
 
 import { type ChangeEvent, type FormEvent, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { CheckCircle2, ImagePlus, X } from "lucide-react";
 
 import { categories } from "@/app/data/categories";
@@ -183,8 +184,14 @@ export function CreateProductForm() {
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {images.map((image, index) => (
             <div key={image.url} className="relative aspect-square overflow-hidden rounded-card border border-border bg-surface-muted">
-              {/* Temporary local preview: a normal img element is appropriate here. */}
-              <img src={image.url} alt={`Product preview ${index + 1}`} className="h-full w-full object-cover" />
+              <Image
+                src={image.url}
+                alt={`Product preview ${index + 1}`}
+                fill
+                unoptimized
+                sizes="(max-width: 640px) 50vw, 33vw"
+                className="object-cover"
+              />
               {index === 0 && (
                 <span className="absolute left-2 top-2 rounded-full bg-primary px-2 py-1 text-[10px] font-semibold text-white">Cover</span>
               )}

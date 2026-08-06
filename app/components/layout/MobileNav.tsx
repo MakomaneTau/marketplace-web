@@ -19,11 +19,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/app/libs/utils";
 
@@ -87,29 +83,21 @@ const supportMenuItems: MenuItem[] = [
 export function MobileNav() {
   const pathname = usePathname();
 
-  const [isOpen, setIsOpen] =
-    useState(false);
+  const [openedAtPathname, setOpenedAtPathname] = useState<string | null>(null);
 
-  const closeButtonRef =
-    useRef<HTMLButtonElement>(null);
+  const isOpen = openedAtPathname === pathname;
 
-  const openButtonRef =
-    useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  const openButtonRef = useRef<HTMLButtonElement>(null);
 
   function openMenu() {
-    setIsOpen(true);
+    setOpenedAtPathname(pathname);
   }
 
   function closeMenu() {
-    setIsOpen(false);
+    setOpenedAtPathname(null);
   }
-
-  /*
-   * Close the drawer when the route changes.
-   */
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
 
   /*
    * Keyboard controls and page scroll locking.
@@ -124,27 +112,19 @@ export function MobileNav() {
 
     closeButtonRef.current?.focus();
 
-    function handleKeyDown(
-      event: KeyboardEvent,
-    ) {
+    function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeMenu();
         openButtonRef.current?.focus();
       }
     }
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown,
-    );
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.body.style.overflow = "";
 
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown,
-      );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
@@ -171,10 +151,7 @@ export function MobileNav() {
           md:hidden
         "
       >
-        <Menu
-          aria-hidden="true"
-          className="size-5"
-        />
+        <Menu aria-hidden="true" className="size-5" />
       </button>
 
       {/* Drawer layer */}
@@ -182,9 +159,7 @@ export function MobileNav() {
       <div
         className={cn(
           "fixed inset-0 z-60 md:hidden",
-          isOpen
-            ? "pointer-events-auto"
-            : "pointer-events-none",
+          isOpen ? "pointer-events-auto" : "pointer-events-none",
         )}
       >
         {/* Dark overlay */}
@@ -195,9 +170,7 @@ export function MobileNav() {
           onClick={closeMenu}
           className={cn(
             "absolute inset-0 bg-black/45 transition-opacity duration-200",
-            isOpen
-              ? "opacity-100"
-              : "opacity-0",
+            isOpen ? "opacity-100" : "opacity-0",
           )}
         />
 
@@ -213,9 +186,7 @@ export function MobileNav() {
             "flex w-[86%] max-w-sm flex-col",
             "bg-surface shadow-xl",
             "transition-transform duration-200 ease-out",
-            isOpen
-              ? "translate-x-0"
-              : "-translate-x-full",
+            isOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
           {/* Drawer header */}
@@ -227,7 +198,6 @@ export function MobileNav() {
               className="flex items-center gap-2 text-lg font-bold text-primary"
             >
               <ShoppingBag className="size-5" />
-
               Marketplace
             </Link>
 
@@ -247,10 +217,7 @@ export function MobileNav() {
                 hover:bg-surface-muted
               "
             >
-              <X
-                aria-hidden="true"
-                className="size-5"
-              />
+              <X aria-hidden="true" className="size-5" />
             </button>
           </div>
 
@@ -288,12 +255,11 @@ export function MobileNav() {
 
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-foreground">
-                    John Doe
+                  John Doe
                 </p>
 
                 <div className="mt-0.5 flex items-center gap-1 text-xs text-secondary">
                   <ShieldCheck className="size-3.5" />
-
                   Student verified
                 </div>
               </div>
@@ -303,10 +269,7 @@ export function MobileNav() {
           {/* Scrollable menu */}
 
           <div className="flex-1 overflow-y-auto px-3 py-4">
-            <nav
-              aria-label="Main mobile menu"
-              className="space-y-1"
-            >
+            <nav aria-label="Main mobile menu" className="space-y-1">
               {mainMenuItems.map((item) => (
                 <MobileMenuLink
                   key={item.href}
@@ -341,7 +304,6 @@ export function MobileNav() {
               "
             >
               <Plus className="size-5" />
-
               Sell an item
             </Link>
 
@@ -352,10 +314,7 @@ export function MobileNav() {
                 Support
               </p>
 
-              <nav
-                aria-label="Support menu"
-                className="mt-2 space-y-1"
-              >
+              <nav aria-label="Support menu" className="mt-2 space-y-1">
                 {supportMenuItems.map((item) => (
                   <MobileMenuLink
                     key={item.href}
@@ -393,7 +352,6 @@ export function MobileNav() {
               "
             >
               <LogIn className="size-5" />
-
               Sign in
             </Link>
           </div>
@@ -409,27 +367,17 @@ interface MobileMenuLinkProps {
   onClick: () => void;
 }
 
-function MobileMenuLink({
-  item,
-  pathname,
-  onClick,
-}: MobileMenuLinkProps) {
+function MobileMenuLink({ item, pathname, onClick }: MobileMenuLinkProps) {
   const Icon = item.icon;
 
   const isActive =
-    item.href === "/"
-      ? pathname === "/"
-      : pathname.startsWith(item.href);
+    item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
   return (
     <Link
       href={item.href}
       onClick={onClick}
-      aria-current={
-        isActive
-          ? "page"
-          : undefined
-      }
+      aria-current={isActive ? "page" : undefined}
       className={cn(
         "flex min-h-11 items-center gap-3 rounded-control px-3 py-2",
         "text-sm font-medium transition-colors",
@@ -439,14 +387,9 @@ function MobileMenuLink({
           : "text-foreground hover:bg-surface-muted",
       )}
     >
-      <Icon
-        aria-hidden="true"
-        className="size-5 shrink-0"
-      />
+      <Icon aria-hidden="true" className="size-5 shrink-0" />
 
-      <span>
-        {item.label}
-      </span>
+      <span>{item.label}</span>
     </Link>
   );
 }
