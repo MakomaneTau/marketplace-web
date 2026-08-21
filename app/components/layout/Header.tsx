@@ -6,11 +6,16 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { HeaderIconLink } from "@/app/components/layout/HeaderIconLink";
 import { Container } from "@/app/components/layout/Container";
 import { MobileNav } from "@/app/components/layout/MobileNav";
+import { useAuth } from "@/app/hooks/use-auth";
+import { logout } from "@/app/libs/api";
 
 export function Header() {
+  const{auth,ready}=useAuth();const router=useRouter();
   return (
     <header className="sticky top-0 z-40 bg-surface/95 backrop-blur">
       <Container>
@@ -110,8 +115,9 @@ export function Header() {
             </HeaderIconLink>
           </nav>
 
-          <Link
-            href="login"
+          {ready&&auth?<button
+            type="button"
+            onClick={async()=>{await logout();router.push("/login");router.refresh();}}
             className="
                 inline-flex
                 h-11
@@ -129,8 +135,8 @@ export function Header() {
             "
           >
             <LogIn className="size-5" />
-            Sign In
-          </Link>
+            Sign out
+          </button>:<Link href="/login" className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-control bg-primary px-4 text-sm font-semibold transition hover:bg-primary-hover"><LogIn className="size-5"/>Sign In</Link>}
         </div>
       </Container>
     </header>

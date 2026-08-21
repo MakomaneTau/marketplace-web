@@ -1,12 +1,15 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
+import { apiErrorMessage, apiPublic, signup } from "@/app/libs/api";
 import { cn } from "@/app/libs/utils";
 import type { UserRole } from "@/app/types/auth";
-import { useRouter } from "next/navigation";
+
+interface UniversityOption { id: string; name: string; slug: string }
 
 export function SignupForm() {
   const router = useRouter();
@@ -25,8 +28,11 @@ export function SignupForm() {
   const [error, setError] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [universities, setUniversities] = useState<UniversityOption[]>([]);
 
   const isStudent = role === "buyer" ? true : sellerIsStudent;
+
+  useEffect(() => { apiPublic<UniversityOption[]>("/universities").then(setUniversities).catch(() => setUniversities([])); }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,24 +61,17 @@ export function SignupForm() {
 
       isStudent,
 
-      university: isStudent ? form.get("university") : null,
-
-      studentNumber: isStudent ? form.get("studentNumber") : null,
+      ...(isStudent ? { universitySlug: form.get("university"), studentNumber: form.get("studentNumber") } : {}),
     };
 
     try {
       setIsSubmitting(true);
 
-      /*
-       * Later this payload will be sent to:
-       *
-       * POST /api/v1/auth/signup
-       */
-
-      console.log(payload);
-      router.replace("/dashboard");
-    } catch {
-      setError("Unable to create your account. Please try again.");
+      const result = await signup(payload);
+      router.replace(result.user.user_metadata?.role === "seller" ? "/seller" : "/");
+      router.refresh();
+    } catch (error) {
+      setError(apiErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -246,15 +245,7 @@ export function SignupForm() {
                   Select university
                 </option>
 
-                <option value="wits">University of the Witwatersrand</option>
-
-                <option value="uj">University of Johannesburg</option>
-
-                <option value="up">University of Pretoria</option>
-
-                <option value="uct">University of Cape Town</option>
-
-                <option value="other">Other</option>
+                {universities.map((university) => <option key={university.id} value={university.slug}>{university.name}</option>)}
               </select>
             </div>
 

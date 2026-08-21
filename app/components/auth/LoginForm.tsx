@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
+import { apiErrorMessage, login } from "@/app/libs/api";
 
 export function LoginForm() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [remember, setRemember] = useState(true);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,12 +31,11 @@ export function LoginForm() {
     try {
       setIsSubmitting(true);
 
-      //api
-
-      console.log({ email, password });
-      router.replace("/dashboard");
-    } catch {
-      setError("Something went wrong. Please try again.");
+      const result = await login(email, password, remember);
+      router.replace(result.user.user_metadata?.role === "seller" ? "/seller" : "/");
+      router.refresh();
+    } catch (error) {
+      setError(apiErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -79,6 +80,8 @@ export function LoginForm() {
       <label className="flex cursor-pointer items-center gap-2">
         <input
           type="checkbox"
+          checked={remember}
+          onChange={(event) => setRemember(event.target.checked)}
           className="
             size-4
             rounded

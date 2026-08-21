@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { SlidersHorizontal, SearchX } from "lucide-react";
 
 import { ProductGrid } from "@/app/components/product/ProductGrid";
-import { categories } from "@/app/data/categories";
-import { products } from "@/app/data/products";
+import { apiPublic } from "@/app/libs/api";
+import { mapProduct, type ApiCategory, type ApiProduct } from "@/app/libs/catalog";
 import type { ProductCondition } from "@/app/types/product";
 
 interface SearchProductsExplorerProps {
@@ -19,29 +19,9 @@ export function SearchProductsExplorer({ initialQuery = "" }: SearchProductsExpl
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState("all");
   const [condition, setCondition] = useState<ConditionFilter>("all");
-  const [sort, setSort] = useState<SortOption>("newest");
-
-  const results = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    const filtered = products.filter((product) => {
-      const matchesQuery =
-        !normalizedQuery ||
-        product.name.toLowerCase().includes(normalizedQuery) ||
-        product.description.toLowerCase().includes(normalizedQuery);
-
-      const matchesCategory = category === "all" || product.categorySlug === category;
-      const matchesCondition = condition === "all" || product.condition === condition;
-
-      return matchesQuery && matchesCategory && matchesCondition;
-    });
-
-    return [...filtered].sort((a, b) => {
-      if (sort === "price-low") return a.price - b.price;
-      if (sort === "price-high") return b.price - a.price;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-  }, [category, condition, query, sort]);
+  const [sort, setSort] = useState<SortOption>("newest"); const[results,setResults]=useState<ReturnType<typeof mapProduct>[]>([]);const[categories,setCategories]=useState<ApiCategory[]>([]);const[loading,setLoading]=useState(true);
+  useEffect(()=>{apiPublic<ApiCategory[]>("/categories").then(setCategories).catch(()=>setCategories([]));},[]);
+  useEffect(()=>{const timer=setTimeout(()=>{const params=new URLSearchParams();if(query.trim())params.set("q",query.trim());if(category!=="all")params.set("category",category);if(condition!=="all")params.set("condition",condition.toLowerCase().replace(" ","_"));params.set("sort",sort==="price-low"?"price_asc":sort==="price-high"?"price_desc":"newest");setLoading(true);apiPublic<ApiProduct[]>(`/products?${params}`).then(items=>setResults(items.map(mapProduct))).catch(()=>setResults([])).finally(()=>setLoading(false));},250);return()=>clearTimeout(timer);},[category,condition,query,sort]);
 
   function clearFilters() {
     setQuery("");
@@ -102,7 +82,7 @@ export function SearchProductsExplorer({ initialQuery = "" }: SearchProductsExpl
         </button>
       </div>
 
-      {results.length > 0 ? (
+      {loading?<p className="py-12 text-center text-sm text-muted">Loading products...</p>:results.length > 0 ? (
         <div className="mt-5">
           <ProductGrid products={results} />
         </div>

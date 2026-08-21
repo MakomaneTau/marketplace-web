@@ -4,9 +4,7 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   CalendarDays,
-  Heart,
   MapPin,
-  MessageCircle,
   ShieldCheck,
   Star,
 } from "lucide-react";
@@ -14,22 +12,22 @@ import {
 import { Container } from "@/app/components/layout/Container";
 import { ProductGallery } from "@/app/components/product/ProductGallery";
 import { ProductGrid } from "@/app/components/product/ProductGrid";
+import { ProductActions } from "@/app/components/product/ProductActions";
 import { formatZAR } from "@/app/libs/format";
-import { getProductById, products } from "@/app/data/products";
+import { mapProduct, type ApiProduct } from "@/app/libs/catalog";
 
 interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;
 }
 
-export function generateStaticParams() {
-  return products.map((product) => ({ id: product.id }));
-}
+const API_URL=process.env.NEXT_PUBLIC_API_URL||"http://127.0.0.1:4000";
+async function loadProduct(id:string){const response=await fetch(`${API_URL}/api/v1/products/${id}`,{cache:"no-store"});if(response.status===404)return null;if(!response.ok)throw new Error("Product service unavailable");return mapProduct((await response.json()).data as ApiProduct);}
 
 export async function generateMetadata({
   params,
 }: ProductDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = getProductById(id);
+  const product = await loadProduct(id).catch(()=>null);
 
   if (!product) return { title: "Product not found" };
 
@@ -43,16 +41,11 @@ export default async function ProductDetailsPage({
   params,
 }: ProductDetailsPageProps) {
   const { id } = await params;
-  const product = getProductById(id);
+  const product = await loadProduct(id).catch(()=>null);
 
   if (!product) notFound();
 
-  const relatedProducts = products
-    .filter(
-      (item) =>
-        item.categorySlug === product.categorySlug && item.id !== product.id,
-    )
-    .slice(0, 4);
+  const relatedResponse=await fetch(`${API_URL}/api/v1/products?category=${product.categorySlug}&limit=5`,{cache:"no-store"}).catch(()=>null);const relatedProducts=relatedResponse?.ok?((await relatedResponse.json()).data as ApiProduct[]).filter(item=>item.id!==id).slice(0,4).map(mapProduct):[];
 
   return (
     <Container className="py-6 md:py-8 lg:py-10">
@@ -78,13 +71,6 @@ export default async function ProductDetailsPage({
               </h1>
             </div>
 
-            <button
-              type="button"
-              aria-label="Add to favourites"
-              className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-foreground hover:bg-surface-muted"
-            >
-              <Heart className="size-5" />
-            </button>
           </div>
 
           <p className="mt-4 text-3xl font-bold text-accent">
@@ -114,22 +100,7 @@ export default async function ProductDetailsPage({
             </p>
           </div>
 
-          <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            <Link
-              href={`/messages?product=${product.id}&seller=${product.seller.id}`}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover"
-            >
-              <MessageCircle className="size-5" />
-              Message seller
-            </Link>
-            <button
-              type="button"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-control border border-border bg-surface px-5 text-sm font-semibold text-foreground hover:bg-surface-muted"
-            >
-              <Heart className="size-5" />
-              Save item
-            </button>
-          </div>
+          <ProductActions productId={product.id}/>
 
           <aside className="mt-7 rounded-card border border-border bg-surface p-5">
             <div className="flex items-start gap-3">

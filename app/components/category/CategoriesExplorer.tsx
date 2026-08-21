@@ -1,21 +1,18 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
-
-import {
-  Search,
-  SearchX,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { PackageOpen, Search, SearchX } from "lucide-react";
 
 import { CategoryCard } from "@/app/components/category/CategoryCard";
-import { categories } from "@/app/data/categories";
+import type { Category } from "@/app/data/categories";
+import { apiPublic } from "@/app/libs/api";
+import type { ApiCategory } from "@/app/libs/catalog";
 
 export function CategoriesExplorer() {
   const [searchQuery, setSearchQuery] =
     useState("");
+  const[categories,setCategories]=useState<Category[]>([]);
+  useEffect(()=>{apiPublic<ApiCategory[]>("/categories").then(items=>setCategories(items.map(item=>({name:item.name,slug:item.slug,description:item.description,productCount:item.product_count,featured:item.is_featured,icon:PackageOpen})))).catch(()=>setCategories([]));},[]);
 
   const filteredCategories = useMemo(() => {
     const normalizedQuery = searchQuery
@@ -36,7 +33,7 @@ export function CategoriesExplorer() {
           .includes(normalizedQuery)
       );
     });
-  }, [searchQuery]);
+  }, [categories, searchQuery]);
 
   return (
     <div>

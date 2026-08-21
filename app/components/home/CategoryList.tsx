@@ -1,12 +1,17 @@
+"use client";
 import Link from "next/link";
+import { PackageOpen } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import { categories } from "@/app/data/categories";
+import { apiPublic } from "@/app/libs/api";
+import type { ApiCategory } from "@/app/libs/catalog";
 
 const HOME_CATEGORY_LIMIT = 6;
 
 export function CategoryList() {
+  const [categories,setCategories]=useState<ApiCategory[]>([]);
+  useEffect(()=>{apiPublic<ApiCategory[]>("/categories?featured=true").then(setCategories).catch(()=>setCategories([]));},[]);
   const homeCategories = categories
-    .filter((category) => category.featured)
     .slice(0, HOME_CATEGORY_LIMIT);
 
   return (
@@ -20,7 +25,7 @@ export function CategoryList() {
       "
     >
       {homeCategories.map((category) => {
-        const Icon = category.icon;
+        const Icon = PackageOpen;
 
         return (
           <Link

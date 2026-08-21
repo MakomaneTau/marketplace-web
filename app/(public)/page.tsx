@@ -1,15 +1,17 @@
 "use client";
+import { useEffect, useState } from "react";
+
 import { CategoryList } from "@/app/components/home/CategoryList";
 import { HeroSection } from "@/app/components/home/HeroSection";
 import { HomeSectionHeader } from "@/app/components/home/HomeSectionHeader";
-
 import { Container } from "@/app/components/layout/Container";
-
 import { ProductGrid } from "@/app/components/product/ProductGrid";
-
-import { featuredProducts } from "@/app/data/products";
+import { apiPublic } from "@/app/libs/api";
+import { mapProduct, type ApiProduct } from "@/app/libs/catalog";
 
 export default function MarketplacePage() {
+const [products,setProducts]=useState<ReturnType<typeof mapProduct>[]>([]);
+useEffect(()=>{apiPublic<ApiProduct[]>("/products?sort=newest&limit=8").then(items=>setProducts(items.map(mapProduct))).catch(()=>setProducts([]));},[]);
 return (
     <Container className="py-5 md:py-8 lg:py-10">
       {/* ====================================
@@ -44,7 +46,7 @@ return (
         />
 
         <ProductGrid
-          products={featuredProducts}
+          products={products}
         />
       </section>
 
@@ -60,7 +62,7 @@ return (
         />
 
         <ProductGrid
-          products={featuredProducts.slice(
+          products={products.slice(
             0,
             4,
           )}
