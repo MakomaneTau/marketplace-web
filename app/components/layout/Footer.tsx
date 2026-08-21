@@ -1,13 +1,9 @@
 import Link from "next/link";
-
 import { ShoppingBag } from "lucide-react";
-
 import { FaInstagram, FaFacebook } from "react-icons/fa6";
 
 import { Container } from "@/app/components/layout/Container";
-
 import { FooterColumn } from "@/app/components/layout/FooterColumn";
-
 import { SocialLink } from "@/app/components/layout/SocialLink";
 
 export function Footer() {

@@ -4,15 +4,16 @@ import {
   type FormEvent,
   useState,
 } from "react";
-
 import {
   CheckCircle2,
   ShieldCheck,
 } from "lucide-react";
 
-import { ImageUploadField } from "./ImageUploadField";
 
 import { Button } from "@/app/components/ui/Button";
+import { apiErrorMessage, apiRequest } from "@/app/libs/api";
+
+import { ImageUploadField } from "./ImageUploadField";
 
 export function SellerVerificationForm() {
   const [selfie, setSelfie] =
@@ -66,52 +67,10 @@ export function SellerVerificationForm() {
         sellerId,
       );
 
-      /*
-       * Future Express API:
-       *
-       * POST /api/v1/verifications/student
-       */
-
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL;
-
-      if (!apiUrl) {
-        /*
-         * Temporary development behaviour.
-         * Remove this once the API endpoint exists.
-         */
-
-        console.log({
-          selfie,
-          sellerId,
-        });
-
-        setSubmitted(true);
-        return;
-      }
-
-      const response = await fetch(
-        `${apiUrl}/api/v1/verifications/student`,
-        {
-          method: "POST",
-
-          credentials: "include",
-
-          body: formData,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          "Verification upload failed.",
-        );
-      }
-
+      await apiRequest("/verifications/seller", { method: "POST", auth: true, body: formData });
       setSubmitted(true);
-    } catch {
-      setError(
-        "We couldn't upload your documents. Please try again.",
-      );
+    } catch (requestError) {
+      setError(apiErrorMessage(requestError));
     } finally {
       setIsSubmitting(false);
     }

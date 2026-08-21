@@ -1,10 +1,19 @@
+"use client";
 import { MoreHorizontal, Pencil, Plus, Search, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import { SectionHeading } from "@/app/components/seller/section-heading";
 import { StatusBadge } from "@/app/components/seller/status-badge";
-import { sellerProducts } from "@/app/data/seller";
+import type { SellerProduct } from "@/app/data/seller";
+import { apiRequest } from "@/app/libs/api";
+import type { ApiProduct } from "@/app/libs/catalog";
+
+type SellerApiProduct=ApiProduct&{stock_quantity:number;view_count:number;status:"active"|"draft"|"sold"|"paused";category:{name:string;slug:string}};
 
 export default function SellerProductsPage() {
+  const[sellerProducts,setSellerProducts]=useState<SellerProduct[]>([]);
+  useEffect(()=>{apiRequest<SellerApiProduct[]>("/seller/products?limit=100",{auth:true}).then(items=>setSellerProducts(items.map(item=>({id:item.id,name:item.title,category:item.category.name,price:Number(item.price),stock:item.stock_quantity,views:item.view_count,status:(item.status[0].toUpperCase()+item.status.slice(1)) as SellerProduct["status"],emoji:"📦"})))).catch(()=>setSellerProducts([]));},[]);
   return (
     <div className="space-y-6">
       <SectionHeading

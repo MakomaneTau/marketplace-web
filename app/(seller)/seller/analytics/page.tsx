@@ -1,4 +1,5 @@
 import { CircleDollarSign, Eye, Package, ShoppingCart, TrendingUp } from "lucide-react";
+
 import { SectionHeading } from "@/app/components/seller/section-heading";
 import { StatCard } from "@/app/components/seller/stat-card";
 import { sellerProducts, weeklyRevenue } from "@/app/data/seller";

@@ -8,6 +8,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import Link from "next/link";
+
 import { SectionHeading } from "@/app/components/seller/section-heading";
 import { StatCard } from "@/app/components/seller/stat-card";
 import { StatusBadge } from "@/app/components/seller/status-badge";

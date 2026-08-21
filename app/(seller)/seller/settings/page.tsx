@@ -1,4 +1,5 @@
 import { Bell, CreditCard, LockKeyhole, ShieldCheck, UserRound } from "lucide-react";
+
 import { SectionHeading } from "@/app/components/seller/section-heading";
 
 const notifications = [

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-
 import {
   ShieldCheck,
 } from "lucide-react";
+
 import { PageHeader } from "@/app/components/layout/PageHeader";
 import { CategoriesExplorer } from "@/app/components/category/CategoriesExplorer";
 import { Container } from "@/app/components/layout/Container";

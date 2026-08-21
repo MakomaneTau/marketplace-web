@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-
 import Image from "next/image";
 import { Camera, ImagePlus, RotateCcw, X } from "lucide-react";
 

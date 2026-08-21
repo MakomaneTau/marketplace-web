@@ -2,17 +2,55 @@
 
 import { ImagePlus, Info, MapPin, PackageCheck, Save, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { apiErrorMessage, apiPublic, apiRequest } from "@/app/libs/api";
+import type { ApiCategory, ApiProduct } from "@/app/libs/catalog";
 
 type ProductFormProps = {
   mode?: "create" | "edit";
   productId?: string;
 };
 
-const categories = ["Books", "Electronics", "Clothing", "Furniture", "Appliances", "Services", "Other"];
+type ManagedProduct = ApiProduct & {
+  category_id: string;
+  stock_quantity: number;
+  pickup_location: string | null;
+  allows_campus_pickup: boolean;
+  allows_delivery: boolean;
+  status: string;
+};
 
 export function ProductForm({ mode = "create", productId }: ProductFormProps) {
   const [previews, setPreviews] = useState<string[]>([]);
   const generatedUrls = useRef<string[]>([]);
+  const pendingFiles = useRef<Map<string, File>>(new Map());
+  const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const [existing, setExisting] = useState<ManagedProduct | null>(null);
+  const [serverImages, setServerImages] = useState<string[]>([]);
+  const [ready, setReady] = useState(mode === "create");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const publish = useRef(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    apiPublic<ApiCategory[]>("/categories").then(setCategories).catch(() => setCategories([]));
+    if (mode === "edit" && productId) {
+      apiRequest<ManagedProduct[]>("/seller/products?limit=100", { auth: true })
+        .then((items) => {
+          const item = items.find((value) => value.id === productId) || null;
+          setExisting(item);
+          setServerImages(item?.image_urls || []);
+          setPreviews(item?.image_urls || []);
+          setReady(true);
+        })
+        .catch((requestError) => {
+          setError(apiErrorMessage(requestError));
+          setReady(true);
+        });
+    }
+  }, [mode, productId]);
 
   useEffect(() => {
     return () => {
@@ -20,24 +58,84 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
     };
   }, []);
 
-  function handleImages(files: FileList | null) {
-    if (!files) return;
+  function handleImages(selectedFiles: FileList | null) {
+    if (!selectedFiles) return;
 
     const remaining = Math.max(0, 5 - previews.length);
-    const selected = Array.from(files).slice(0, remaining);
+    const selected = Array.from(selectedFiles).slice(0, remaining);
     const urls = selected.map((file) => URL.createObjectURL(file));
+    urls.forEach((url, index) => pendingFiles.current.set(url, selected[index]));
     generatedUrls.current.push(...urls);
     setPreviews((current) => [...current, ...urls]);
   }
 
-  function removeImage(url: string) {
+  async function removeImage(url: string) {
+    const existingIndex = serverImages.indexOf(url);
+    if (existingIndex >= 0 && productId) {
+      try {
+        await apiRequest(`/seller/products/${productId}/images/${existingIndex}`, {
+          method: "DELETE",
+          auth: true,
+        });
+        setServerImages((current) => current.filter((item) => item !== url));
+      } catch (requestError) {
+        setError(apiErrorMessage(requestError));
+        return;
+      }
+    }
     URL.revokeObjectURL(url);
     generatedUrls.current = generatedUrls.current.filter((item) => item !== url);
     setPreviews((current) => current.filter((item) => item !== url));
+    pendingFiles.current.delete(url);
   }
 
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    if (publish.current && previews.length === 0) {
+      setError("Add at least one image before publishing this listing.");
+      return;
+    }
+    const form = new FormData(event.currentTarget);
+    const input = {
+      category_id: String(form.get("category")),
+      title: String(form.get("title")),
+      description: String(form.get("description")),
+      condition: String(form.get("condition")),
+      price: Number(form.get("price")),
+      currency: "ZAR",
+      stock_quantity: Number(form.get("quantity")),
+      pickup_location: String(form.get("pickup_location")),
+      allows_campus_pickup: form.get("campus_pickup") === "on",
+      allows_delivery: form.get("delivery") === "on",
+      status: "draft",
+    };
+    try {
+      setSubmitting(true);
+      const product = mode === "edit" && productId
+        ? await apiRequest<ManagedProduct>(`/seller/products/${productId}`, { method: "PATCH", auth: true, body: JSON.stringify(input) })
+        : await apiRequest<ManagedProduct>("/seller/products", { method: "POST", auth: true, body: JSON.stringify(input) });
+      for (const file of pendingFiles.current.values()) {
+        const body = new FormData();
+        body.append("image", file);
+        await apiRequest(`/seller/products/${product.id}/images`, { method: "POST", auth: true, body });
+      }
+      if (publish.current) {
+        await apiRequest(`/seller/products/${product.id}`, { method: "PATCH", auth: true, body: JSON.stringify({ status: "active" }) });
+      }
+      router.push("/seller/products");
+      router.refresh();
+    } catch (requestError) {
+      setError(apiErrorMessage(requestError));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if(!ready)return <p className="py-12 text-center text-sm text-slate-500">Loading listing...</p>;
+
   return (
-    <form className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]" onSubmit={(event) => event.preventDefault()}>
+    <form className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]" onSubmit={submit}>
       <div className="space-y-6">
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex items-center gap-3">
@@ -95,7 +193,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <span className="mb-2 block text-sm font-semibold text-slate-700">Product title</span>
               <input
                 name="title"
-                defaultValue={mode === "edit" ? "Scientific calculator" : ""}
+                defaultValue={existing?.title||""}
                 placeholder="e.g. Casio scientific calculator"
                 maxLength={80}
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
@@ -106,12 +204,12 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <span className="mb-2 block text-sm font-semibold text-slate-700">Category</span>
               <select
                 name="category"
-                defaultValue={mode === "edit" ? "Electronics" : ""}
+                defaultValue={existing?.category_id||""}
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               >
                 <option value="" disabled>Select a category</option>
                 {categories.map((category) => (
-                  <option key={category}>{category}</option>
+                  <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </select>
             </label>
@@ -120,14 +218,11 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <span className="mb-2 block text-sm font-semibold text-slate-700">Condition</span>
               <select
                 name="condition"
-                defaultValue={mode === "edit" ? "Good" : ""}
+                defaultValue={existing?.condition||""}
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               >
                 <option value="" disabled>Select condition</option>
-                <option>New</option>
-                <option>Like new</option>
-                <option>Good</option>
-                <option>Fair</option>
+                <option value="new">New</option><option value="like_new">Like new</option><option value="good">Good</option><option value="fair">Fair</option>
               </select>
             </label>
 
@@ -136,7 +231,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <textarea
                 name="description"
                 rows={6}
-                defaultValue={mode === "edit" ? "Used for one semester and still in very good condition. Includes the original protective cover." : ""}
+                defaultValue={existing?.description||""}
                 placeholder="Describe the condition, what is included, and any defects the buyer should know about."
                 className="w-full resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               />
@@ -156,7 +251,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                   type="number"
                   min="0"
                   step="1"
-                  defaultValue={mode === "edit" ? 280 : undefined}
+                  defaultValue={existing?Number(existing.price):undefined}
                   placeholder="0"
                   className="min-w-0 flex-1 px-3.5 py-3 text-sm outline-none"
                 />
@@ -169,7 +264,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 name="quantity"
                 type="number"
                 min="1"
-                defaultValue={mode === "edit" ? 3 : 1}
+                defaultValue={existing?.stock_quantity||1}
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               />
             </label>
@@ -187,15 +282,24 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             </div>
           </div>
           <div className="mt-5 space-y-3">
+            <label className="block">
+              <span className="mb-2 block text-sm font-semibold text-slate-700">Pickup location</span>
+              <input
+                name="pickup_location"
+                defaultValue={existing?.pickup_location || ""}
+                placeholder="e.g. Main library entrance"
+                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+              />
+            </label>
             <label className="flex gap-3 rounded-xl border border-slate-200 p-4">
-              <input type="checkbox" defaultChecked className="mt-0.5 h-4 w-4 accent-violet-700" />
+              <input name="campus_pickup" type="checkbox" defaultChecked={existing?.allows_campus_pickup??true} className="mt-0.5 h-4 w-4 accent-violet-700" />
               <span>
                 <span className="block text-sm font-semibold text-slate-900">Campus collection</span>
                 <span className="block text-xs text-slate-500">Meet the buyer at an agreed safe campus pickup point.</span>
               </span>
             </label>
             <label className="flex gap-3 rounded-xl border border-slate-200 p-4">
-              <input type="checkbox" className="mt-0.5 h-4 w-4 accent-violet-700" />
+              <input name="delivery" type="checkbox" defaultChecked={existing?.allows_delivery??false} className="mt-0.5 h-4 w-4 accent-violet-700" />
               <span>
                 <span className="block text-sm font-semibold text-slate-900">Local delivery</span>
                 <span className="block text-xs text-slate-500">Arrange delivery directly with the buyer.</span>
@@ -237,9 +341,13 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
           </p>
         )}
 
+        {error&&<p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
+
         <div className="grid grid-cols-2 gap-3 xl:grid-cols-1">
           <button
             type="submit"
+            disabled={submitting}
+            onClick={()=>{publish.current=true;}}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-800"
           >
             <PackageCheck className="h-4 w-4" />
@@ -247,6 +355,8 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
           </button>
           <button
             type="button"
+            onClick={(event)=>{publish.current=false;event.currentTarget.form?.requestSubmit();}}
+            disabled={submitting}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
           >
             <Save className="h-4 w-4" />
