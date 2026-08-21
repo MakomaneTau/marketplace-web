@@ -20,6 +20,8 @@ interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;
 }
 
+type ProductReview = { id: string; rating: number; comment: string; reviewer: { display_name: string } };
+
 const API_URL=process.env.NEXT_PUBLIC_API_URL||"http://127.0.0.1:4000";
 async function loadProduct(id:string){const response=await fetch(`${API_URL}/api/v1/products/${id}`,{cache:"no-store"});if(response.status===404)return null;if(!response.ok)throw new Error("Product service unavailable");return mapProduct((await response.json()).data as ApiProduct);}
 
@@ -46,6 +48,8 @@ export default async function ProductDetailsPage({
   if (!product) notFound();
 
   const relatedResponse=await fetch(`${API_URL}/api/v1/products?category=${product.categorySlug}&limit=5`,{cache:"no-store"}).catch(()=>null);const relatedProducts=relatedResponse?.ok?((await relatedResponse.json()).data as ApiProduct[]).filter(item=>item.id!==id).slice(0,4).map(mapProduct):[];
+  const reviewsResponse = await fetch(`${API_URL}/api/v1/products/${id}/reviews?limit=5`, { cache: "no-store" }).catch(() => null);
+  const reviews = reviewsResponse?.ok ? ((await reviewsResponse.json()).data as ProductReview[]) : [];
 
   return (
     <Container className="py-6 md:py-8 lg:py-10">
@@ -146,6 +150,8 @@ export default async function ProductDetailsPage({
           </div>
         </section>
       )}
+
+      {reviews.length > 0 && <section className="mt-10 border-t border-border pt-8"><h2 className="text-xl font-bold">Recent reviews</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">{reviews.map((review) => <article key={review.id} className="rounded-card border border-border bg-surface p-5"><p className="font-semibold">{review.reviewer.display_name} · {review.rating}/5</p><p className="mt-2 text-sm text-muted">{review.comment}</p></article>)}</div></section>}
     </Container>
   );
 }

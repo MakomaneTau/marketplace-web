@@ -1,181 +1,58 @@
 "use client";
 
-import {
-  Camera,
-  MapPin,
-  ShieldCheck,
-  Store,
-  ToggleLeft,
-  ToggleRight,
-} from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
-import {
-  PickupAreaSelector,
-  type PickupAreaSelection,
-} from "@/app/components/seller/pickup-area-selector";
 import { SectionHeading } from "@/app/components/seller/section-heading";
+import { apiErrorMessage, apiPublic, apiRequest } from "@/app/libs/api";
+
+type University = { id: string; name: string; slug: string };
+type Campus = { id: string; name: string };
+type Shop = { id: string; name: string; tagline: string | null; description: string | null; is_open: boolean; logo_url: string | null; banner_url: string | null; pickup_areas: { campus: Campus & { university: University } }[] };
 
 export default function SellerShopPage() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [pickupAreas, setPickupAreas] = useState<PickupAreaSelection[]>([
-    { id: "primary", universitySlug: "", campusName: "" },
-  ]);
+  const [shop, setShop] = useState<Shop | null>(null);
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [campuses, setCampuses] = useState<Campus[]>([]);
+  const [universitySlug, setUniversitySlug] = useState("");
+  const [campusIds, setCampusIds] = useState<string[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  return (
-    <div className="space-y-6">
-      <SectionHeading
-        eyebrow="Storefront"
-        title="My shop"
-        description="Build buyer trust with a clear shop identity and collection information."
-      />
+  useEffect(() => {
+    apiPublic<University[]>("/universities").then(setUniversities);
+    apiRequest<Shop | null>("/seller/shop", { auth: true }).then((value) => {
+      setShop(value);
+      setCampusIds(value?.pickup_areas.map((area) => area.campus.id) || []);
+      setLoaded(true);
+    }).catch((requestError) => { setError(apiErrorMessage(requestError)); setLoaded(true); });
+  }, []);
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <form
-          className="space-y-6"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <div className="flex items-center gap-3">
-              <span className="rounded-xl bg-violet-50 p-2 text-violet-700">
-                <Store className="h-5 w-5" />
-              </span>
-              <div>
-                <h2 className="font-bold text-slate-950">Shop identity</h2>
-                <p className="text-xs text-slate-500">
-                  This information appears on your public seller profile.
-                </p>
-              </div>
-            </div>
+  useEffect(() => {
+    if (!universitySlug) return;
+    apiPublic<Campus[]>(`/universities/${universitySlug}/campuses`).then(setCampuses).catch(() => setCampuses([]));
+  }, [universitySlug]);
 
-            <div className="mt-6 flex flex-col gap-5 sm:flex-row">
-              <button
-                type="button"
-                className="relative grid h-24 w-24 shrink-0 place-items-center rounded-2xl bg-slate-950 text-xl font-black text-white"
-              >
-                NS
-                <span className="absolute -bottom-2 -right-2 rounded-full border-4 border-white bg-violet-700 p-1.5">
-                  <Camera className="h-3.5 w-3.5" />
-                </span>
-              </button>
-              <div className="grid flex-1 gap-5">
-                <label>
-                  <span className="mb-2 block text-sm font-semibold text-slate-700">
-                    Shop name
-                  </span>
-                  <input
-                    defaultValue="Neo’s Student Store"
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
-                  />
-                </label>
-                <label>
-                  <span className="mb-2 block text-sm font-semibold text-slate-700">
-                    Shop tagline
-                  </span>
-                  <input
-                    defaultValue="Affordable essentials for campus life"
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
-                  />
-                </label>
-              </div>
-            </div>
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    try {
+      setError(null);
+      const input = { name: form.get("name"), tagline: form.get("tagline"), description: form.get("description"), isOpen: form.get("isOpen") === "on" };
+      const saved = await apiRequest<Shop>("/seller/shop", { method: shop ? "PATCH" : "POST", auth: true, body: JSON.stringify(input) });
+      const updated = await apiRequest<Shop>("/seller/shop/pickup-areas", { method: "PUT", auth: true, body: JSON.stringify({ campusIds }) });
+      setShop({ ...saved, pickup_areas: updated.pickup_areas });
+      setMessage("Shop changes saved.");
+    } catch (requestError) { setError(apiErrorMessage(requestError)); }
+  }
 
-            <label className="mt-5 block">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
-                About your shop
-              </span>
-              <textarea
-                rows={5}
-                defaultValue="I sell useful, fairly priced student items around Wits. I respond quickly and prefer safe campus collection points."
-                className="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
-              />
-            </label>
+  async function upload(kind: "logo" | "banner", file?: File) {
+    if (!file) return;
+    const body = new FormData(); body.append("image", file);
+    try { setShop(await apiRequest<Shop>(`/seller/shop/${kind}`, { method: "POST", auth: true, body })); } catch (requestError) { setError(apiErrorMessage(requestError)); }
+  }
 
-            <label className="mt-5 flex items-center gap-3">
-              <span>Shop Availability:</span>
+  if (!loaded) return <p className="py-12 text-center text-sm text-slate-500">Loading shop...</p>;
 
-              {isOpen ? (
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <ToggleLeft className="h-6 w-6 text-slate-400" />
-                  Shop Closed
-                </button>
-              ) : (
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <ToggleRight className="h-6 w-6 text-violet-700" />
-                  Shop Open
-                </button>
-              )}
-            </label>
-          </section>
-
-          <PickupAreaSelector
-            multiple
-            value={pickupAreas}
-            onChange={setPickupAreas}
-          />
-
-          <button
-            type="submit"
-            className="rounded-xl bg-violet-700 px-5 py-3 text-sm font-semibold text-white hover:bg-violet-800"
-          >
-            Save shop changes
-          </button>
-        </form>
-
-        <aside className="xl:sticky xl:top-24 xl:self-start">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-            Buyer preview
-          </p>
-          <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <div className="h-28 bg-linear-to-br from-violet-700 via-violet-600 to-indigo-500" />
-            <div className="px-5 pb-6">
-              <div className="-mt-10 grid h-20 w-20 place-items-center rounded-2xl border-4 border-white bg-slate-950 text-xl font-black text-white">
-                NS
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <h2 className="text-xl font-bold text-slate-950">
-                  Neo’s Student Store
-                </h2>
-                <ShieldCheck className="h-5 w-5 text-emerald-600" />
-              </div>
-              <p className="mt-1 text-sm font-medium text-violet-700">
-                Affordable essentials for campus life
-              </p>
-              <p className="mt-4 text-sm leading-6 text-slate-600">
-                I sell useful, fairly priced student items around Wits. I
-                respond quickly and prefer safe campus collection points.
-              </p>
-              <div className="mt-5 grid grid-cols-3 divide-x divide-slate-200 rounded-xl bg-slate-50 py-3 text-center">
-                <div>
-                  <p className="font-bold text-slate-950">4.9</p>
-                  <p className="text-[10px] text-slate-500">Rating</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-950">24</p>
-                  <p className="text-[10px] text-slate-500">Sales</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-950">12</p>
-                  <p className="text-[10px] text-slate-500">Listings</p>
-                </div>
-              </div>
-              <p className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-500">
-                <MapPin className="h-4 w-4" />{" "}
-                {pickupAreas
-                  .map((pickupArea) => pickupArea.campusName)
-                  .filter(Boolean)
-                  .join(", ") || "Select a pickup area"}
-              </p>
-            </div>
-          </article>
-        </aside>
-      </div>
-    </div>
-  );
+  return <div className="space-y-6"><SectionHeading eyebrow="Storefront" title="My shop" description="Build buyer trust with a clear shop identity and collection information."/><form onSubmit={submit} className="space-y-6 rounded-2xl border bg-white p-6 shadow-sm"><div className="grid gap-5 sm:grid-cols-2"><label className="text-sm font-semibold">Shop name<input name="name" required minLength={3} defaultValue={shop?.name || ""} className="mt-2 w-full rounded-xl border px-4 py-3"/></label><label className="text-sm font-semibold">Tagline<input name="tagline" defaultValue={shop?.tagline || ""} className="mt-2 w-full rounded-xl border px-4 py-3"/></label></div><label className="block text-sm font-semibold">About your shop<textarea name="description" rows={5} defaultValue={shop?.description || ""} className="mt-2 w-full rounded-xl border px-4 py-3"/></label><label className="flex items-center gap-3 text-sm font-semibold"><input name="isOpen" type="checkbox" defaultChecked={shop?.is_open ?? true}/>Open for orders</label><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold">Logo<input type="file" accept="image/*" onChange={(event) => upload("logo", event.target.files?.[0])} className="mt-2 block w-full text-sm"/></label><label className="text-sm font-semibold">Banner<input type="file" accept="image/*" onChange={(event) => upload("banner", event.target.files?.[0])} className="mt-2 block w-full text-sm"/></label></div><div className="rounded-xl bg-slate-50 p-4"><h2 className="font-semibold">Pickup campuses</h2><div className="mt-3 grid gap-3 sm:grid-cols-2"><select value={universitySlug} onChange={(event) => setUniversitySlug(event.target.value)} className="rounded-xl border bg-white px-4 py-3"><option value="">Select university</option>{universities.map((university) => <option key={university.id} value={university.slug}>{university.name}</option>)}</select><select onChange={(event) => { const id = event.target.value; if (id && !campusIds.includes(id)) setCampusIds((current) => [...current, id]); }} className="rounded-xl border bg-white px-4 py-3"><option value="">Add campus</option>{campuses.map((campus) => <option key={campus.id} value={campus.id}>{campus.name}</option>)}</select></div><div className="mt-3 flex flex-wrap gap-2">{campusIds.map((id) => <button type="button" key={id} onClick={() => setCampusIds((current) => current.filter((value) => value !== id))} className="rounded-full bg-violet-100 px-3 py-1 text-xs text-violet-800">{shop?.pickup_areas.find((area) => area.campus.id === id)?.campus.name || campuses.find((campus) => campus.id === id)?.name || id} ×</button>)}</div></div>{message && <p className="text-sm text-emerald-700">{message}</p>}{error && <p role="alert" className="text-sm text-red-700">{error}</p>}<button className="rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white">Save shop changes</button></form></div>;
 }

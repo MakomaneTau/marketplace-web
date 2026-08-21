@@ -2,7 +2,10 @@
 
 import { Bell, ChevronDown, Menu, Plus, LogOut } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+import { apiRequest, logout } from "@/app/libs/api";
 
 type SellerHeaderProps = {
   onOpenMenu: () => void;
@@ -13,7 +16,15 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
     null,
   );
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
+  const [notifications, setNotifications] = useState<{ id: string; title: string; body: string }[]>([]);
   const actionsRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    apiRequest<{ id: string; title: string; body: string }[]>("/notifications?unread=true&limit=10", { auth: true })
+      .then((items) => { setNotifications(items); setHasUnreadNotifications(items.length > 0); })
+      .catch(() => setNotifications([]));
+  }, []);
 
   useEffect(() => {
     const closeMenus = (event: PointerEvent) => {
@@ -91,37 +102,24 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
                   <button
                     type="button"
                     className="text-xs font-semibold text-violet-700 hover:text-violet-900"
-                    onClick={() => setHasUnreadNotifications(false)}
+                    onClick={async () => {
+                      await apiRequest("/notifications/read-all", { method: "PATCH", auth: true });
+                      setHasUnreadNotifications(false);
+                      setNotifications([]);
+                    }}
                   >
                     Mark all read
                   </button>
                 )}
               </div>
               <div className="divide-y divide-slate-100">
-                <Link
-                  href="/seller/orders"
-                  className="block px-4 py-3 transition hover:bg-slate-50"
-                  onClick={() => setOpenMenu(null)}
-                >
-                  <p className="text-sm font-semibold text-slate-900">
-                    New order received
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Review the order and arrange collection.
-                  </p>
-                </Link>
-                <Link
-                  href="/seller/messages"
-                  className="block px-4 py-3 transition hover:bg-slate-50"
-                  onClick={() => setOpenMenu(null)}
-                >
-                  <p className="text-sm font-semibold text-slate-900">
-                    You have a new message
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    A buyer asked about product availability.
-                  </p>
-                </Link>
+                {notifications.map((notification) => (
+                  <div key={notification.id} className="px-4 py-3">
+                    <p className="text-sm font-semibold text-slate-900">{notification.title}</p>
+                    <p className="mt-1 text-xs text-slate-500">{notification.body}</p>
+                  </div>
+                ))}
+                {notifications.length === 0 && <p className="px-4 py-5 text-sm text-slate-500">No unread notifications.</p>}
               </div>
             </div>
           )}
@@ -172,14 +170,14 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
                 >
                   Account settings
                 </Link>
-                <Link
-                  href="/seller/logout"
+                <button
+                  type="button"
                   className="block rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-slate-50 hover:text-slate-950"
-                  onClick={() => setOpenMenu(null)}
+                  onClick={async () => { await logout(); router.push("/login"); }}
                 >
                   <LogOut className="mr-2 inline h-4 w-4" />
                   Log out
-                </Link>
+                </button>
               </nav>
             </div>
           )}
