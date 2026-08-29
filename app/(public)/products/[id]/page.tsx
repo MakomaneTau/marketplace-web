@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import {
   ArrowLeft,
   CalendarDays,
@@ -23,7 +23,22 @@ interface ProductDetailsPageProps {
 type ProductReview = { id: string; rating: number; comment: string; reviewer: { display_name: string } };
 
 const API_URL=process.env.NEXT_PUBLIC_API_URL||"http://127.0.0.1:4000";
-async function loadProduct(id:string){const response=await fetch(`${API_URL}/api/v1/products/${id}`,{cache:"no-store"});if(response.status===404)return null;if(!response.ok)throw new Error("Product service unavailable");return mapProduct((await response.json()).data as ApiProduct);}
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+async function loadProduct(reference: string) {
+  const usesUuid = UUID_PATTERN.test(reference);
+  const endpoint = usesUuid
+    ? `/api/v1/products/${reference}`
+    : `/api/v1/products?slug=${encodeURIComponent(reference)}&limit=1`;
+  const response = await fetch(`${API_URL}${endpoint}`, { cache: "no-store" });
+
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error("Product service unavailable");
+
+  const body = await response.json();
+  const value = usesUuid ? body.data : body.data?.[0];
+  return value ? mapProduct(value as ApiProduct) : null;
+}
 
 export async function generateMetadata({
   params,
@@ -36,6 +51,7 @@ export async function generateMetadata({
   return {
     title: product.name,
     description: product.description,
+    alternates: { canonical: `/products/${product.slug}` },
   };
 }
 
@@ -46,9 +62,10 @@ export default async function ProductDetailsPage({
   const product = await loadProduct(id).catch(()=>null);
 
   if (!product) notFound();
+  if (id !== product.slug) permanentRedirect(`/products/${product.slug}`);
 
-  const relatedResponse=await fetch(`${API_URL}/api/v1/products?category=${product.categorySlug}&limit=5`,{cache:"no-store"}).catch(()=>null);const relatedProducts=relatedResponse?.ok?((await relatedResponse.json()).data as ApiProduct[]).filter(item=>item.id!==id).slice(0,4).map(mapProduct):[];
-  const reviewsResponse = await fetch(`${API_URL}/api/v1/products/${id}/reviews?limit=5`, { cache: "no-store" }).catch(() => null);
+  const relatedResponse=await fetch(`${API_URL}/api/v1/products?category=${product.categorySlug}&limit=5`,{cache:"no-store"}).catch(()=>null);const relatedProducts=relatedResponse?.ok?((await relatedResponse.json()).data as ApiProduct[]).filter(item=>item.id!==product.id).slice(0,4).map(mapProduct):[];
+  const reviewsResponse = await fetch(`${API_URL}/api/v1/products/${product.id}/reviews?limit=5`, { cache: "no-store" }).catch(() => null);
   const reviews = reviewsResponse?.ok ? ((await reviewsResponse.json()).data as ProductReview[]) : [];
 
   return (

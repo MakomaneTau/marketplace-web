@@ -29,7 +29,7 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
   return (
     <article className="group min-w-0">
       <div className="relative aspect-square overflow-hidden rounded-card bg-surface-muted">
-        <Link href={`/products/${product.id}`} aria-label={`View ${product.name}`}>
+        <Link href={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -52,7 +52,7 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
       </div>
 
       <div className="pt-3">
-        <Link href={`/products/${product.id}`} className="block">
+        <Link href={`/products/${product.slug}`} className="block">
           <h3 className="line-clamp-2 text-sm font-medium leading-5 text-foreground md:text-base">
             {product.name}
           </h3>

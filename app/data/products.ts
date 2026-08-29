@@ -15,6 +15,7 @@ const placeholder = "/images/product-placeholder.svg";
 export const products: Product[] = [
   {
     id: "casio-fx-991za",
+    slug: "casio-fx-991za-plus-scientific-calculator-11111111",
     name: "Casio FX-991ZA Plus Scientific Calculator",
     description:
       "A reliable scientific calculator in good working condition. Suitable for engineering, economics and science modules. Includes protective cover.",
@@ -30,6 +31,7 @@ export const products: Product[] = [
   },
   {
     id: "economics-textbook",
+    slug: "intermediate-microeconomics-textbook-22222222",
     name: "Intermediate Microeconomics Textbook",
     description:
       "Clean copy with light highlighting in a few chapters. Ideal for second- and third-year economics students.",
@@ -45,6 +47,7 @@ export const products: Product[] = [
   },
   {
     id: "wireless-headphones",
+    slug: "wireless-over-ear-headphones-33333333",
     name: "Wireless Over-Ear Headphones",
     description:
       "Comfortable Bluetooth headphones with strong battery life. Charging cable included.",
@@ -60,6 +63,7 @@ export const products: Product[] = [
   },
   {
     id: "study-desk-lamp",
+    slug: "led-study-desk-lamp-44444444",
     name: "LED Study Desk Lamp",
     description:
       "Adjustable desk lamp with three brightness levels and USB power. Great for residence study desks.",
@@ -74,6 +78,7 @@ export const products: Product[] = [
   },
   {
     id: "mechanical-keyboard",
+    slug: "compact-mechanical-keyboard-55555555",
     name: "Compact Mechanical Keyboard",
     description:
       "Compact wired mechanical keyboard with responsive switches. Fully functional and recently cleaned.",
@@ -88,6 +93,7 @@ export const products: Product[] = [
   },
   {
     id: "algorithms-textbook",
+    slug: "introduction-to-algorithms-study-copy-66666666",
     name: "Introduction to Algorithms Study Copy",
     description:
       "Useful algorithms reference with some handwritten notes. Binding remains strong and all pages are present.",
@@ -102,6 +108,7 @@ export const products: Product[] = [
   },
   {
     id: "office-chair",
+    slug: "student-office-chair-77777777",
     name: "Student Office Chair",
     description:
       "Comfortable office chair suitable for a residence room or study area. Collection only.",
@@ -116,6 +123,7 @@ export const products: Product[] = [
   },
   {
     id: "laptop-backpack",
+    slug: "water-resistant-laptop-backpack-88888888",
     name: "Water-Resistant Laptop Backpack",
     description:
       "Padded backpack that fits laptops up to 15.6 inches. Includes multiple compartments for books and accessories.",
@@ -130,6 +138,7 @@ export const products: Product[] = [
   },
   {
     id: "iphone-13-case",
+    slug: "iphone-13-protective-case-99999999",
     name: "iPhone 13 Protective Case",
     description: "Unused shock-resistant phone case in its original packaging.",
     price: 90,
@@ -143,6 +152,7 @@ export const products: Product[] = [
   },
   {
     id: "gaming-controller",
+    slug: "wireless-gaming-controller-aaaaaaaa",
     name: "Wireless Gaming Controller",
     description: "Wireless controller with charging cable. Tested and working correctly.",
     price: 420,
