@@ -27,4 +27,14 @@ export const apiPublic=<T>(path:string,init?:RequestInit)=>apiRequest<T>(path,in
 export async function login(email:string,password:string,persistent:boolean){const data=await apiRequest<{session:ApiSession;user:AuthUser}>("/auth/login",{method:"POST",body:JSON.stringify({email,password})});storeAuth({...data,persistent});return data;}
 export async function signup(input:Record<string,unknown>){const data=await apiRequest<{session:ApiSession|null;user:AuthUser}>("/auth/signup",{method:"POST",body:JSON.stringify(input)});if(data.session)storeAuth({...data,session:data.session,persistent:true});return data;}
 export async function logout(){try{await apiRequest<void>("/auth/logout",{method:"POST",auth:true});}finally{clearAuth();}}
-export function apiErrorMessage(error:unknown){return error instanceof ApiClientError?error.message:"Unable to reach the marketplace service. Please try again.";}
+export function apiErrorMessage(error:unknown){
+  if (error instanceof ApiClientError) {
+    if (error.status === 401) {
+      return "Your session has expired or you are not signed in. Please sign in to continue.";
+    }
+
+    return error.message;
+  }
+
+  return "Unable to reach the marketplace service. Please try again.";
+}
