@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   CircleHelp,
   Grid2X2,
   Heart,
   Home,
   LogIn,
+  LogOut,
   Menu,
   MessageCircle,
   Package,
@@ -21,6 +22,8 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useAuth } from "@/app/hooks/use-auth";
+import { logout } from "@/app/libs/api";
 import { cn } from "@/app/libs/utils";
 
 interface MenuItem {
@@ -82,6 +85,8 @@ const supportMenuItems: MenuItem[] = [
 
 export function MobileNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { auth, ready } = useAuth();
 
   const [openedAtPathname, setOpenedAtPathname] = useState<string | null>(null);
 
@@ -98,6 +103,19 @@ export function MobileNav() {
   function closeMenu() {
     setOpenedAtPathname(null);
   }
+
+  async function handleSignOut() {
+    closeMenu();
+    await logout();
+    router.push("/login");
+    router.refresh();
+  }
+
+  const displayName = auth
+    ? typeof auth.user.user_metadata?.display_name === "string"
+      ? auth.user.user_metadata.display_name
+      : auth.user.email || "Marketplace user"
+    : null;
 
   /*
    * Keyboard controls and page scroll locking.
@@ -223,11 +241,12 @@ export function MobileNav() {
 
           {/* Account summary */}
 
-          <div className="border-b border-border p-4">
-            <Link
-              href="/profile"
-              onClick={closeMenu}
-              className="
+          {auth && (
+            <div className="border-b border-border p-4">
+              <Link
+                href="/profile"
+                onClick={closeMenu}
+                className="
                 flex
                 items-center
                 gap-3
@@ -237,9 +256,9 @@ export function MobileNav() {
                 transition
                 hover:bg-primary-soft
               "
-            >
-              <div
-                className="
+              >
+                <div
+                  className="
                   flex
                   size-11
                   shrink-0
@@ -249,22 +268,23 @@ export function MobileNav() {
                   bg-primary
                   text-white
                 "
-              >
-                <UserRound className="size-5" />
-              </div>
-
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-foreground">
-                  John Doe
-                </p>
-
-                <div className="mt-0.5 flex items-center gap-1 text-xs text-secondary">
-                  <ShieldCheck className="size-3.5" />
-                  Student verified
+                >
+                  <UserRound className="size-5" />
                 </div>
-              </div>
-            </Link>
-          </div>
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {displayName}
+                  </p>
+
+                  <div className="mt-0.5 flex items-center gap-1 text-xs capitalize text-secondary">
+                    <ShieldCheck className="size-3.5" />
+                    {auth.user.user_metadata?.role || "Member"} account
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )}
 
           {/* Scrollable menu */}
 
@@ -330,30 +350,59 @@ export function MobileNav() {
           {/* Authentication area */}
 
           <div className="border-t border-border p-4">
-            <Link
-              href="/login"
-              onClick={closeMenu}
-              className="
-                flex
-                h-11
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-control
-                border
-                border-border
-                bg-surface
-                text-sm
-                font-semibold
-                text-foreground
-                transition
-                hover:bg-surface-muted
-              "
-            >
-              <LogIn className="size-5" />
-              Sign in
-            </Link>
+            {ready &&
+              (auth ? (
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="
+                  flex
+                  h-11
+                  w-full
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-control
+                  border
+                  border-border
+                  bg-surface
+
+                  text-sm
+                  font-semibold
+                  text-red-600
+                  transition
+                  hover:bg-surface-muted
+                "
+                >
+                  <LogOut className="size-5" />
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={closeMenu}
+                  className="
+                  flex
+                  h-11
+                  w-full
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-control
+                  border
+                  border-border
+                  bg-surface
+                  text-sm
+                  font-semibold
+                  text-foreground
+                  transition
+                  hover:bg-surface-muted
+                "
+                >
+                  <LogIn className="size-5" />
+                  Login
+                </Link>
+              ))}
           </div>
         </aside>
       </div>
