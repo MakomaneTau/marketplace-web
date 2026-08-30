@@ -24,6 +24,16 @@ type ProductReview = { id: string; rating: number; comment: string; reviewer: { 
 
 const API_URL=process.env.NEXT_PUBLIC_API_URL||"http://127.0.0.1:4000";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const listingDateFormatter = new Intl.DateTimeFormat("en-ZA", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Africa/Johannesburg",
+});
+
+function formatListingDate(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Date unavailable" : listingDateFormatter.format(date);
+}
 
 async function loadProduct(reference: string) {
   const usesUuid = UUID_PATTERN.test(reference);
@@ -108,7 +118,7 @@ export default async function ProductDetailsPage({
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1.5 text-sm text-muted">
               <CalendarDays className="size-4" />
-              Listed {product.createdAt}
+              Listed <time dateTime={product.createdAt}>{formatListingDate(product.createdAt)}</time>
             </span>
           </div>
 

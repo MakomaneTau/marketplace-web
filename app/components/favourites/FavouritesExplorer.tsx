@@ -4,6 +4,7 @@ import Link from "next/link";
 import { HeartOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
 import { ProductGrid } from "@/app/components/product/ProductGrid";
 import { ApiClientError, apiErrorMessage, apiRequest } from "@/app/libs/api";
 import { mapProduct, type ApiProduct } from "@/app/libs/catalog";
@@ -51,6 +52,7 @@ export function FavouritesExplorer() {
   }
 
   if (error) {
+    if (signInRequired) return <ProtectedRequestError message={error} />;
     return (
       <div
         role="alert"

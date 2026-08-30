@@ -21,7 +21,7 @@ export function SellerShell({ children }: SellerShellProps) {
   }, [menuOpen]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
+    <div className="seller-theme min-h-screen bg-background text-slate-950">
       <div className="fixed inset-y-0 left-0 z-40">
         <SellerSidebar />
       </div>

@@ -10,7 +10,7 @@ export default function MarketPlaceLayout({
   children,
 }: MarketPlaceLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="buyer-theme min-h-screen bg-background">
       <Header />
 
       {/*

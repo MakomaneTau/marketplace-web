@@ -120,3 +120,54 @@
 @theme inline {
   --font-sans: var(--font-inter);
 }
+
+/*
+|--------------------------------------------------------------------------
+| Role colour schemes
+|--------------------------------------------------------------------------
+|
+| Buyer/public pages use an energetic blue and orange marketplace palette.
+| Seller pages use a focused violet and teal management palette. Components
+| using semantic colour utilities automatically inherit the active scheme.
+|
+*/
+
+.buyer-theme {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #eff6ff;
+  --color-secondary: #10b981;
+  --color-secondary-hover: #059669;
+  --color-secondary-soft: #ecfdf5;
+  --color-accent: #f97316;
+  --color-accent-hover: #ea580c;
+  --color-accent-soft: #fff7ed;
+  --color-background: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+}
+
+.seller-theme {
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-primary-soft: #f5f3ff;
+  --color-secondary: #0f766e;
+  --color-secondary-hover: #115e59;
+  --color-secondary-soft: #f0fdfa;
+  --color-accent: #d97706;
+  --color-accent-hover: #b45309;
+  --color-accent-soft: #fffbeb;
+  --color-background: #faf9ff;
+  --color-surface-muted: #f5f3ff;
+
+  /* Bridge existing seller utilities to the scoped semantic palette. */
+  --color-violet-50: var(--color-primary-soft);
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: var(--color-primary);
+  --color-violet-800: var(--color-primary-hover);
+  --color-violet-900: #581c87;
+  --color-violet-950: #3b0764;
+}

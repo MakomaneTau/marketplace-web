@@ -1,5 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4000";
 const SESSION_KEY = "marketplace.session";
+export const SELLER_DATA_EVENT = "marketplace-seller-data";
 
 export interface ApiSession {
   accessToken: string;
@@ -11,6 +12,7 @@ export interface ApiSession {
 export interface AuthUser { id: string; email?: string; user_metadata?: { role?: "buyer" | "seller"; [key: string]: unknown } }
 export interface StoredAuth { session: ApiSession; user: AuthUser; persistent: boolean }
 export class ApiClientError extends Error { constructor(public status: number, public code: string, message: string, public details?: unknown) { super(message); } }
+export const SESSION_ERROR_MESSAGE = "Your session has expired or you are not signed in. Please sign in to continue.";
 
 function stores() { return typeof window === "undefined" ? [] : [window.localStorage, window.sessionStorage]; }
 export function getStoredAuth(): StoredAuth | null {
@@ -19,6 +21,7 @@ export function getStoredAuth(): StoredAuth | null {
 }
 export function storeAuth(auth: StoredAuth) { if(typeof window==="undefined")return; localStorage.removeItem(SESSION_KEY);sessionStorage.removeItem(SESSION_KEY);(auth.persistent?localStorage:sessionStorage).setItem(SESSION_KEY,JSON.stringify(auth));window.dispatchEvent(new Event("marketplace-auth")); }
 export function clearAuth(){if(typeof window==="undefined")return;localStorage.removeItem(SESSION_KEY);sessionStorage.removeItem(SESSION_KEY);window.dispatchEvent(new Event("marketplace-auth"));}
+export function notifySellerDataChanged(){if(typeof window!=="undefined")window.dispatchEvent(new Event(SELLER_DATA_EVENT));}
 
 async function parse<T>(response:Response):Promise<T>{const body=response.status===204?null:await response.json().catch(()=>null);if(!response.ok){const error=body?.error;throw new ApiClientError(response.status,error?.code||"REQUEST_FAILED",error?.message||"Request failed.",error?.details);}return body?.data as T;}
 async function refresh(auth:StoredAuth){const response=await fetch(`${API_URL}/api/v1/auth/refresh`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({refreshToken:auth.session.refreshToken})});const data=await parse<{session:ApiSession;user:AuthUser}>(response);const next={...data,persistent:auth.persistent};storeAuth(next);return next;}
@@ -30,7 +33,7 @@ export async function logout(){try{await apiRequest<void>("/auth/logout",{method
 export function apiErrorMessage(error:unknown){
   if (error instanceof ApiClientError) {
     if (error.status === 401) {
-      return "Your session has expired or you are not signed in. Please sign in to continue.";
+      return SESSION_ERROR_MESSAGE;
     }
 
     return error.message;

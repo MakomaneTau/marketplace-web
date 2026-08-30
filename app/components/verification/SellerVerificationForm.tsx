@@ -10,8 +10,9 @@ import {
 } from "lucide-react";
 
 
+import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
 import { Button } from "@/app/components/ui/Button";
-import { apiErrorMessage, apiRequest } from "@/app/libs/api";
+import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
 
 import { ImageUploadField } from "./ImageUploadField";
 
@@ -126,6 +127,8 @@ export function SellerVerificationForm() {
       </div>
     );
   }
+
+  if (error === SESSION_ERROR_MESSAGE) return <ProtectedRequestError message={error} />;
 
   return (
     <form

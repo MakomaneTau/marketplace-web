@@ -12,7 +12,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
+import { apiRequest, SELLER_DATA_EVENT } from "@/app/libs/api";
 import { cn } from "@/app/libs/utils";
 
 const navigation = [
@@ -32,6 +34,27 @@ type SellerSidebarProps = {
 
 export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
   const pathname = usePathname();
+  const [shopHealth, setShopHealth] = useState<{ percentage: number; hasShop: boolean } | null>(null);
+
+  useEffect(() => {
+    const loadShopHealth = () => {
+      apiRequest<{
+        name: string;
+        tagline: string | null;
+        description: string | null;
+        logo_url: string | null;
+        banner_url: string | null;
+        pickup_areas: unknown[];
+      } | null>("/seller/shop", { auth: true }).then((shop) => {
+        if (!shop) return setShopHealth({ percentage: 0, hasShop: false });
+        const completed = [shop.name, shop.tagline, shop.description, shop.logo_url, shop.banner_url, shop.pickup_areas.length > 0].filter(Boolean).length;
+        setShopHealth({ percentage: Math.round(completed / 6 * 100), hasShop: true });
+      }).catch(() => setShopHealth(null));
+    };
+    loadShopHealth();
+    window.addEventListener(SELLER_DATA_EVENT, loadShopHealth);
+    return () => window.removeEventListener(SELLER_DATA_EVENT, loadShopHealth);
+  }, []);
 
   return (
     <aside
@@ -87,18 +110,18 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
         })}
       </nav>
 
-      <div className="border-t border-slate-200 p-4">
+      {shopHealth && shopHealth.percentage < 100 && <div className="border-t border-slate-200 p-4">
         <div className="rounded-2xl bg-slate-950 p-4 text-white">
           <p className="text-xs font-semibold text-violet-200">Store health</p>
-          <p className="mt-1 text-sm font-bold">Your shop is 80% complete</p>
+          <p className="mt-1 text-sm font-bold">{shopHealth.hasShop ? `Your shop is ${shopHealth.percentage}% complete` : "Create your shop profile"}</p>
           <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15">
-            <div className="h-full w-4/5 rounded-full bg-violet-400" />
+            <div className="h-full rounded-full bg-violet-400 transition-[width]" style={{ width: `${shopHealth.percentage}%` }} />
           </div>
           <Link href="/seller/shop" className="mt-3 inline-block text-xs font-semibold text-white underline">
-            Complete shop profile
+            {shopHealth.hasShop ? "Complete shop profile" : "Set up shop"}
           </Link>
         </div>
-      </div>
+      </div>}
     </aside>
   );
 }

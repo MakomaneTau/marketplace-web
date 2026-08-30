@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { apiRequest, logout } from "@/app/libs/api";
+import { apiRequest, getStoredAuth, logout, SELLER_DATA_EVENT } from "@/app/libs/api";
 
 type SellerHeaderProps = {
   onOpenMenu: () => void;
@@ -15,16 +15,36 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
   const [openMenu, setOpenMenu] = useState<"notifications" | "account" | null>(
     null,
   );
-  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [notifications, setNotifications] = useState<{ id: string; title: string; body: string }[]>([]);
+  const [identity, setIdentity] = useState<{
+    displayName: string;
+    avatarUrl: string | null;
+    shopName: string;
+  }>({ displayName: "Seller", avatarUrl: null, shopName: "Your shop" });
   const actionsRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
+    const loadIdentity = () => {
+      Promise.all([
+        apiRequest<{ displayName: string; firstName: string; lastName: string; avatarUrl: string | null }>("/profile", { auth: true }),
+        apiRequest<{ name: string } | null>("/seller/shop", { auth: true }),
+      ]).then(([profile, shop]) => {
+        const displayName = profile.displayName || [profile.firstName, profile.lastName].filter(Boolean).join(" ") || getStoredAuth()?.user.email || "Seller";
+        setIdentity({ displayName, avatarUrl: profile.avatarUrl, shopName: shop?.name || `${displayName}'s shop` });
+      }).catch(() => undefined);
+    };
+    loadIdentity();
+    window.addEventListener(SELLER_DATA_EVENT, loadIdentity);
+
     apiRequest<{ id: string; title: string; body: string }[]>("/notifications?unread=true&limit=10", { auth: true })
       .then((items) => { setNotifications(items); setHasUnreadNotifications(items.length > 0); })
-      .catch(() => setNotifications([]));
+      .catch(() => { setNotifications([]); setHasUnreadNotifications(false); });
+    return () => window.removeEventListener(SELLER_DATA_EVENT, loadIdentity);
   }, []);
+
+  const initials = identity.displayName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || "S";
 
   useEffect(() => {
     const closeMenus = (event: PointerEvent) => {
@@ -63,7 +83,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         </button>
         <div className="hidden sm:block">
           <p className="text-xs font-medium text-slate-500">Selling as</p>
-          <p className="text-sm font-bold text-slate-950">Neo’s Student Store</p>
+          <p className="text-sm font-bold text-slate-950">{identity.shopName}</p>
         </div>
       </div>
 
@@ -134,9 +154,10 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
             aria-expanded={openMenu === "account"}
             onClick={() => toggleMenu("account")}
           >
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-900 text-xs font-bold text-white">
-              KN
-            </span>
+            {identity.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={identity.avatarUrl} alt="" className="h-8 w-8 rounded-lg object-cover" />
+            ) : <span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-900 text-xs font-bold text-white">{initials}</span>}
             <ChevronDown
               className={`h-4 w-4 text-slate-500 transition-transform ${
                 openMenu === "account" ? "rotate-180" : ""
@@ -151,9 +172,9 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
             >
               <div className="border-b border-slate-100 px-3 py-2">
                 <p className="text-sm font-bold text-slate-950">
-                  Neo’s Student Store
+                  {identity.shopName}
                 </p>
-                <p className="text-xs text-slate-500">Seller account</p>
+                <p className="text-xs text-slate-500">{identity.displayName}</p>
               </div>
               <nav className="mt-1" aria-label="Seller account">
                 <Link

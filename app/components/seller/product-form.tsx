@@ -4,7 +4,8 @@ import { ImagePlus, Info, MapPin, PackageCheck, Save, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { apiErrorMessage, apiPublic, apiRequest } from "@/app/libs/api";
+import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
+import { apiErrorMessage, apiPublic, apiRequest, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
 import type { ApiCategory, ApiProduct } from "@/app/libs/catalog";
 
 type ProductFormProps = {
@@ -133,6 +134,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
   }
 
   if(!ready)return <p className="py-12 text-center text-sm text-slate-500">Loading listing...</p>;
+  if(error===SESSION_ERROR_MESSAGE)return <ProtectedRequestError message={error}/>;
 
   return (
     <form className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]" onSubmit={submit}>
