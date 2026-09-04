@@ -29,10 +29,14 @@ export async function apiRequest<T>(path:string,init:RequestInit&{auth?:boolean}
 export const apiPublic=<T>(path:string,init?:RequestInit)=>apiRequest<T>(path,init);
 export async function login(email:string,password:string,persistent:boolean){const data=await apiRequest<{session:ApiSession;user:AuthUser}>("/auth/login",{method:"POST",body:JSON.stringify({email,password})});storeAuth({...data,persistent});return data;}
 export async function signup(input:Record<string,unknown>){const data=await apiRequest<{session:ApiSession|null;user:AuthUser}>("/auth/signup",{method:"POST",body:JSON.stringify(input)});if(data.session)storeAuth({...data,session:data.session,persistent:true});return data;}
+export async function resetPassword(password:string,recoveryAccessToken:string){return apiRequest<void>("/auth/reset-password",{method:"POST",headers:{Authorization:`Bearer ${recoveryAccessToken}`},body:JSON.stringify({password})});}
 export async function logout(){try{await apiRequest<void>("/auth/logout",{method:"POST",auth:true});}finally{clearAuth();}}
 export function apiErrorMessage(error:unknown){
   if (error instanceof ApiClientError) {
-    if (error.status === 401) {
+    if (
+      error.status === 401 &&
+      error.code !== "AUTH_CREDENTIALS_INVALID"
+    ) {
       return SESSION_ERROR_MESSAGE;
     }
 
