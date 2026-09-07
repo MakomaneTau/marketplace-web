@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { apiRequest, SELLER_DATA_EVENT } from "@/app/libs/api";
+import { UnreadMessageBadge } from "@/app/components/messaging/unread-messages";
 import { cn } from "@/app/libs/utils";
 
 const navigation = [
@@ -104,7 +105,7 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
               )}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
-              {item.label}
+              {item.label}{item.href === "/seller/messages" && <UnreadMessageBadge />}
             </Link>
           );
         })}

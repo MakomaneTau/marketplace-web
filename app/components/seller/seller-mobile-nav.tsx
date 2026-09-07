@@ -4,6 +4,7 @@ import { LayoutDashboard, MessageSquare, Package, ShoppingBag } from "lucide-rea
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { UnreadMessageBadge } from "@/app/components/messaging/unread-messages";
 import { cn } from "@/app/libs/utils";
 
 const items = [
@@ -33,7 +34,10 @@ export function SellerMobileNav() {
               active ? "text-violet-700" : "text-slate-500",
             )}
           >
-            <Icon className="h-5 w-5" aria-hidden="true" />
+            <span className="relative">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+              {item.href === "/seller/messages" && <span className="absolute -right-4 -top-2"><UnreadMessageBadge /></span>}
+            </span>
             {item.label}
           </Link>
         );

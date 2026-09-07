@@ -1,6 +1,8 @@
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 
 export type StatCardProps = {
+  href?: string;
   label: string;
   value: string;
   change?: string;
@@ -8,8 +10,8 @@ export type StatCardProps = {
   icon: LucideIcon;
 };
 
-export function StatCard({ label, value, change, helper, icon: Icon }: StatCardProps) {
-  return (
+export function StatCard({ label, value, change, helper, icon: Icon, href }: StatCardProps) {
+  const content = (
     <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -28,4 +30,5 @@ export function StatCard({ label, value, change, helper, icon: Icon }: StatCardP
       )}
     </article>
   );
+  return href ? <Link href={href} aria-label={`View ${label.toLowerCase()}`} className="block rounded-2xl transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-violet-600">{content}</Link> : content;
 }
