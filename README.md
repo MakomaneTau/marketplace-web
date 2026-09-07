@@ -35,17 +35,17 @@ automatically.
 Create `.env.local` in this directory:
 
 ```dotenv
-NEXT_PUBLIC_API_URL=http://localhost:4000
+MARKETPLACE_API_URL=http://localhost:4000
 ```
 
-`NEXT_PUBLIC_API_URL` is the intended browser-visible base URL for the Express
-service. The starter page does not consume it yet. Only put non-secret values
-in variables prefixed with `NEXT_PUBLIC_`, because Next.js includes them in the
-browser bundle.
+`MARKETPLACE_API_URL` is a server-only URL used by the Next.js API gateway.
+Browser requests stay on the web application's origin under `/api/marketplace`,
+and authentication credentials are kept in HttpOnly cookies. Do not put secrets
+in variables prefixed with `NEXT_PUBLIC_`, because Next.js includes those values
+in the browser bundle.
 
-The API currently allows browser requests from exactly
-`http://localhost:3000`. Use that hostname rather than `127.0.0.1` unless the
-API CORS configuration is updated too.
+The API's CORS configuration is still useful for trusted direct consumers, but
+normal web traffic reaches Express through the same-origin Next.js gateway.
 
 ## Run the complete local application
 

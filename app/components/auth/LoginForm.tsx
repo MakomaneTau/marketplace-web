@@ -32,7 +32,12 @@ export function LoginForm() {
       setIsSubmitting(true);
 
       const result = await login(email, password, remember);
-      router.replace(result.user.user_metadata?.role === "seller" ? "/seller" : "/");
+      const requestedPath = new URLSearchParams(window.location.search).get("next");
+      const safeRequestedPath =
+        requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !/[\\\x00-\x1f\x7f]/.test(requestedPath)
+          ? requestedPath
+          : null;
+      router.replace(safeRequestedPath || (result.user.user_metadata?.role === "seller" ? "/seller" : "/"));
       router.refresh();
     } catch (error) {
       setError(apiErrorMessage(error));

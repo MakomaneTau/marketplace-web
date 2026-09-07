@@ -12,7 +12,7 @@ import {
 } from "@/app/libs/catalog";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4000";
+  process.env.MARKETPLACE_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4000";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;

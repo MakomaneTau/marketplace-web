@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { SessionBootstrap } from "@/app/components/auth/session-bootstrap";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className="font-sans antialiased">
+        <SessionBootstrap />
         {children}
       </body>
     </html>

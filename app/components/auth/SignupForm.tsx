@@ -15,13 +15,6 @@ export function SignupForm() {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("buyer");
 
-  /*
-   * Buyers must always be students.
-   *
-   * Sellers choose whether they are students.
-   */
-  const [sellerIsStudent, setSellerIsStudent] = useState(true);
-
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -30,7 +23,7 @@ export function SignupForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [universities, setUniversities] = useState<UniversityOption[]>([]);
 
-  const isStudent = role === "buyer" ? true : sellerIsStudent;
+  const isBuyer = role === "buyer";
 
   useEffect(() => { apiPublic<UniversityOption[]>("/universities").then(setUniversities).catch(() => setUniversities([])); }, []);
 
@@ -59,9 +52,7 @@ export function SignupForm() {
 
       role,
 
-      isStudent,
-
-      ...(isStudent ? { universitySlug: form.get("university"), studentNumber: form.get("studentNumber") } : {}),
+      universitySlug: form.get("university") || null,
     };
 
     try {
@@ -110,50 +101,6 @@ export function SignupForm() {
       </fieldset>
 
       {/* ========================================
-          SELLER STUDENT QUESTION
-      ======================================== */}
-
-      {role === "seller" && (
-        <fieldset>
-          <legend className="text-sm font-semibold text-foreground">
-            Are you currently a student?
-          </legend>
-
-          <p className="mt-1 text-sm text-muted">
-            Sellers do not have to be students.
-          </p>
-
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setSellerIsStudent(true)}
-              className={cn(
-                "rounded-control border px-4 py-3 text-sm font-medium transition",
-                sellerIsStudent
-                  ? "border-primary bg-primary-soft text-primary"
-                  : "border-border bg-surface text-foreground hover:bg-surface-muted",
-              )}
-            >
-              Yes
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSellerIsStudent(false)}
-              className={cn(
-                "rounded-control border px-4 py-3 text-sm font-medium transition",
-                !sellerIsStudent
-                  ? "border-primary bg-primary-soft text-primary"
-                  : "border-border bg-surface text-foreground hover:bg-surface-muted",
-              )}
-            >
-              No
-            </button>
-          </div>
-        </fieldset>
-      )}
-
-      {/* ========================================
           PERSONAL INFORMATION
       ======================================== */}
 
@@ -180,7 +127,7 @@ export function SignupForm() {
         name="email"
         type="email"
         autoComplete="email"
-        placeholder={isStudent ? "student@university.ac.za" : "you@example.com"}
+        placeholder="you@example.com"
         required
       />
 
@@ -188,7 +135,6 @@ export function SignupForm() {
           STUDENT INFORMATION
       ======================================== */}
 
-      {isStudent && (
         <div
           className="
             space-y-4
@@ -201,14 +147,12 @@ export function SignupForm() {
         >
           <div>
             <h2 className="text-sm font-semibold text-foreground">
-              Student information
+              Your university
             </h2>
 
-            {role === "buyer" && (
-              <p className="mt-1 text-xs text-muted">
-                Buyers must be verified students.
-              </p>
-            )}
+            <p className="mt-1 text-xs text-muted">
+              {isBuyer ? "Choose your university to help us show relevant items in your area." : "Optionally select a university near your shop."}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -217,13 +161,13 @@ export function SignupForm() {
                 htmlFor="university"
                 className="mb-1.5 block text-sm font-medium text-foreground"
               >
-                University
+                University{!isBuyer && " (optional)"}
               </label>
 
               <select
                 id="university"
                 name="university"
-                required
+                required={isBuyer}
                 defaultValue=""
                 className="
                   h-11
@@ -241,7 +185,7 @@ export function SignupForm() {
                   focus:ring-primary/20
                 "
               >
-                <option value="" disabled>
+                <option value="" disabled={isBuyer}>
                   Select university
                 </option>
 
@@ -249,17 +193,8 @@ export function SignupForm() {
               </select>
             </div>
 
-            <div className="sm:col-span-2">
-              <Input
-                label="Student number"
-                name="studentNumber"
-                placeholder="Enter your student number"
-                required
-              />
-            </div>
           </div>
         </div>
-      )}
 
       {/* ========================================
           PASSWORD

@@ -35,7 +35,7 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-Open `http://127.0.0.1:3000`. The default API URL is `http://127.0.0.1:4000`; override `NEXT_PUBLIC_API_URL` in `.env.local` when required.
+Open `http://127.0.0.1:3000`. The server-side API gateway uses `http://127.0.0.1:4000` by default; override `MARKETPLACE_API_URL` in `.env.local` when required. Browser requests remain same-origin and sessions are stored in HttpOnly cookies.
 
 ## Validate locally
 

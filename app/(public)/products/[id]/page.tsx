@@ -22,7 +22,7 @@ interface ProductDetailsPageProps {
 
 type ProductReview = { id: string; rating: number; comment: string; reviewer: { display_name: string } };
 
-const API_URL=process.env.NEXT_PUBLIC_API_URL||"http://127.0.0.1:4000";
+const API_URL=process.env.MARKETPLACE_API_URL||process.env.NEXT_PUBLIC_API_URL||"http://127.0.0.1:4000";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const listingDateFormatter = new Intl.DateTimeFormat("en-ZA", {
   dateStyle: "medium",

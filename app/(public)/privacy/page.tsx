@@ -38,7 +38,7 @@ const sections = [
   {
     title: "Sessions on your device",
     paragraphs: [
-      "The web application stores the signed-in session in local storage when Remember me is selected, or session storage otherwise. Signing out removes the stored session. Avoid signing in on devices you do not control.",
+      "The web application stores sign-in credentials in HttpOnly cookies. Remember me keeps these cookies across browser sessions; otherwise they are session cookies. Signing out clears the session cookies. Avoid signing in on devices you do not control.",
     ],
   },
   {
