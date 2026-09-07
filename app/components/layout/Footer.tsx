@@ -52,10 +52,6 @@ export function Footer() {
                 href: "/search",
               },
               {
-                label: "Sell an item",
-                href: "/products/new",
-              },
-              {
                 label: "Categories",
                 href: "/categories",
               },

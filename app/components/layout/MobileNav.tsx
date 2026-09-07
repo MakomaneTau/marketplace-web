@@ -12,7 +12,6 @@ import {
   Menu,
   MessageCircle,
   Package,
-  Plus,
   Search,
   ShieldCheck,
   ShoppingBag,
@@ -299,33 +298,6 @@ export function MobileNav() {
                 />
               ))}
             </nav>
-
-            {/* Sell action */}
-
-            <Link
-              href="/products/new"
-              onClick={closeMenu}
-              className="
-                mt-5
-                flex
-                h-11
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-control
-                bg-primary
-                px-4
-                text-sm
-                font-semibold
-                text-white
-                transition
-                hover:bg-primary-hover
-              "
-            >
-              <Plus className="size-5" />
-              Sell an item
-            </Link>
 
             {/* Support */}
 

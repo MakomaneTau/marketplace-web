@@ -129,26 +129,6 @@ export function HeroSection() {
             <ArrowRight className="size-4" />
           </Link>
 
-          <Link
-            href="/products/new"
-            className="
-              inline-flex
-              h-11
-              items-center
-              justify-center
-              rounded-control
-              border
-              border-white/30
-              px-5
-              text-sm
-              font-semibold
-              text-white
-              transition
-              hover:bg-white/10
-            "
-          >
-            Sell something
-          </Link>
         </div>
       </div>
     </section>
