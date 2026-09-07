@@ -5,16 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { apiErrorMessage, apiRequest, getStoredAuth, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
+import { useAuth } from "@/app/hooks/use-auth";
+import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
 
 export function ProductActions({ productId }: { productId: string }) {
   const router = useRouter();
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { auth, ready } = useAuth();
 
   function guard() {
-    if (!getStoredAuth()) {
+    if (!ready) return false;
+    if (!auth) {
       router.push("/login");
       return false;
     }
@@ -59,13 +62,13 @@ export function ProductActions({ productId }: { productId: string }) {
   return (
     <div className="mt-7">
       <div className="grid gap-3 sm:grid-cols-3">
-        <button type="button" onClick={() => { if (guard()) router.push(`/cart?product=${productId}`); }} className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-accent px-5 text-sm font-semibold text-white">
+        <button type="button" disabled={!ready} onClick={() => { if (guard()) router.push(`/cart?product=${productId}`); }} className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-accent px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
           <ShoppingCart className="size-5" /> Buy now
         </button>
-        <button type="button" onClick={message} disabled={busy} className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60">
+        <button type="button" onClick={message} disabled={busy || !ready} className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60">
           <MessageCircle className="size-5" /> Message seller
         </button>
-        <button type="button" onClick={save} disabled={busy} className="inline-flex h-12 items-center justify-center gap-2 rounded-control border border-border bg-surface px-5 text-sm font-semibold text-foreground hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-60">
+        <button type="button" onClick={save} disabled={busy || !ready} className="inline-flex h-12 items-center justify-center gap-2 rounded-control border border-border bg-surface px-5 text-sm font-semibold text-foreground hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-60">
           <Heart className="size-5" fill={saved ? "currentColor" : "none"} /> {saved ? "Saved" : "Save item"}
         </button>
       </div>

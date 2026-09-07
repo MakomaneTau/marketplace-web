@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 
 import { formatZAR } from "@/app/libs/format";
 import type { Product } from "@/app/types/product";
-import { apiRequest, getStoredAuth } from "@/app/libs/api";
+import { ApiClientError, apiErrorMessage, apiRequest } from "@/app/libs/api";
+import { useAuth } from "@/app/hooks/use-auth";
 
 interface ProductCardProps {
   product: Product;
@@ -17,13 +18,36 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
   const [isFavourite, setIsFavourite] = useState(Boolean(product.isFavourite));
-  const [busy,setBusy]=useState(false); const router=useRouter();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [signInRequired, setSignInRequired] = useState(false);
+  const router = useRouter();
+  const { auth, ready } = useAuth();
 
   async function toggleFavourite() {
-    if(!getStoredAuth()){router.push("/login");return;} if(busy)return;
+    if (ready && !auth) {
+      router.push("/login");
+      return;
+    }
+    if (busy) return;
     const nextValue = !isFavourite;
     setIsFavourite(nextValue);
-    setBusy(true);try{await apiRequest(`/favourites/${product.id}`,{method:nextValue?"PUT":"DELETE",auth:true});onFavouriteChange?.(product.id,nextValue);}catch{setIsFavourite(!nextValue);}finally{setBusy(false);}
+    setBusy(true);
+    setError(null);
+    setSignInRequired(false);
+    try {
+      await apiRequest(`/favourites/${product.id}`, {
+        method: nextValue ? "PUT" : "DELETE",
+        auth: true,
+      });
+      onFavouriteChange?.(product.id, nextValue);
+    } catch (requestError: unknown) {
+      setIsFavourite(!nextValue);
+      setError(apiErrorMessage(requestError));
+      setSignInRequired(requestError instanceof ApiClientError && requestError.status === 401);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -44,7 +68,7 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
           aria-label={isFavourite ? `Remove ${product.name} from favourites` : `Add ${product.name} to favourites`}
           aria-pressed={isFavourite}
           onClick={toggleFavourite}
-          disabled={busy}
+          disabled={busy || !ready}
           className="absolute right-2 top-2 flex size-10 items-center justify-center rounded-full bg-white/90 text-foreground shadow-sm backdrop-blur transition hover:bg-white"
         >
           <Heart className="size-5" fill={isFavourite ? "currentColor" : "none"} />
@@ -52,6 +76,17 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
       </div>
 
       <div className="pt-3">
+        {error && (
+          <div role="alert" className="mb-2 text-sm text-danger">
+            <p>{error}</p>
+            {signInRequired && (
+              <div className="mt-1 flex flex-wrap gap-3">
+                <Link href="/login" className="underline">Sign in</Link>
+                <Link href="/" className="underline">Back to marketplace</Link>
+              </div>
+            )}
+          </div>
+        )}
         <Link href={`/products/${product.slug}`} className="block">
           <h3 className="line-clamp-2 text-sm font-medium leading-5 text-foreground md:text-base">
             {product.name}
