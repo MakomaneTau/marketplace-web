@@ -22,8 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className="font-sans antialiased">
-        <SessionBootstrap />
-        {children}
+        <SessionBootstrap>{children}</SessionBootstrap>
       </body>
     </html>
   );

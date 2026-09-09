@@ -2,6 +2,8 @@
 
 import { type FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { MailCheck } from "lucide-react";
 
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
@@ -19,6 +21,7 @@ export function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [error, setError] = useState<string | null>(null);
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [universities, setUniversities] = useState<UniversityOption[]>([]);
@@ -59,7 +62,13 @@ export function SignupForm() {
       setIsSubmitting(true);
 
       const result = await signup(payload);
-      router.replace(result.user.user_metadata?.role === "seller" ? "/seller" : "/");
+      setPassword("");
+      setConfirmPassword("");
+      if (!result.authenticated) {
+        setConfirmationEmail(String(payload.email).trim());
+        return;
+      }
+      router.replace(result.profile?.role === "seller" ? "/seller" : "/");
       router.refresh();
     } catch (error) {
       setError(apiErrorMessage(error));
@@ -67,6 +76,16 @@ export function SignupForm() {
       setIsSubmitting(false);
     }
   }
+
+  if (confirmationEmail) return (
+    <section role="status" aria-live="polite" className="space-y-5 rounded-card border border-border bg-surface p-6 text-center">
+      <MailCheck className="mx-auto size-12 text-primary" aria-hidden="true" />
+      <h2 className="text-2xl font-bold">Check your email</h2>
+      <p>Check <strong className="break-all">{confirmationEmail}</strong> for your verification email. Follow the link to confirm your email address, then return here to sign in.</p>
+      <p className="text-sm text-muted">You aren’t signed in yet. If the email hasn’t arrived, check your spam folder and allow a few minutes.</p>
+      <Link href="/login" className="inline-flex rounded-control bg-primary px-6 py-3 font-semibold text-white">Continue to sign in</Link>
+    </section>
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

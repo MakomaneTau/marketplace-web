@@ -37,7 +37,7 @@ export function LoginForm() {
         requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !/[\\\x00-\x1f\x7f]/.test(requestedPath)
           ? requestedPath
           : null;
-      router.replace(safeRequestedPath || (result.user.user_metadata?.role === "seller" ? "/seller" : "/"));
+      router.replace(safeRequestedPath || (result.profile?.role === "seller" ? "/seller" : "/"));
       router.refresh();
     } catch (error) {
       setError(apiErrorMessage(error));

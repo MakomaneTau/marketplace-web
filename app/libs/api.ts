@@ -41,6 +41,7 @@ export const SESSION_ERROR_MESSAGE =
 
 let cachedAuth: StoredAuth | null | undefined;
 let sessionRequest: Promise<StoredAuth | null> | null = null;
+let sessionVersion = 0;
 
 function emitAuthChanged() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_EVENT));
@@ -52,13 +53,21 @@ export function getStoredAuth(): StoredAuth | null {
 
 export function clearLegacyBrowserSession() {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(LEGACY_SESSION_KEY);
-  window.sessionStorage.removeItem(LEGACY_SESSION_KEY);
+  try {
+    window.localStorage.removeItem(LEGACY_SESSION_KEY);
+    window.sessionStorage.removeItem(LEGACY_SESSION_KEY);
+  } catch { /* Cookie sessions also work when browser storage is disabled. */ }
 }
 
 function setCachedAuth(auth: StoredAuth | null, notify = false) {
   cachedAuth = auth;
   if (notify) emitAuthChanged();
+}
+
+function invalidateSession() {
+  sessionVersion += 1;
+  sessionRequest = null;
+  cachedAuth = undefined;
 }
 
 async function parse<T>(response: Response): Promise<T> {
@@ -94,7 +103,10 @@ export async function apiRequest<T>(
     credentials: "same-origin",
   });
 
-  if (response.status === 401 && needsAuth) setCachedAuth(null, true);
+  if (response.status === 401 && needsAuth && path !== "/auth/me") {
+    invalidateSession();
+    setCachedAuth(null, true);
+  }
   return parse<T>(response);
 }
 
@@ -104,20 +116,24 @@ export async function getCurrentAuth(force = false): Promise<StoredAuth | null> 
   if (!force && cachedAuth !== undefined) return cachedAuth;
   if (sessionRequest) return sessionRequest;
 
-  sessionRequest = apiRequest<StoredAuth>("/auth/me", { auth: true })
+  const version = sessionVersion;
+
+  sessionRequest = apiRequest<StoredAuth>("/auth/me", { auth: true, signal: AbortSignal.timeout(15000) })
     .then((auth) => {
-      setCachedAuth(auth);
+      if (version !== sessionVersion) return getCurrentAuth();
+      setCachedAuth(auth, true);
       return auth;
     })
     .catch((error: unknown) => {
+      if (version !== sessionVersion) return getCurrentAuth();
       if (error instanceof ApiClientError && error.status === 401) {
-        setCachedAuth(null);
+        setCachedAuth(null, true);
         return null;
       }
       throw error;
     })
     .finally(() => {
-      sessionRequest = null;
+      if (version === sessionVersion) sessionRequest = null;
     });
 
   return sessionRequest;
@@ -129,17 +145,26 @@ export async function login(email: string, password: string, persistent: boolean
     headers: { "x-marketplace-persistent": persistent ? "true" : "false" },
     body: JSON.stringify({ email, password }),
   });
-  setCachedAuth({ user: data.user }, true);
-  return data;
+  invalidateSession();
+  window.dispatchEvent(new Event("marketplace-auth-loading"));
+  const auth = await getCurrentAuth();
+  if (!auth) throw new ApiClientError(401, "AUTH_SESSION_MISSING", SESSION_ERROR_MESSAGE);
+  return { ...data, ...auth };
 }
 
 export async function signup(input: Record<string, unknown>) {
-  const data = await apiRequest<{ user: AuthUser; authenticated?: boolean }>("/auth/signup", {
+  const data = await apiRequest<{ user: AuthUser; authenticated?: boolean; profile?: AuthProfile }>("/auth/signup", {
     method: "POST",
     headers: { "x-marketplace-persistent": "true" },
     body: JSON.stringify(input),
   });
-  setCachedAuth(data.authenticated ? { user: data.user } : null, true);
+  if (data.authenticated) {
+    invalidateSession();
+    window.dispatchEvent(new Event("marketplace-auth-loading"));
+    const auth = await getCurrentAuth();
+    if (!auth) throw new ApiClientError(401, "AUTH_SESSION_MISSING", SESSION_ERROR_MESSAGE);
+    return { ...data, ...auth };
+  }
   return data;
 }
 
@@ -155,6 +180,7 @@ export async function logout() {
   try {
     await apiRequest<void>("/auth/logout", { method: "POST", auth: true });
   } finally {
+    invalidateSession();
     setCachedAuth(null, true);
   }
 }
