@@ -56,7 +56,11 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
   return (
     <article className="group min-w-0 border border-border bg-surface transition hover:border-border-strong">
       <div className="relative aspect-square overflow-hidden bg-surface-muted">
-        <Link href={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
+        <Link
+          href={`/products/${product.slug}`}
+          aria-label={`View ${product.name}`}
+          className="absolute inset-0 block"
+        >
           <Image
             src={imageSrc}
             alt={product.name}

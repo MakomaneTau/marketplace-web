@@ -99,6 +99,7 @@ function CartContent() {
   const [error, setError] = useState<string | null>(null);
   const [campusError, setCampusError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [failedImage, setFailedImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!productId) return;
@@ -200,6 +201,9 @@ function CartContent() {
   const hasFulfilment = product.allows_delivery || product.allows_campus_pickup;
   const pickupUnavailable = fulfilment === "campus_pickup" && product.allows_campus_pickup && !campuses.length;
   const productHref = `/products/${product.slug || product.id}`;
+  const originalProductImage = product.image_urls?.[0] || "/images/product-placeholder.svg";
+  const productImage = failedImage === originalProductImage ? "/images/product-placeholder.svg" : originalProductImage;
+  const isRemoteProductImage = /^https?:\/\//.test(productImage);
 
   return (
     <Container className="py-8 sm:py-12">
@@ -220,7 +224,15 @@ function CartContent() {
             <h2 id="item-details-title" className="text-lg font-bold">1. Item details</h2>
             <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-border pt-5">
               <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-control bg-surface-muted sm:h-28 sm:w-28">
-                <Image src={product.image_urls?.[0] || "/images/product-placeholder.svg"} alt="" fill sizes="112px" className="object-cover" />
+                <Image
+                  src={productImage}
+                  alt=""
+                  fill
+                  sizes="112px"
+                  className="object-cover"
+                  onError={() => setFailedImage(originalProductImage)}
+                  unoptimized={isRemoteProductImage}
+                />
               </div>
               <div className="min-w-[12rem] flex-1">
                 <h3 className="font-semibold text-foreground">{product.title}</h3>
