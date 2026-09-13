@@ -19,7 +19,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type TransitionEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { useAuth } from "@/app/hooks/use-auth";
@@ -89,18 +89,30 @@ export function MobileNav() {
   const { auth, ready } = useAuth();
 
   const [openedAtPathname, setOpenedAtPathname] = useState<string | null>(null);
+  const [shouldRenderMenu, setShouldRenderMenu] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const isOpen = openedAtPathname === pathname;
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
 
   function openMenu() {
+    setShouldRenderMenu(true);
     setOpenedAtPathname(pathname);
   }
 
   function closeMenu() {
+    if (
+      document.activeElement instanceof HTMLElement &&
+      drawerRef.current?.contains(document.activeElement)
+    ) {
+      document.activeElement.blur();
+    }
+
+    setIsMenuVisible(false);
     setOpenedAtPathname(null);
   }
 
@@ -109,6 +121,13 @@ export function MobileNav() {
     await logout();
     router.push("/login");
     router.refresh();
+  }
+
+  function handleMenuTransitionEnd(event: TransitionEvent<HTMLDivElement>) {
+    if (event.target === event.currentTarget && !isMenuVisible) {
+      setShouldRenderMenu(false);
+      openButtonRef.current?.focus();
+    }
   }
 
   const displayName = auth
@@ -138,7 +157,10 @@ export function MobileNav() {
       element.inert = true;
     });
 
-    closeButtonRef.current?.focus();
+    const animationFrameId = window.requestAnimationFrame(() => {
+      setIsMenuVisible(true);
+      closeButtonRef.current?.focus();
+    });
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -150,6 +172,7 @@ export function MobileNav() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      window.cancelAnimationFrame(animationFrameId);
       document.body.style.overflow = "";
       backgroundElements.forEach((element, index) => {
         element.inert = previousInertValues[index];
@@ -158,6 +181,20 @@ export function MobileNav() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isMenuVisible) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShouldRenderMenu(false);
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [isMenuVisible]);
 
   return (
     <>
@@ -187,10 +224,15 @@ export function MobileNav() {
 
       {/* Drawer layer */}
 
-      {isOpen && createPortal(
+      {shouldRenderMenu && createPortal(
         <div
           data-mobile-menu-layer
-          className="fixed inset-0 z-60 md:hidden"
+          onTransitionEnd={handleMenuTransitionEnd}
+          className={cn(
+            "fixed inset-0 z-60 md:hidden",
+            "transition-opacity duration-300 ease-out motion-reduce:duration-0",
+            isMenuVisible ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
         >
         {/* Dark overlay */}
 
@@ -199,20 +241,24 @@ export function MobileNav() {
             aria-label="Close navigation menu"
             onClick={closeMenu}
             className="absolute inset-0 bg-black/45"
+            tabIndex={isMenuVisible ? 0 : -1}
           />
 
         {/* Navigation drawer */}
 
           <aside
+            ref={drawerRef}
             id="mobile-menu-drawer"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
+            inert={!isMenuVisible}
             className={cn(
               "absolute inset-y-0 left-0",
               "flex w-[86%] max-w-sm flex-col",
               "bg-surface shadow-xl",
-              "translate-x-0",
+              "transition-transform duration-300 ease-out motion-reduce:duration-0",
+              isMenuVisible ? "translate-x-0" : "-translate-x-full",
             )}
           >
           {/* Drawer header */}
