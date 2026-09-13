@@ -103,7 +103,12 @@ export async function apiRequest<T>(
     credentials: "same-origin",
   });
 
-  if (response.status === 401 && needsAuth && path !== "/auth/me") {
+  if (
+    response.status === 401 &&
+    needsAuth &&
+    path !== "/auth/me" &&
+    path !== "/auth/logout"
+  ) {
     invalidateSession();
     setCachedAuth(null, true);
   }
@@ -179,6 +184,8 @@ export async function resetPassword(password: string, recoveryAccessToken: strin
 export async function logout() {
   try {
     await apiRequest<void>("/auth/logout", { method: "POST", auth: true });
+  } catch (error) {
+    if (!(error instanceof ApiClientError && error.status === 401)) throw error;
   } finally {
     invalidateSession();
     setCachedAuth(null, true);

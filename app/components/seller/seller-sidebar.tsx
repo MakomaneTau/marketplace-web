@@ -61,12 +61,12 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
     <aside
       className={cn(
         "flex h-full flex-col border-r border-slate-200 bg-white",
-        mobile ? "w-[86vw] max-w-80" : "hidden w-64 lg:flex",
+        mobile ? "w-[86vw] max-w-80" : "hidden w-60 lg:flex",
       )}
     >
       <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5">
         <Link href="/seller" className="flex items-center gap-2.5" onClick={onClose}>
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet-700 text-sm font-black text-white">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-sm font-black text-white">
             M
           </span>
           <span>
@@ -98,9 +98,9 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
               href={item.href}
               onClick={onClose}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition",
                 active
-                  ? "bg-violet-50 text-violet-800"
+                  ? "bg-primary-soft text-primary"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
               )}
             >
@@ -112,11 +112,11 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
       </nav>
 
       {shopHealth && shopHealth.percentage < 100 && <div className="border-t border-slate-200 p-4">
-        <div className="rounded-2xl bg-slate-950 p-4 text-white">
-          <p className="text-xs font-semibold text-violet-200">Store health</p>
+        <div className="rounded-lg bg-slate-950 p-4 text-white">
+          <p className="text-xs font-semibold text-blue-200">Store health</p>
           <p className="mt-1 text-sm font-bold">{shopHealth.hasShop ? `Your shop is ${shopHealth.percentage}% complete` : "Create your shop profile"}</p>
           <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15">
-            <div className="h-full rounded-full bg-violet-400 transition-[width]" style={{ width: `${shopHealth.percentage}%` }} />
+            <div className="h-full rounded-full bg-blue-400 transition-[width]" style={{ width: `${shopHealth.percentage}%` }} />
           </div>
           <Link href="/seller/shop" className="mt-3 inline-block text-xs font-semibold text-white underline">
             {shopHealth.hasShop ? "Complete shop profile" : "Set up shop"}

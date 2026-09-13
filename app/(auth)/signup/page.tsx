@@ -8,7 +8,9 @@ export default function SignupPage() {
       description="Join the marketplace and start buying or selling."
       footerText="Already have an account?"
       footerLinkText="Sign in"
-      footerHref="../login"
+      footerHref="/login"
+      kind="signup"
+      wide
     >
       <SignupForm />
     </AuthShell>

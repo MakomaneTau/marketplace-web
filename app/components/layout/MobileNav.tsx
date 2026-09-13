@@ -20,6 +20,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { useAuth } from "@/app/hooks/use-auth";
 import { logout } from "@/app/libs/api";
@@ -127,6 +128,16 @@ export function MobileNav() {
 
     document.body.style.overflow = "hidden";
 
+    const backgroundElements = Array.from(document.body.children).filter(
+      (element): element is HTMLElement =>
+        element instanceof HTMLElement &&
+        !element.hasAttribute("data-mobile-menu-layer"),
+    );
+    const previousInertValues = backgroundElements.map((element) => element.inert);
+    backgroundElements.forEach((element) => {
+      element.inert = true;
+    });
+
     closeButtonRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -140,6 +151,9 @@ export function MobileNav() {
 
     return () => {
       document.body.style.overflow = "";
+      backgroundElements.forEach((element, index) => {
+        element.inert = previousInertValues[index];
+      });
 
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -173,39 +187,34 @@ export function MobileNav() {
 
       {/* Drawer layer */}
 
-      <div
-        className={cn(
-          "fixed inset-0 z-60 md:hidden",
-          isOpen ? "pointer-events-auto" : "pointer-events-none",
-        )}
-      >
+      {isOpen && createPortal(
+        <div
+          data-mobile-menu-layer
+          className="fixed inset-0 z-60 md:hidden"
+        >
         {/* Dark overlay */}
 
-        <button
-          type="button"
-          aria-label="Close navigation menu"
-          onClick={closeMenu}
-          className={cn(
-            "absolute inset-0 bg-black/45 transition-opacity duration-200",
-            isOpen ? "opacity-100" : "opacity-0",
-          )}
-        />
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            onClick={closeMenu}
+            className="absolute inset-0 bg-black/45"
+          />
 
         {/* Navigation drawer */}
 
-        <aside
-          id="mobile-menu-drawer"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation menu"
-          className={cn(
-            "absolute inset-y-0 left-0",
-            "flex w-[86%] max-w-sm flex-col",
-            "bg-surface shadow-xl",
-            "transition-transform duration-200 ease-out",
-            isOpen ? "translate-x-0" : "-translate-x-full",
-          )}
-        >
+          <aside
+            id="mobile-menu-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className={cn(
+              "absolute inset-y-0 left-0",
+              "flex w-[86%] max-w-sm flex-col",
+              "bg-surface shadow-xl",
+              "translate-x-0",
+            )}
+          >
           {/* Drawer header */}
 
           <div className="flex h-16 items-center justify-between border-b border-border px-4">
@@ -376,8 +385,10 @@ export function MobileNav() {
                 </Link>
               ))}
           </div>
-        </aside>
-      </div>
+          </aside>
+        </div>,
+        document.body,
+      )}
     </>
   );
 }

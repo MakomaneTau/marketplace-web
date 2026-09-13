@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Mail } from "lucide-react";
 
 import { AuthShell } from "@/app/components/auth/AuthShell";
 import { Button } from "@/app/components/ui/Button";
@@ -39,6 +40,7 @@ export default function ForgotPasswordPage() {
       footerText="Remembered your password?"
       footerLinkText="Sign in"
       footerHref="/login"
+      kind="recovery"
     >
       <form onSubmit={submit} className="space-y-5">
         <Input
@@ -47,6 +49,7 @@ export default function ForgotPasswordPage() {
           type="email"
           autoComplete="email"
           placeholder="you@example.com"
+          icon={<Mail className="size-4" />}
           disabled={isSubmitting}
           required
         />

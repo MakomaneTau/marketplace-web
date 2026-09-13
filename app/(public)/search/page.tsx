@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 
 import { Container } from "@/app/components/layout/Container";
 import { PageHeader } from "@/app/components/layout/PageHeader";
-import { SearchProductsExplorer } from "@/app/components/search/SearchProductsExplorer";
+import {
+  SearchProductsExplorer,
+  type ConditionFilter,
+  type SortOption,
+} from "@/app/components/search/SearchProductsExplorer";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -10,14 +14,25 @@ export const metadata: Metadata = {
 };
 
 interface SearchPageProps {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+function first(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const resolvedSearchParams = await searchParams;
-  const initialQuery = Array.isArray(resolvedSearchParams.q)
-    ? resolvedSearchParams.q[0] ?? ""
-    : resolvedSearchParams.q ?? "";
+  const initialQuery = first(resolvedSearchParams.q);
+  const initialCategory = first(resolvedSearchParams.category) || "all";
+  const conditionValue = first(resolvedSearchParams.condition);
+  const initialCondition: ConditionFilter = ["New", "Like new", "Good", "Fair"].includes(conditionValue)
+    ? conditionValue as ConditionFilter
+    : "all";
+  const sortValue = first(resolvedSearchParams.sort);
+  const initialSort: SortOption = ["price-low", "price-high"].includes(sortValue)
+    ? sortValue as SortOption
+    : "newest";
 
   return (
     <Container className="py-6 md:py-8 lg:py-10">
@@ -27,7 +42,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       />
 
       <section className="mt-8">
-        <SearchProductsExplorer initialQuery={initialQuery} />
+        <SearchProductsExplorer
+          initialQuery={initialQuery}
+          initialCategory={initialCategory}
+          initialCondition={initialCondition}
+          initialSort={initialSort}
+        />
       </section>
     </Container>
   );

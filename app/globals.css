@@ -41,6 +41,16 @@ img {
   height: auto;
 }
 
+.hero-mobile-bound {
+  max-width: calc(100vw - 4.5rem);
+}
+
+@media (min-width: 40rem) {
+  .hero-mobile-bound {
+    max-width: 36rem;
+  }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Accessible focus

@@ -13,8 +13,8 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
   const [activeImage, setActiveImage] = useState(safeImages[0]);
 
   return (
-    <div>
-      <div className="relative aspect-square overflow-hidden rounded-card bg-surface-muted">
+    <div className="grid min-w-0 gap-3 md:grid-cols-[5rem_minmax(0,1fr)]">
+      <div className="relative aspect-square overflow-hidden rounded-card bg-surface-muted md:col-start-2 md:row-start-1">
         <Image
           src={activeImage}
           alt={productName}
@@ -26,7 +26,7 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
       </div>
 
       {safeImages.length > 1 && (
-        <div className="mt-3 grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-2 md:col-start-1 md:row-start-1 md:grid-cols-1 md:self-start">
           {safeImages.map((image, index) => {
             const selected = image === activeImage;
             return (
