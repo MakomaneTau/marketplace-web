@@ -56,6 +56,10 @@ function money(value: number) {
   }).format(value);
 }
 
+function maximumOrderQuantity(product: CheckoutProduct) {
+  return Math.max(1, Math.min(product.stock_quantity ?? 99, 99));
+}
+
 function CheckoutSkeleton() {
   return (
     <Container className="py-8 sm:py-12">
@@ -109,6 +113,7 @@ function CartContent() {
         setProduct(item);
         setCampuses(availableCampuses);
         setCampusError(pickupError);
+        setQuantity((value) => Math.min(value, maximumOrderQuantity(item)));
         setFulfilment(item.allows_campus_pickup ? "campus_pickup" : "delivery");
       })
       .catch((requestError) => {
@@ -130,6 +135,7 @@ function CartContent() {
       setProduct(item);
       setCampuses(availableCampuses);
       setCampusError(pickupError);
+      setQuantity((value) => Math.min(value, maximumOrderQuantity(item)));
       setFulfilment(item.allows_campus_pickup ? "campus_pickup" : "delivery");
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
@@ -197,7 +203,9 @@ function CartContent() {
 
   const unitPrice = Number(product.price);
   const subtotal = unitPrice * quantity;
-  const maximumQuantity = Math.max(1, Math.min(product.stock_quantity ?? 99, 99));
+  const maximumQuantity = maximumOrderQuantity(product);
+  const hasQuantityLimit = product.stock_quantity !== undefined;
+  const quantityLimitText = maximumQuantity === 1 ? "Only 1 available" : `${maximumQuantity} available`;
   const hasFulfilment = product.allows_delivery || product.allows_campus_pickup;
   const pickupUnavailable = fulfilment === "campus_pickup" && product.allows_campus_pickup && !campuses.length;
   const productHref = `/products/${product.slug || product.id}`;
@@ -244,10 +252,13 @@ function CartContent() {
               </div>
               <div className="flex w-full items-center justify-between gap-4 sm:w-auto sm:block sm:text-right">
                 <p className="text-lg font-bold">{money(unitPrice)}</p>
-                <div className="inline-grid grid-cols-[2.5rem_3rem_2.5rem] overflow-hidden rounded-control border border-border-strong sm:mt-4" aria-label="Quantity">
-                  <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} aria-label="Decrease quantity" className="grid h-10 place-items-center bg-white hover:bg-surface-muted disabled:opacity-40"><Minus className="size-4" aria-hidden="true" /></button>
-                  <output aria-live="polite" className="grid h-10 place-items-center border-x border-border text-sm font-semibold">{quantity}</output>
-                  <button type="button" onClick={() => setQuantity((value) => Math.min(maximumQuantity, value + 1))} disabled={quantity === maximumQuantity} aria-label="Increase quantity" className="grid h-10 place-items-center bg-white hover:bg-surface-muted disabled:opacity-40"><Plus className="size-4" aria-hidden="true" /></button>
+                <div className="sm:mt-4">
+                  <div className="inline-grid grid-cols-[2.5rem_3rem_2.5rem] overflow-hidden rounded-control border border-border-strong" aria-label="Quantity">
+                    <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} aria-label="Decrease quantity" className="grid h-10 place-items-center bg-white hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"><Minus className="size-4" aria-hidden="true" /></button>
+                    <output aria-live="polite" className="grid h-10 place-items-center border-x border-border text-sm font-semibold">{quantity}</output>
+                    <button type="button" onClick={() => setQuantity((value) => Math.min(maximumQuantity, value + 1))} disabled={quantity === maximumQuantity} aria-label={quantity === maximumQuantity ? `Increase quantity disabled. ${quantityLimitText}.` : "Increase quantity"} className="grid h-10 place-items-center bg-white hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"><Plus className="size-4" aria-hidden="true" /></button>
+                  </div>
+                  {hasQuantityLimit && <p className="mt-2 text-xs font-medium text-muted">{quantityLimitText}</p>}
                 </div>
               </div>
             </div>
