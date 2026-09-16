@@ -79,7 +79,7 @@ export default async function ProductDetailsPage({ params }: ProductDetailsPageP
   if (id !== product.slug) permanentRedirect(`/products/${product.slug}`);
 
   const [relatedResponse, reviewsResponse] = await Promise.all([
-    fetch(`${API_URL}/api/v1/products?category=${product.categorySlug}&limit=5`, { cache: "no-store" }).catch(() => null),
+    fetch(`${API_URL}/api/v1/products?shop=${encodeURIComponent(product.seller.shopSlug)}&limit=5`, { cache: "no-store" }).catch(() => null),
     fetch(`${API_URL}/api/v1/products/${product.id}/reviews?limit=5`, { cache: "no-store" }).catch(() => null),
   ]);
 
@@ -187,9 +187,9 @@ export default async function ProductDetailsPage({ params }: ProductDetailsPageP
       {relatedProducts.length > 0 && (
         <section className="mt-12 border-t border-border pt-8">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-xl font-black text-foreground">More in this category</h2>
-            <Link href={`/categories/${product.categorySlug}`} className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline">
-              View all <ChevronRight className="size-4" aria-hidden="true" />
+            <h2 className="text-xl font-black text-foreground">More from {product.seller.name}</h2>
+            <Link href={`/search?shop=${encodeURIComponent(product.seller.shopSlug)}`} className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline">
+              View shop listings <ChevronRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
           <div className="mt-5"><ProductGrid products={relatedProducts} /></div>

@@ -23,9 +23,9 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
       setInitialized(true);
     };
 
-    const load = () => {
+    const load = (force = false) => {
       setState((current) => ({ ...current, ready: false }));
-      getCurrentAuth().then(sync).catch(() => {
+      getCurrentAuth(force).then(sync).catch(() => {
         if (!active) return;
         // Public browsing remains available when the account service is offline.
         setState({ auth: null, ready: true });
@@ -33,14 +33,21 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
       });
     };
 
+    const refreshAfterPageRestore = (event: PageTransitionEvent) => {
+      if (event.persisted) load(true);
+    };
+    const loadAfterAuthChange = () => load();
+
     window.addEventListener("marketplace-auth", sync);
-    window.addEventListener("marketplace-auth-loading", load);
+    window.addEventListener("marketplace-auth-loading", loadAfterAuthChange);
+    window.addEventListener("pageshow", refreshAfterPageRestore);
     load();
 
     return () => {
       active = false;
       window.removeEventListener("marketplace-auth", sync);
-      window.removeEventListener("marketplace-auth-loading", load);
+      window.removeEventListener("marketplace-auth-loading", loadAfterAuthChange);
+      window.removeEventListener("pageshow", refreshAfterPageRestore);
     };
   }, []);
 

@@ -37,6 +37,7 @@ type Person = {
 
 type Conversation = {
   id: string;
+  conversation_type?: "message_seller" | "delivery";
   product: {
     title: string;
     slug: string;
@@ -50,6 +51,10 @@ type Conversation = {
   unread_count: number;
   messages?: Message[];
 };
+
+function conversationTopic(conversation: Conversation) {
+  return conversation.conversation_type === "delivery" ? "Order" : "Inquiry";
+}
 
 function messageTime(value: string) {
   return new Intl.DateTimeFormat("en-ZA", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
@@ -92,6 +97,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(initialId));
+  const [failedProductImages, setFailedProductImages] = useState<Set<string>>(new Set());
   const scrollArea = useRef<HTMLDivElement>(null);
 
   const current = active?.id === activeId ? active : null;
@@ -216,10 +222,13 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
   const normalizedSearch = search.trim().toLowerCase();
   const filtered = items.filter((item) => {
     const person = contact(item);
-    return `${person.display_name} ${person.university?.name || ""} ${item.product?.title || ""}`.toLowerCase().includes(normalizedSearch);
+    return `${person.display_name} ${person.university?.name || ""} ${item.product?.title || ""} ${conversationTopic(item)}`.toLowerCase().includes(normalizedSearch);
   });
   const person = current ? contact(current) : null;
   const unreadTotal = items.reduce((total, item) => total + item.unread_count, 0);
+  const originalProductImage = current?.product?.image_urls?.[0] || "/images/product-placeholder.svg";
+  const productImage = failedProductImages.has(originalProductImage) ? "/images/product-placeholder.svg" : originalProductImage;
+  const isRemoteProductImage = /^https?:\/\//.test(productImage);
 
   return (
     <section className="grid min-h-[40rem] overflow-hidden rounded-card border border-border bg-surface lg:h-[calc(100vh-12rem)] lg:max-h-[46rem] lg:grid-cols-[21rem_minmax(0,1fr)]" aria-label="Messages workspace">
@@ -254,7 +263,10 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                     {item.latest_message && <time dateTime={item.latest_message.created_at} className="shrink-0 text-[10px] text-muted">{messageTime(item.latest_message.created_at)}</time>}
                   </span>
                   <span className="mt-0.5 flex items-center gap-1 text-xs text-muted"><GraduationCap className="size-3.5 shrink-0" aria-hidden="true" /><span className="truncate">{otherPerson.university?.acronym || otherPerson.university?.name || "University not provided"}</span></span>
-                  <span className="mt-1 block truncate text-xs font-medium text-primary">{item.product?.title || "Product no longer available"}</span>
+                  <span className="mt-1 flex min-w-0 items-center gap-2 text-xs">
+                    <span className="shrink-0 rounded-full bg-background px-2 py-0.5 font-semibold text-foreground ring-1 ring-border">{conversationTopic(item)}</span>
+                    <span className="min-w-0 flex-1 truncate font-medium text-primary">{item.product?.title || "Product no longer available"}</span>
+                  </span>
                   <span className="mt-1 flex items-center gap-2 text-xs text-muted">
                     <span className="min-w-0 flex-1 truncate">{item.latest_message?.sender_id === userId ? "You: " : ""}{item.latest_message?.body || "Start the conversation"}</span>
                     {item.unread_count > 0 && <span aria-label={`${item.unread_count} unread messages`} className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-white">{item.unread_count > 99 ? "99+" : item.unread_count}</span>}
@@ -281,13 +293,21 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                 <ArrowLeft className="size-5" aria-hidden="true" />
               </button>
               <Avatar person={person} />
-              <div className="min-w-0"><h2 className="truncate font-bold">{person.display_name}</h2><p className="mt-0.5 truncate text-xs text-muted">{person.university?.name || "University not provided"}</p></div>
+              <div className="min-w-0"><h2 className="truncate font-bold">{person.display_name}</h2><p className="mt-0.5 flex min-w-0 items-center gap-2 text-xs text-muted"><span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 font-semibold text-primary">{conversationTopic(current)}</span><span className="min-w-0 truncate">{person.university?.name || "University not provided"}</span></p></div>
             </header>
 
             {current.product && (
               <Link href={`/products/${current.product.slug}`} className="flex items-center gap-3 border-b border-border px-4 py-3 transition hover:bg-surface-muted sm:px-5">
                 <div className="relative size-12 shrink-0 overflow-hidden rounded-control bg-surface-muted">
-                  <Image src={current.product.image_urls?.[0] || "/images/product-placeholder.svg"} alt="" fill sizes="48px" className="object-cover" />
+                  <Image
+                    src={productImage}
+                    alt=""
+                    fill
+                    sizes="48px"
+                    className="object-cover"
+                    onError={() => setFailedProductImages((failed) => new Set(failed).add(originalProductImage))}
+                    unoptimized={isRemoteProductImage}
+                  />
                 </div>
                 <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{current.product.title}</span><span className="mt-1 flex items-center gap-2 text-xs text-muted"><strong className="text-foreground">R{Number(current.product.price).toFixed(2)}</strong><span aria-hidden="true">/</span><span className="capitalize">{current.product.status || "View listing"}</span></span></span>
                 <ExternalLink className="size-4 shrink-0 text-primary" aria-hidden="true" />

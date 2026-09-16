@@ -201,6 +201,18 @@ export function apiErrorMessage(error: unknown) {
     if (error.status === 401 && error.code !== "AUTH_CREDENTIALS_INVALID") {
       return SESSION_ERROR_MESSAGE;
     }
+    if (Array.isArray(error.details) && error.details.length > 0) {
+      const details = error.details
+        .filter((detail): detail is { field: string; message: string } =>
+          Boolean(detail) &&
+          typeof detail === "object" &&
+          typeof (detail as { field?: unknown }).field === "string" &&
+          typeof (detail as { message?: unknown }).message === "string",
+        )
+        .map((detail) => `${detail.field}: ${detail.message}`)
+        .join("; ");
+      if (details) return `${error.message} ${details}`;
+    }
     return error.message;
   }
   return "Unable to reach the marketplace service. Please try again.";

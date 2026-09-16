@@ -7,7 +7,6 @@ import {
   LockKeyhole,
   MapPin,
   Minus,
-  PackageCheck,
   Plus,
   ShieldCheck,
   Truck,
@@ -23,13 +22,26 @@ import { apiErrorMessage, apiPublic, apiRequest, SESSION_ERROR_MESSAGE } from "@
 import type { ApiProduct } from "@/app/libs/catalog";
 
 type Fulfilment = "delivery" | "campus_pickup";
-type Campus = { id: string; name: string };
+type Campus = {
+  id: string;
+  name: string;
+  city?: string | null;
+  province?: string | null;
+  university?: { id: string; name: string; acronym?: string | null; slug: string } | null;
+};
 type CheckoutProduct = ApiProduct & {
   allows_delivery: boolean;
   allows_campus_pickup: boolean;
   stock_quantity?: number;
 };
 type PublicShop = { pickup_areas?: { campus: Campus }[] };
+
+const PICKUP_TIME_OPTIONS = Array.from({ length: 29 }, (_, index) => {
+  const minutesFromStart = 8 * 60 + index * 30;
+  const hours = Math.floor(minutesFromStart / 60).toString().padStart(2, "0");
+  const minutes = (minutesFromStart % 60).toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+});
 
 async function fetchCheckoutData(productId: string, signal?: AbortSignal) {
   const item = await apiPublic<CheckoutProduct>(`/products/${productId}`, { signal });
@@ -60,6 +72,19 @@ function maximumOrderQuantity(product: CheckoutProduct) {
   return Math.max(1, Math.min(product.stock_quantity ?? 99, 99));
 }
 
+function buildPickupNotes(form: FormData) {
+  const preferredBuilding = String(form.get("preferredBuilding") ?? "").trim();
+  const preferredTime = String(form.get("preferredTime") ?? "").trim();
+  const otherDetails = String(form.get("otherPickupDetails") ?? "").trim();
+  const parts = [
+    preferredBuilding ? `Preferred building: ${preferredBuilding}` : "",
+    preferredTime ? `Preferred time: ${preferredTime}` : "",
+    otherDetails ? `Other details: ${otherDetails}` : "",
+  ].filter(Boolean);
+
+  return parts.length ? parts.join("\n").slice(0, 500) : null;
+}
+
 function CheckoutSkeleton() {
   return (
     <Container className="py-8 sm:py-12">
@@ -69,25 +94,6 @@ function CheckoutSkeleton() {
         <div className="h-[34rem] animate-pulse rounded-card border border-border bg-surface" />
         <div className="h-80 animate-pulse rounded-card border border-border bg-surface" />
       </div>
-    </Container>
-  );
-}
-
-function EmptyCheckout() {
-  return (
-    <Container className="grid min-h-[60vh] place-items-center py-12">
-      <section className="max-w-md text-center" aria-labelledby="empty-checkout-title">
-        <span className="mx-auto grid size-14 place-items-center rounded-full bg-primary-soft text-primary">
-          <PackageCheck className="size-7" aria-hidden="true" />
-        </span>
-        <h1 id="empty-checkout-title" className="mt-5 text-2xl font-bold">Your checkout is empty</h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          Choose Buy now on a listing when you are ready to arrange collection or delivery.
-        </p>
-        <Link href="/search" className="mt-6 inline-flex h-11 items-center justify-center rounded-control bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover">
-          Browse listings
-        </Link>
-      </section>
     </Container>
   );
 }
@@ -102,8 +108,14 @@ function CartContent() {
   const [loading, setLoading] = useState(Boolean(productId));
   const [error, setError] = useState<string | null>(null);
   const [campusError, setCampusError] = useState<string | null>(null);
+  const [selectedCampusId, setSelectedCampusId] = useState("");
+  const [selectedPickupTime, setSelectedPickupTime] = useState("");
   const [busy, setBusy] = useState(false);
   const [failedImage, setFailedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!productId) router.replace("/orders");
+  }, [productId, router]);
 
   useEffect(() => {
     if (!productId) return;
@@ -113,6 +125,10 @@ function CartContent() {
         setProduct(item);
         setCampuses(availableCampuses);
         setCampusError(pickupError);
+        setSelectedCampusId((current) => {
+          if (current && availableCampuses.some((campus) => campus.id === current)) return current;
+          return availableCampuses[0]?.id ?? "";
+        });
         setQuantity((value) => Math.min(value, maximumOrderQuantity(item)));
         setFulfilment(item.allows_campus_pickup ? "campus_pickup" : "delivery");
       })
@@ -135,6 +151,10 @@ function CartContent() {
       setProduct(item);
       setCampuses(availableCampuses);
       setCampusError(pickupError);
+      setSelectedCampusId((current) => {
+        if (current && availableCampuses.some((campus) => campus.id === current)) return current;
+        return availableCampuses[0]?.id ?? "";
+      });
       setQuantity((value) => Math.min(value, maximumOrderQuantity(item)));
       setFulfilment(item.allows_campus_pickup ? "campus_pickup" : "delivery");
     } catch (requestError) {
@@ -155,7 +175,7 @@ function CartContent() {
         ? { deliveryAddress: String(form.get("deliveryAddress") ?? "").trim() }
         : {
             pickupCampusId: String(form.get("pickupCampusId") ?? ""),
-            pickupNotes: String(form.get("pickupNotes") ?? "").trim() || null,
+            pickupNotes: buildPickupNotes(form),
           }),
     };
 
@@ -175,7 +195,7 @@ function CartContent() {
     }
   }
 
-  if (!productId) return <EmptyCheckout />;
+  if (!productId) return <CheckoutSkeleton />;
   if (loading) return <CheckoutSkeleton />;
   if (error === SESSION_ERROR_MESSAGE) {
     return <Container className="py-8"><ProtectedRequestError message={error} /></Container>;
@@ -208,6 +228,7 @@ function CartContent() {
   const quantityLimitText = maximumQuantity === 1 ? "Only 1 available" : `${maximumQuantity} available`;
   const hasFulfilment = product.allows_delivery || product.allows_campus_pickup;
   const pickupUnavailable = fulfilment === "campus_pickup" && product.allows_campus_pickup && !campuses.length;
+  const selectedCampus = campuses.find((campus) => campus.id === selectedCampusId);
   const productHref = `/products/${product.slug || product.id}`;
   const originalProductImage = product.image_urls?.[0] || "/images/product-placeholder.svg";
   const productImage = failedImage === originalProductImage ? "/images/product-placeholder.svg" : originalProductImage;
@@ -293,13 +314,75 @@ function CartContent() {
             ) : product.allows_campus_pickup ? (
               <div className="mt-5 grid gap-4">
                 <label className="block text-sm font-semibold">Pickup campus
-                  <select name="pickupCampusId" required disabled={pickupUnavailable} className="mt-2 w-full rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none focus:border-primary disabled:bg-surface-muted">
+                  <select
+                    name="pickupCampusId"
+                    required
+                    value={selectedCampusId}
+                    disabled={pickupUnavailable}
+                    onChange={(event) => setSelectedCampusId(event.target.value)}
+                    className="mt-2 w-full rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none focus:border-primary disabled:bg-surface-muted"
+                  >
                     <option value="">{pickupUnavailable ? "No pickup campuses available" : "Select campus"}</option>
-                    {campuses.map((campus) => <option key={campus.id} value={campus.id}>{campus.name}</option>)}
+                    {campuses.map((campus) => (
+                      <option key={campus.id} value={campus.id}>
+                        {campus.name}{campus.university?.name ? ` - ${campus.university.name}` : ""}
+                      </option>
+                    ))}
                   </select>
                 </label>
-                <label className="block text-sm font-semibold">Meetup notes <span className="font-normal text-muted">(optional)</span>
-                  <textarea name="pickupNotes" maxLength={500} rows={3} placeholder="Preferred building, time, or other details" className="mt-2 w-full resize-y rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none placeholder:text-subtle focus:border-primary" />
+                {selectedCampus && (
+                  <div className="rounded-control border border-border bg-surface-muted px-4 py-3 text-sm">
+                    <p className="font-semibold text-foreground">{selectedCampus.university?.name ?? "University not provided"}</p>
+                    <p className="mt-1 text-muted">
+                      {selectedCampus.name}
+                      {[selectedCampus.city, selectedCampus.province].filter(Boolean).length > 0
+                        ? `, ${[selectedCampus.city, selectedCampus.province].filter(Boolean).join(", ")}`
+                        : ""}
+                    </p>
+                  </div>
+                )}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block text-sm font-semibold">Preferred building <span className="font-normal text-muted">(optional)</span>
+                    <input
+                      name="preferredBuilding"
+                      maxLength={120}
+                      placeholder="Library entrance, block C..."
+                      className="mt-2 h-12 w-full rounded-control border border-border-strong bg-white px-4 font-normal outline-none placeholder:text-subtle focus:border-primary"
+                    />
+                  </label>
+                </div>
+                <fieldset className="rounded-control border border-border bg-surface-muted p-3">
+                  <legend className="px-1 text-sm font-semibold">Preferred time <span className="font-normal text-muted">(optional)</span></legend>
+                  <input type="hidden" name="preferredTime" value={selectedPickupTime} />
+                  <div className="mt-2 grid max-h-44 grid-cols-3 gap-2 overflow-y-auto pr-1 sm:max-h-32 sm:grid-cols-5">
+                    {PICKUP_TIME_OPTIONS.map((time) => {
+                      const isSelected = selectedPickupTime === time;
+                      return (
+                        <button
+                          key={time}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => setSelectedPickupTime((current) => current === time ? "" : time)}
+                          className={`h-10 rounded-control border px-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                            isSelected
+                              ? "border-primary bg-primary text-white"
+                              : "border-border-strong bg-white text-foreground hover:border-primary"
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+                <label className="block text-sm font-semibold">Other details <span className="font-normal text-muted">(optional)</span>
+                  <textarea
+                    name="otherPickupDetails"
+                    maxLength={240}
+                    rows={3}
+                    placeholder="Gate, parking, access instructions, or anything the seller should know"
+                    className="mt-2 w-full resize-y rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none placeholder:text-subtle focus:border-primary"
+                  />
                 </label>
                 {campusError && <p role="alert" className="text-sm text-danger">Pickup locations could not be loaded. {campusError}</p>}
               </div>

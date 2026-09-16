@@ -15,6 +15,7 @@ export type ConditionFilter = "all" | ProductCondition;
 interface SearchProductsExplorerProps {
   initialQuery?: string;
   initialCategory?: string;
+  initialShop?: string;
   initialCondition?: ConditionFilter;
   initialSort?: SortOption;
 }
@@ -31,6 +32,7 @@ const fallbackCategories: ApiCategory[] = localCategories.map((category) => ({
 export function SearchProductsExplorer({
   initialQuery = "",
   initialCategory = "all",
+  initialShop = "",
   initialCondition = "all",
   initialSort = "newest",
 }: SearchProductsExplorerProps) {
@@ -56,6 +58,7 @@ export function SearchProductsExplorer({
       const params = new URLSearchParams();
       if (query.trim()) params.set("q", query.trim());
       if (category !== "all") params.set("category", category);
+      if (initialShop) params.set("shop", initialShop);
       if (condition !== "all") params.set("condition", condition.toLowerCase().replace(" ", "_"));
       if (sort !== "newest") params.set("sort", sort);
 
@@ -82,7 +85,7 @@ export function SearchProductsExplorer({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [category, condition, query, retryKey, sort]);
+  }, [category, condition, initialShop, query, retryKey, sort]);
 
   const filtersActive = Boolean(query.trim()) || category !== "all" || condition !== "all" || sort !== "newest";
 

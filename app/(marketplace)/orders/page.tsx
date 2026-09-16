@@ -4,12 +4,13 @@ import {
   Building2,
   CheckCircle2,
   ClipboardList,
+  MessageCircle,
   PackageCheck,
   RotateCcw,
   Truck,
 } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
@@ -79,10 +80,12 @@ function OrdersSkeleton() {
 
 function OrdersContent() {
   const placed = useSearchParams().get("placed") === "1";
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<OrderFilter>("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chattingOrderId, setChattingOrderId] = useState<string | null>(null);
 
   const loadOrders = useCallback(async () => {
     setLoading(true);
@@ -108,6 +111,23 @@ function OrdersContent() {
     if (filter === "active") return !["completed", "cancelled"].includes(order.status);
     return order.status === filter;
   }), [filter, orders]);
+
+  async function openDeliveryChat(order: Order) {
+    if (["completed", "cancelled"].includes(order.status)) return;
+    try {
+      setChattingOrderId(order.id);
+      setError(null);
+      const conversation = await apiRequest<{ id: string }>(`/conversations/orders/${order.id}`, {
+        method: "POST",
+        auth: true,
+      });
+      router.push(`/messages?conversation=${conversation.id}`);
+    } catch (requestError) {
+      setError(apiErrorMessage(requestError));
+    } finally {
+      setChattingOrderId(null);
+    }
+  }
 
   if (error === SESSION_ERROR_MESSAGE) {
     return <ProtectedRequestError message={error} />;
@@ -180,7 +200,20 @@ function OrdersContent() {
                   {order.fulfilment_type === "delivery" ? <Truck className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> : <Building2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />}
                   <span>{order.fulfilment_type === "delivery" ? "Delivery" : "Campus pickup"}{order.pickup_campus?.name ? ` at ${order.pickup_campus.name}` : ""}</span>
                 </div>
-                <div className="text-right"><span className="text-xs text-muted">Order total</span><p className="text-lg font-bold">{money(order.total_amount)}</p></div>
+                <div className="flex flex-wrap items-end justify-end gap-3 text-right">
+                  {!["completed", "cancelled"].includes(order.status) && (
+                    <button
+                      type="button"
+                      onClick={() => void openDeliveryChat(order)}
+                      disabled={chattingOrderId === order.id}
+                      className="inline-flex h-10 items-center gap-2 rounded-control border border-border-strong bg-white px-4 text-sm font-semibold text-foreground hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <MessageCircle className="size-4" aria-hidden="true" />
+                      {chattingOrderId === order.id ? "Opening..." : "Chat about delivery"}
+                    </button>
+                  )}
+                  <div><span className="text-xs text-muted">Order total</span><p className="text-lg font-bold">{money(order.total_amount)}</p></div>
+                </div>
               </footer>
 
               {order.status === "completed" && order.items[0] && <ReviewForm orderId={order.id} productId={order.items[0].product_id} />}

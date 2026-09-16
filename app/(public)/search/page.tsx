@@ -25,6 +25,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const resolvedSearchParams = await searchParams;
   const initialQuery = first(resolvedSearchParams.q);
   const initialCategory = first(resolvedSearchParams.category) || "all";
+  const initialShop = first(resolvedSearchParams.shop);
   const conditionValue = first(resolvedSearchParams.condition);
   const initialCondition: ConditionFilter = ["New", "Like new", "Good", "Fair"].includes(conditionValue)
     ? conditionValue as ConditionFilter
@@ -45,6 +46,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <SearchProductsExplorer
           initialQuery={initialQuery}
           initialCategory={initialCategory}
+          initialShop={initialShop}
           initialCondition={initialCondition}
           initialSort={initialSort}
         />

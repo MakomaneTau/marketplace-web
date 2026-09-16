@@ -13,6 +13,8 @@ import { logout } from "@/app/libs/api";
 export function Header() {
   const { auth, ready } = useAuth();
   const router = useRouter();
+  const isSeller = auth?.profile?.role === "seller";
+  const accountHref = isSeller ? "/seller" : "/profile";
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <Container>
@@ -114,10 +116,10 @@ export function Header() {
               <Heart className="size-5" />
             </HeaderIconLink>
 
-            <HeaderIconLink href="/cart" label="Cart">
+            <HeaderIconLink href="/orders" label="Orders">
               <ShoppingBag className="size-5" />
             </HeaderIconLink>
-            <HeaderIconLink href="/profile" label="Profile">
+            <HeaderIconLink href={accountHref} label={isSeller ? "Seller dashboard" : "Profile"}>
               <UserRound className="size-5" />
             </HeaderIconLink>
           </nav>

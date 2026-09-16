@@ -2,6 +2,7 @@ import type { Product } from "@/app/types/product";
 
 const seller = {
   id: "seller-1",
+  shopSlug: "neo-student-store",
   name: "Neo Student Store",
   verified: true,
   rating: 4.8,
