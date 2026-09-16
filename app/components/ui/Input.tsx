@@ -2,6 +2,7 @@
 
 import { Eye, EyeOff } from "lucide-react";
 import {
+  type ReactNode,
   type InputHTMLAttributes,
   useId,
   useState,
@@ -14,6 +15,7 @@ interface InputProps
   label?: string;
   error?: string;
   hint?: string;
+  icon?: ReactNode;
 }
 
 export function Input({
@@ -21,6 +23,7 @@ export function Input({
   label,
   error,
   hint,
+  icon,
   className,
   type,
   ...props
@@ -44,6 +47,11 @@ export function Input({
       )}
 
       <div className="relative">
+        {icon && (
+          <span className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-muted" aria-hidden="true">
+            {icon}
+          </span>
+        )}
         <input
           id={inputId}
           aria-invalid={Boolean(error)}
@@ -62,6 +70,7 @@ export function Input({
               ? "border-danger"
               : "border-border",
             className,
+            icon && "pl-11",
             isPassword && "pr-12",
           )}
           {...props}

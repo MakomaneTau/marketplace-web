@@ -2,6 +2,7 @@ export type ProductCondition = "New" | "Like new" | "Good" | "Fair";
 
 export interface SellerSummary {
   id: string;
+  shopSlug: string;
   name: string;
   verified: boolean;
   rating: number;

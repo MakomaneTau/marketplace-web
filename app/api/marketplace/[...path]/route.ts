@@ -28,7 +28,19 @@ function isUnsafeMethod(method: string) {
 
 function originIsAllowed(request: NextRequest) {
   const origin = request.headers.get("origin");
-  return !origin || origin === request.nextUrl.origin;
+  if (!origin) return true;
+
+  const host = request.headers.get("host");
+  if (!host) return false;
+
+  try {
+    const originUrl = new URL(origin);
+    const forwardedProtocol = request.headers.get("x-forwarded-proto")?.split(",", 1)[0]?.trim();
+    const requestProtocol = forwardedProtocol || request.nextUrl.protocol.replace(":", "");
+    return originUrl.protocol === `${requestProtocol}:` && originUrl.host === host;
+  } catch {
+    return false;
+  }
 }
 
 function upstreamHeaders(request: NextRequest, accessToken?: string) {

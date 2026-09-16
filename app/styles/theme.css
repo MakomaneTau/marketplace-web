@@ -15,17 +15,17 @@
   |--------------------------------------------------------------------------
   */
 
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-soft: #eff6ff;
+  --color-primary: #155eef;
+  --color-primary-hover: #0b4fd6;
+  --color-primary-soft: #eef4ff;
 
   --color-secondary: #10b981;
   --color-secondary-hover: #059669;
   --color-secondary-soft: #ecfdf5;
 
-  --color-accent: #f97316;
-  --color-accent-hover: #ea580c;
-  --color-accent-soft: #fff7ed;
+  --color-accent: #e85d3f;
+  --color-accent-hover: #cf482d;
+  --color-accent-soft: #fff3ef;
 
   /*
   |--------------------------------------------------------------------------
@@ -33,7 +33,7 @@
   |--------------------------------------------------------------------------
   */
 
-  --color-background: #f8fafc;
+  --color-background: #f7f9fc;
   --color-surface: #ffffff;
   --color-surface-muted: #f1f5f9;
 
@@ -43,8 +43,8 @@
   |--------------------------------------------------------------------------
   */
 
-  --color-foreground: #1e293b;
-  --color-muted: #64748b;
+  --color-foreground: #101828;
+  --color-muted: #667085;
   --color-subtle: #94a3b8;
 
   /*
@@ -74,8 +74,8 @@
   */
 
   --radius-control: 0.5rem;
-  --radius-card: 0.75rem;
-  --radius-modal: 1rem;
+  --radius-card: 0.5rem;
+  --radius-modal: 0.75rem;
 
   /*
   |--------------------------------------------------------------------------
@@ -118,7 +118,7 @@
 */
 
 @theme inline {
-  --font-sans: var(--font-inter);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /*
@@ -133,41 +133,41 @@
 */
 
 .buyer-theme {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-soft: #eff6ff;
+  --color-primary: #155eef;
+  --color-primary-hover: #0b4fd6;
+  --color-primary-soft: #eef4ff;
   --color-secondary: #10b981;
   --color-secondary-hover: #059669;
   --color-secondary-soft: #ecfdf5;
-  --color-accent: #f97316;
-  --color-accent-hover: #ea580c;
-  --color-accent-soft: #fff7ed;
-  --color-background: #f8fafc;
+  --color-accent: #e85d3f;
+  --color-accent-hover: #cf482d;
+  --color-accent-soft: #fff3ef;
+  --color-background: #f7f9fc;
   --color-surface-muted: #f1f5f9;
 }
 
 .seller-theme {
-  --color-primary: #7c3aed;
-  --color-primary-hover: #6d28d9;
-  --color-primary-soft: #f5f3ff;
-  --color-secondary: #0f766e;
-  --color-secondary-hover: #115e59;
-  --color-secondary-soft: #f0fdfa;
-  --color-accent: #d97706;
-  --color-accent-hover: #b45309;
-  --color-accent-soft: #fffbeb;
-  --color-background: #faf9ff;
-  --color-surface-muted: #f5f3ff;
+  --color-primary: #155eef;
+  --color-primary-hover: #0b4fd6;
+  --color-primary-soft: #eef4ff;
+  --color-secondary: #079455;
+  --color-secondary-hover: #067647;
+  --color-secondary-soft: #ecfdf3;
+  --color-accent: #dc6803;
+  --color-accent-hover: #b54708;
+  --color-accent-soft: #fffaeb;
+  --color-background: #f7f9fc;
+  --color-surface-muted: #f2f4f7;
 
   /* Bridge existing seller utilities to the scoped semantic palette. */
   --color-violet-50: var(--color-primary-soft);
-  --color-violet-100: #ede9fe;
-  --color-violet-200: #ddd6fe;
-  --color-violet-400: #a78bfa;
-  --color-violet-500: #8b5cf6;
-  --color-violet-600: #7c3aed;
+  --color-violet-100: #dbe7ff;
+  --color-violet-200: #b2ccff;
+  --color-violet-400: #528bff;
+  --color-violet-500: #2970ff;
+  --color-violet-600: #155eef;
   --color-violet-700: var(--color-primary);
   --color-violet-800: var(--color-primary-hover);
-  --color-violet-900: #581c87;
-  --color-violet-950: #3b0764;
+  --color-violet-900: #194185;
+  --color-violet-950: #102a56;
 }

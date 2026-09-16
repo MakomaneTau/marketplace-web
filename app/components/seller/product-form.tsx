@@ -98,24 +98,35 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
       return;
     }
     const form = new FormData(event.currentTarget);
+    const allowsCampusPickup = form.get("campus_pickup") === "on";
+    const allowsDelivery = form.get("delivery") === "on";
+    if (!allowsCampusPickup && !allowsDelivery) {
+      setError("Choose at least one collection or delivery option.");
+      return;
+    }
     const input = {
-      category_id: String(form.get("category")),
-      title: String(form.get("title")),
-      description: String(form.get("description")),
-      condition: String(form.get("condition")),
+      category_id: String(form.get("category")).trim(),
+      title: String(form.get("title")).trim(),
+      condition: String(form.get("condition")).trim(),
       price: Number(form.get("price")),
       currency: "ZAR",
       stock_quantity: Number(form.get("quantity")),
-      pickup_location: String(form.get("pickup_location")),
-      allows_campus_pickup: form.get("campus_pickup") === "on",
-      allows_delivery: form.get("delivery") === "on",
+      allows_campus_pickup: allowsCampusPickup,
+      allows_delivery: allowsDelivery,
       status: "draft",
+    };
+    const description = String(form.get("description")).trim();
+    const pickupLocation = String(form.get("pickup_location")).trim();
+    const optionalInput = {
+      ...input,
+      ...(description ? { description } : {}),
+      ...(pickupLocation ? { pickup_location: pickupLocation } : {}),
     };
     try {
       setSubmitting(true);
       const product = mode === "edit" && productId
-        ? await apiRequest<ManagedProduct>(`/seller/products/${productId}`, { method: "PATCH", auth: true, body: JSON.stringify(input) })
-        : await apiRequest<ManagedProduct>("/seller/products", { method: "POST", auth: true, body: JSON.stringify(input) });
+        ? await apiRequest<ManagedProduct>(`/seller/products/${productId}`, { method: "PATCH", auth: true, body: JSON.stringify(optionalInput) })
+        : await apiRequest<ManagedProduct>("/seller/products", { method: "POST", auth: true, body: JSON.stringify(optionalInput) });
       for (const file of pendingFiles.current.values()) {
         const body = new FormData();
         body.append("image", file);
@@ -197,6 +208,8 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 name="title"
                 defaultValue={existing?.title||""}
                 placeholder="e.g. Casio scientific calculator"
+                required
+                minLength={5}
                 maxLength={80}
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               />
@@ -207,6 +220,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <select
                 name="category"
                 defaultValue={existing?.category_id||""}
+                required
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               >
                 <option value="" disabled>Select a category</option>
@@ -221,6 +235,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <select
                 name="condition"
                 defaultValue={existing?.condition||""}
+                required
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               >
                 <option value="" disabled>Select condition</option>
@@ -229,12 +244,14 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             </label>
 
             <label className="sm:col-span-2">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">Description</span>
+              <span className="mb-2 block text-sm font-semibold text-slate-700">Description <span className="font-normal text-slate-400">(optional)</span></span>
               <textarea
                 name="description"
                 rows={6}
                 defaultValue={existing?.description||""}
                 placeholder="Describe the condition, what is included, and any defects the buyer should know about."
+                minLength={20}
+                maxLength={2000}
                 className="w-full resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               />
             </label>
@@ -251,10 +268,11 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 <input
                   name="price"
                   type="number"
-                  min="0"
+                  min="1"
                   step="1"
                   defaultValue={existing?Number(existing.price):undefined}
                   placeholder="0"
+                  required
                   className="min-w-0 flex-1 px-3.5 py-3 text-sm outline-none"
                 />
               </div>
@@ -267,6 +285,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 type="number"
                 min="1"
                 defaultValue={existing?.stock_quantity||1}
+                required
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               />
             </label>
@@ -285,7 +304,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
           </div>
           <div className="mt-5 space-y-3">
             <label className="block">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">Pickup location</span>
+              <span className="mb-2 block text-sm font-semibold text-slate-700">Pickup location <span className="font-normal text-slate-400">(optional)</span></span>
               <input
                 name="pickup_location"
                 defaultValue={existing?.pickup_location || ""}
@@ -301,7 +320,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               </span>
             </label>
             <label className="flex gap-3 rounded-xl border border-slate-200 p-4">
-              <input name="delivery" type="checkbox" defaultChecked={existing?.allows_delivery??false} className="mt-0.5 h-4 w-4 accent-violet-700" />
+              <input name="delivery" type="checkbox" defaultChecked={existing?.allows_delivery??true} className="mt-0.5 h-4 w-4 accent-violet-700" />
               <span>
                 <span className="block text-sm font-semibold text-slate-900">Local delivery</span>
                 <span className="block text-xs text-slate-500">Arrange delivery directly with the buyer.</span>

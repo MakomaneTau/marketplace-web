@@ -10,7 +10,7 @@ export default function PublicLayout({
   children,
 }: PublicLayoutProps) {
   return (
-    <div className="buyer-theme min-h-screen bg-background">
+    <div className="buyer-theme min-h-[100dvh] overflow-x-clip bg-background">
       <Header />
 
       {/*

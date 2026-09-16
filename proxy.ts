@@ -88,6 +88,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next();
+  response.headers.set("Cache-Control", "private, no-store, max-age=0, must-revalidate");
   if (refreshedSession) {
     const persistent = request.cookies.get(PERSISTENT_COOKIE)?.value === "true";
     response.cookies.set(

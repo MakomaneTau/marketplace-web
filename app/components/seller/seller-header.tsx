@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronDown, Menu, Plus, LogOut } from "lucide-react";
+import { ArrowUpRight, Bell, ChevronDown, Menu, Plus, LogOut, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -76,11 +76,21 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         <button
           type="button"
           onClick={onOpenMenu}
-          className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 lg:hidden"
+          className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 lg:hidden"
           aria-label="Open seller menu"
         >
           <Menu className="h-5 w-5" />
         </button>
+        <Link
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open buyer homepage in a new tab"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+          Buyer homepage <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
         <div className="hidden sm:block">
           <p className="text-xs font-medium text-slate-500">Selling as</p>
           <p className="text-sm font-bold text-slate-950">{identity.shopName}</p>
@@ -90,7 +100,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
       <div ref={actionsRef} className="flex items-center gap-2 sm:gap-3">
         <Link
           href="/seller/products/new"
-          className="inline-flex items-center gap-2 rounded-xl bg-violet-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-violet-800 sm:px-4"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover sm:px-4"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Add product</span>
@@ -99,7 +109,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         <div className="relative">
           <button
             type="button"
-            className="relative rounded-xl border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 aria-expanded:border-violet-200 aria-expanded:bg-violet-50 aria-expanded:text-violet-700"
+            className="relative rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 aria-expanded:border-blue-200 aria-expanded:bg-primary-soft aria-expanded:text-primary"
             aria-label="Notifications"
             aria-controls="seller-notifications-menu"
             aria-expanded={openMenu === "notifications"}
@@ -114,14 +124,14 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
           {openMenu === "notifications" && (
             <div
               id="seller-notifications-menu"
-              className="absolute right-0 top-[calc(100%+0.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
+              className="absolute right-0 top-[calc(100%+0.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl"
             >
               <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
                 <p className="text-sm font-bold text-slate-950">Notifications</p>
                 {hasUnreadNotifications && (
                   <button
                     type="button"
-                    className="text-xs font-semibold text-violet-700 hover:text-violet-900"
+                    className="text-xs font-semibold text-primary hover:text-primary-hover"
                     onClick={async () => {
                       await apiRequest("/notifications/read-all", { method: "PATCH", auth: true });
                       setHasUnreadNotifications(false);
@@ -148,7 +158,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         <div className="relative hidden sm:block">
           <button
             type="button"
-            className="flex items-center gap-2 rounded-xl border border-slate-200 p-1.5 pr-2 transition hover:bg-slate-50 aria-expanded:border-violet-200 aria-expanded:bg-violet-50"
+            className="flex items-center gap-2 rounded-lg border border-slate-200 p-1.5 pr-2 transition hover:bg-slate-50 aria-expanded:border-blue-200 aria-expanded:bg-primary-soft"
             aria-label="Open seller account menu"
             aria-controls="seller-account-menu"
             aria-expanded={openMenu === "account"}
@@ -168,7 +178,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
           {openMenu === "account" && (
             <div
               id="seller-account-menu"
-              className="absolute right-0 top-[calc(100%+0.5rem)] w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl"
+              className="absolute right-0 top-[calc(100%+0.5rem)] w-56 overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-xl"
             >
               <div className="border-b border-slate-100 px-3 py-2">
                 <p className="text-sm font-bold text-slate-950">

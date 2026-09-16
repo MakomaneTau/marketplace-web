@@ -45,7 +45,7 @@ export function SellerShell({ children }: SellerShellProps) {
   }
 
   return (
-    <UnreadMessagesProvider><div className="seller-theme min-h-screen bg-background text-slate-950">
+    <UnreadMessagesProvider><div className="seller-theme min-h-[100dvh] bg-background text-slate-950">
       <div className="fixed inset-y-0 left-0 z-40">
         <SellerSidebar />
       </div>
@@ -64,9 +64,9 @@ export function SellerShell({ children }: SellerShellProps) {
         </div>
       )}
 
-      <div className="lg:pl-64">
+      <div className="lg:pl-60">
         <SellerHeader onOpenMenu={() => setMenuOpen(true)} />
-        <main className="mx-auto w-full max-w-[1600px] px-4 pb-28 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-10">
+        <main className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-6 sm:px-6 sm:pt-7 lg:px-8 lg:pb-10">
           {children}
         </main>
       </div>

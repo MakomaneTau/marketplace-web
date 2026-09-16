@@ -76,3 +76,24 @@ test('a stale session response cannot sign the user back in after logout', async
   assert.equal(await pending, null);
   assert.equal(api.getStoredAuth(), null);
 });
+
+test('logout treats an expired access token as an already-ended session', async () => {
+  let changes = 0;
+  const { api, window } = client(async () => response(null, 401));
+  window.addEventListener('marketplace-auth', () => { changes++; });
+
+  await api.logout();
+
+  assert.equal(api.getStoredAuth(), null);
+  assert.equal(changes, 1);
+});
+
+test('logout still reports non-authentication service failures', async () => {
+  const { api } = client(async () => response(null, 503));
+
+  await assert.rejects(api.logout(), (error) => {
+    assert.equal(error.status, 503);
+    return true;
+  });
+  assert.equal(api.getStoredAuth(), null);
+});

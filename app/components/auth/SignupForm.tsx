@@ -3,7 +3,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MailCheck } from "lucide-react";
+import { LockKeyhole, Mail, MailCheck, RotateCcw, ShoppingBag, Store, UserPlus, UserRound, type LucideIcon } from "lucide-react";
 
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
@@ -25,10 +25,29 @@ export function SignupForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [universities, setUniversities] = useState<UniversityOption[]>([]);
+  const [universitiesLoading, setUniversitiesLoading] = useState(true);
+  const [universityError, setUniversityError] = useState<string | null>(null);
 
   const isBuyer = role === "buyer";
 
-  useEffect(() => { apiPublic<UniversityOption[]>("/universities").then(setUniversities).catch(() => setUniversities([])); }, []);
+  useEffect(() => {
+    void apiPublic<UniversityOption[]>("/universities")
+      .then(setUniversities)
+      .catch(() => setUniversityError("Universities could not be loaded."))
+      .finally(() => setUniversitiesLoading(false));
+  }, []);
+
+  async function retryUniversities() {
+    setUniversitiesLoading(true);
+    setUniversityError(null);
+    try {
+      setUniversities(await apiPublic<UniversityOption[]>("/universities"));
+    } catch {
+      setUniversityError("Universities could not be loaded.");
+    } finally {
+      setUniversitiesLoading(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,12 +97,12 @@ export function SignupForm() {
   }
 
   if (confirmationEmail) return (
-    <section role="status" aria-live="polite" className="space-y-5 rounded-card border border-border bg-surface p-6 text-center">
+    <section role="status" aria-live="polite" className="space-y-5 text-center">
       <MailCheck className="mx-auto size-12 text-primary" aria-hidden="true" />
       <h2 className="text-2xl font-bold">Check your email</h2>
       <p>Check <strong className="break-all">{confirmationEmail}</strong> for your verification email. Follow the link to confirm your email address, then return here to sign in.</p>
-      <p className="text-sm text-muted">You aren’t signed in yet. If the email hasn’t arrived, check your spam folder and allow a few minutes.</p>
-      <Link href="/login" className="inline-flex rounded-control bg-primary px-6 py-3 font-semibold text-white">Continue to sign in</Link>
+      <p className="text-sm text-muted">{"You aren't signed in yet. If the email hasn't arrived, check your spam folder and allow a few minutes."}</p>
+      <Link href="/login" className="inline-flex h-11 items-center rounded-control bg-primary px-6 text-sm font-semibold text-white hover:bg-primary-hover">Continue to sign in</Link>
     </section>
   );
 
@@ -98,10 +117,11 @@ export function SignupForm() {
           What would you like to do?
         </legend>
 
-        <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <RoleButton
             title="Buy"
             description="I'm looking for items"
+            icon={ShoppingBag}
             selected={role === "buyer"}
             onClick={() => {
               setRole("buyer");
@@ -111,6 +131,7 @@ export function SignupForm() {
           <RoleButton
             title="Sell"
             description="I want to sell items"
+            icon={Store}
             selected={role === "seller"}
             onClick={() => {
               setRole("seller");
@@ -129,6 +150,7 @@ export function SignupForm() {
           name="firstName"
           autoComplete="given-name"
           placeholder="First name"
+          icon={<UserRound className="size-4" />}
           required
         />
 
@@ -137,6 +159,7 @@ export function SignupForm() {
           name="lastName"
           autoComplete="family-name"
           placeholder="Last name"
+          icon={<UserRound className="size-4" />}
           required
         />
       </div>
@@ -147,6 +170,7 @@ export function SignupForm() {
         type="email"
         autoComplete="email"
         placeholder="you@example.com"
+        icon={<Mail className="size-4" />}
         required
       />
 
@@ -154,16 +178,7 @@ export function SignupForm() {
           STUDENT INFORMATION
       ======================================== */}
 
-        <div
-          className="
-            space-y-4
-            rounded-card
-            border
-            border-border
-            bg-surface-muted/50
-            p-4
-          "
-        >
+        <div className="space-y-4 border-t border-border pt-6">
           <div>
             <h2 className="text-sm font-semibold text-foreground">
               Your university
@@ -188,6 +203,7 @@ export function SignupForm() {
                 name="university"
                 required={isBuyer}
                 defaultValue=""
+                disabled={universitiesLoading || Boolean(universityError)}
                 className="
                   h-11
                   w-full
@@ -202,14 +218,24 @@ export function SignupForm() {
                   focus:border-primary
                   focus:ring-2
                   focus:ring-primary/20
+                  disabled:cursor-not-allowed
+                  disabled:bg-surface-muted
                 "
               >
                 <option value="" disabled={isBuyer}>
-                  Select university
+                  {universitiesLoading ? "Loading universities..." : universityError ? "Universities unavailable" : "Select university"}
                 </option>
 
                 {universities.map((university) => <option key={university.id} value={university.slug}>{university.name}</option>)}
               </select>
+              {universityError && (
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <p role="alert" className="text-danger">{universityError}</p>
+                  <button type="button" onClick={() => void retryUniversities()} className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+                    <RotateCcw className="size-3.5" aria-hidden="true" />Retry
+                  </button>
+                </div>
+              )}
             </div>
 
           </div>
@@ -228,6 +254,7 @@ export function SignupForm() {
         value={password}
         onChange={(event) => setPassword(event.target.value)}
         hint="Use at least 8 characters."
+        icon={<LockKeyhole className="size-4" />}
         required
       />
 
@@ -239,6 +266,7 @@ export function SignupForm() {
         placeholder="Enter your password again"
         value={confirmPassword}
         onChange={(event) => setConfirmPassword(event.target.value)}
+        icon={<LockKeyhole className="size-4" />}
         required
       />
 
@@ -255,16 +283,16 @@ export function SignupForm() {
 
         <span className="text-sm leading-5 text-muted">
           I agree to the{" "}
-          <a href="/terms" className="font-medium text-primary hover:underline">
+          <Link href="/terms" className="font-medium text-primary hover:underline">
             Terms of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a
+          <Link
             href="/privacy"
             className="font-medium text-primary hover:underline"
           >
             Privacy Policy
-          </a>
+          </Link>
           .
         </span>
       </label>
@@ -295,7 +323,8 @@ export function SignupForm() {
           SUBMIT
       ======================================== */}
 
-      <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
+      <Button type="submit" size="lg" fullWidth disabled={isSubmitting || (isBuyer && (universitiesLoading || Boolean(universityError)))}>
+        <UserPlus className="size-5" aria-hidden="true" />
         {isSubmitting ? "Creating account..." : "Create account"}
       </Button>
     </form>
@@ -311,6 +340,7 @@ export function SignupForm() {
 interface RoleButtonProps {
   title: string;
   description: string;
+  icon: LucideIcon;
   selected: boolean;
   onClick: () => void;
 }
@@ -318,6 +348,7 @@ interface RoleButtonProps {
 function RoleButton({
   title,
   description,
+  icon: Icon,
   selected,
   onClick,
 }: RoleButtonProps) {
@@ -334,17 +365,13 @@ function RoleButton({
           : "border-border bg-surface hover:border-border-strong hover:bg-surface-muted",
       )}
     >
-      <span
-        className={cn(
-          "block text-sm font-semibold",
-
-          selected ? "text-primary" : "text-foreground",
-        )}
-      >
-        {title}
+      <span className="flex items-start gap-3">
+        <Icon className={cn("mt-0.5 size-5 shrink-0", selected ? "text-primary" : "text-muted")} aria-hidden="true" />
+        <span>
+          <span className={cn("block text-sm font-semibold", selected ? "text-primary" : "text-foreground")}>{title}</span>
+          <span className="mt-1 block text-xs text-muted">{description}</span>
+        </span>
       </span>
-
-      <span className="mt-1 block text-xs text-muted">{description}</span>
     </button>
   );
 }

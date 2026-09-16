@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Clock3, LockKeyhole, LogIn, Mail } from "lucide-react";
 
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
 import { apiErrorMessage, login } from "@/app/libs/api";
 
-export function LoginForm() {
+export function LoginForm({ sessionExpired = false }: { sessionExpired?: boolean }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,12 +49,19 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {sessionExpired && !error && (
+        <div role="status" className="flex gap-3 rounded-control border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <Clock3 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <p>Your session ended. Sign in again to continue.</p>
+        </div>
+      )}
       <Input
         label="Email address"
         type="email"
         name="email"
         autoComplete="email"
         placeholder="Enter your email"
+        icon={<Mail className="size-4" />}
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         required
@@ -65,6 +73,7 @@ export function LoginForm() {
           name="password"
           autoComplete="current-password"
           placeholder="Enter your password"
+          icon={<LockKeyhole className="size-4" />}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
@@ -117,6 +126,7 @@ export function LoginForm() {
       )}
 
       <Button type="submit" fullWidth size="lg" disabled={isSubmitting}>
+        <LogIn className="size-5" aria-hidden="true" />
         {isSubmitting ? "Signing in..." : "Sign in"}
       </Button>
     </form>

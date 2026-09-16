@@ -103,7 +103,12 @@ export async function apiRequest<T>(
     credentials: "same-origin",
   });
 
-  if (response.status === 401 && needsAuth && path !== "/auth/me") {
+  if (
+    response.status === 401 &&
+    needsAuth &&
+    path !== "/auth/me" &&
+    path !== "/auth/logout"
+  ) {
     invalidateSession();
     setCachedAuth(null, true);
   }
@@ -179,6 +184,8 @@ export async function resetPassword(password: string, recoveryAccessToken: strin
 export async function logout() {
   try {
     await apiRequest<void>("/auth/logout", { method: "POST", auth: true });
+  } catch (error) {
+    if (!(error instanceof ApiClientError && error.status === 401)) throw error;
   } finally {
     invalidateSession();
     setCachedAuth(null, true);
@@ -193,6 +200,18 @@ export function apiErrorMessage(error: unknown) {
   if (error instanceof ApiClientError) {
     if (error.status === 401 && error.code !== "AUTH_CREDENTIALS_INVALID") {
       return SESSION_ERROR_MESSAGE;
+    }
+    if (Array.isArray(error.details) && error.details.length > 0) {
+      const details = error.details
+        .filter((detail): detail is { field: string; message: string } =>
+          Boolean(detail) &&
+          typeof detail === "object" &&
+          typeof (detail as { field?: unknown }).field === "string" &&
+          typeof (detail as { message?: unknown }).message === "string",
+        )
+        .map((detail) => `${detail.field}: ${detail.message}`)
+        .join("; ");
+      if (details) return `${error.message} ${details}`;
     }
     return error.message;
   }

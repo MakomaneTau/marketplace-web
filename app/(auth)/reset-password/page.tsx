@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { LockKeyhole } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
 import { AuthShell } from "@/app/components/auth/AuthShell";
@@ -98,6 +99,7 @@ export default function ResetPasswordPage() {
       footerText="Remembered your password?"
       footerLinkText="Sign in"
       footerHref="/login"
+      kind="recovery"
     >
       {recovery.status === "checking" && (
         <p role="status" className="text-sm text-muted">
@@ -131,6 +133,7 @@ export default function ResetPasswordPage() {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             hint="Use at least 8 characters."
+            icon={<LockKeyhole className="size-4" />}
             required
           />
           <Input
@@ -142,6 +145,7 @@ export default function ResetPasswordPage() {
             maxLength={72}
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
+            icon={<LockKeyhole className="size-4" />}
             required
           />
 

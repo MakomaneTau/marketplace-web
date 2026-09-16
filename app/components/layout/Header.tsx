@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, LogIn, Search, ShoppingBag, UserRound } from "lucide-react";
+import { Heart, LogIn, MapPin, Search, ShoppingBag, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -13,14 +13,16 @@ import { logout } from "@/app/libs/api";
 export function Header() {
   const { auth, ready } = useAuth();
   const router = useRouter();
+  const isSeller = auth?.profile?.role === "seller";
+  const accountHref = isSeller ? "/seller" : "/profile";
   return (
-    <header className="sticky top-0 z-40 bg-surface/95 backrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <Container>
-        <div className="flex h-16 items-center justify-between md:hidden">
-          <MobileNav />
+        <div className="grid h-16 min-w-0 grid-cols-3 items-center md:hidden">
+          <div className="justify-self-start"><MobileNav /></div>
 
-          <Link href="/" className="text-lg font-bold text-primary">
-            Marketplace
+          <Link href="/" className="justify-self-center text-lg font-black text-foreground">
+            Market<span className="text-primary">place</span>
           </Link>
 
           <Link
@@ -31,6 +33,7 @@ export function Header() {
               size-10
               items-center
               justify-center
+              justify-self-end
               rounded-control
               text-foreground
               transition
@@ -41,7 +44,7 @@ export function Header() {
           </Link>
         </div>
 
-        <div className="hidden h-16 items-center justify-between gap-flex md:flex">
+        <div className="hidden h-16 items-center justify-between gap-3 md:flex">
           <Link
             href="/"
             className="
@@ -51,15 +54,15 @@ export function Header() {
               gap-2
               text-xl
               font-bold
-              text-primary
+              text-foreground
             "
           >
-            <ShoppingBag className="size-6" />
+            <ShoppingBag className="size-6 text-primary" />
 
-            <span>Marketplace</span>
+            <span>Market<span className="text-primary">place</span></span>
           </Link>
 
-          <form role="search" className="relative max-w-2xl flex-1">
+          <form role="search" action="/search" className="relative max-w-xl flex-1">
             <Search
               aria-hidden="true"
               className="
@@ -73,6 +76,7 @@ export function Header() {
             />
 
             <input
+              name="q"
               type="search"
               placeholder="Search textbooks, electronics, furniture..."
               className="
@@ -96,6 +100,14 @@ export function Header() {
             />
           </form>
 
+          <Link
+            href="/search?nearby=true"
+            className="hidden h-11 shrink-0 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-surface-muted xl:flex"
+          >
+            <MapPin className="size-4 text-primary" aria-hidden="true" />
+            Near campus
+          </Link>
+
           <nav
             aria-label="Buyer Navigation"
             className="flex items-center gap-1"
@@ -104,10 +116,10 @@ export function Header() {
               <Heart className="size-5" />
             </HeaderIconLink>
 
-            <HeaderIconLink href="/cart" label="Cart">
+            <HeaderIconLink href="/orders" label="Orders">
               <ShoppingBag className="size-5" />
             </HeaderIconLink>
-            <HeaderIconLink href="/profile" label="Profile">
+            <HeaderIconLink href={accountHref} label={isSeller ? "Seller dashboard" : "Profile"}>
               <UserRound className="size-5" />
             </HeaderIconLink>
           </nav>
