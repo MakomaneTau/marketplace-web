@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, LogIn, MapPin, Search, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowLeft, Heart, LogIn, MapPin, Search, ShoppingBag, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +14,6 @@ export function Header() {
   const { auth, ready } = useAuth();
   const router = useRouter();
   const isSeller = auth?.profile?.role === "seller";
-  const accountHref = isSeller ? "/seller" : "/profile";
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <Container>
@@ -26,8 +25,8 @@ export function Header() {
           </Link>
 
           <Link
-            href="/favourites"
-            aria-label="Favourites"
+            href={isSeller ? "/seller" : "/favourites"}
+            aria-label={isSeller ? "Seller homepage" : "Favourites"}
             className="
               flex
               size-10
@@ -40,7 +39,7 @@ export function Header() {
               hover:bg-surface-muted
             "
           >
-            <Heart className="size-5" />
+            {isSeller ? <ArrowLeft className="size-5" /> : <Heart className="size-5" />}
           </Link>
         </div>
 
@@ -100,29 +99,41 @@ export function Header() {
             />
           </form>
 
-          <Link
-            href="/search?nearby=true"
-            className="hidden h-11 shrink-0 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-surface-muted xl:flex"
-          >
-            <MapPin className="size-4 text-primary" aria-hidden="true" />
-            Near campus
-          </Link>
+          {isSeller ? (
+            <Link
+              href="/seller"
+              className="inline-flex h-11 shrink-0 items-center gap-2 rounded-control border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-surface-muted"
+            >
+              <ArrowLeft className="size-4 text-primary" aria-hidden="true" />
+              Go back to seller homepage
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/search?nearby=true"
+                className="hidden h-11 shrink-0 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-surface-muted xl:flex"
+              >
+                <MapPin className="size-4 text-primary" aria-hidden="true" />
+                Near campus
+              </Link>
 
-          <nav
-            aria-label="Buyer Navigation"
-            className="flex items-center gap-1"
-          >
-            <HeaderIconLink href="/favourites" label="Favourites">
-              <Heart className="size-5" />
-            </HeaderIconLink>
+              <nav
+                aria-label="Buyer Navigation"
+                className="flex items-center gap-1"
+              >
+                <HeaderIconLink href="/favourites" label="Favourites">
+                  <Heart className="size-5" />
+                </HeaderIconLink>
 
-            <HeaderIconLink href="/orders" label="Orders">
-              <ShoppingBag className="size-5" />
-            </HeaderIconLink>
-            <HeaderIconLink href={accountHref} label={isSeller ? "Seller dashboard" : "Profile"}>
-              <UserRound className="size-5" />
-            </HeaderIconLink>
-          </nav>
+                <HeaderIconLink href="/orders" label="Orders">
+                  <ShoppingBag className="size-5" />
+                </HeaderIconLink>
+                <HeaderIconLink href="/profile" label="Profile">
+                  <UserRound className="size-5" />
+                </HeaderIconLink>
+              </nav>
+            </>
+          )}
 
           {ready && auth ? (
             <button

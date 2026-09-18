@@ -6,7 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
 import { SectionHeading } from "@/app/components/seller/section-heading";
-import { apiErrorMessage, apiRequest } from "@/app/libs/api";
+import { ShopSetupRequired } from "@/app/components/seller/shop-setup-required";
+import { ApiClientError, apiErrorMessage, apiRequest } from "@/app/libs/api";
 
 type OrderStatus = "new" | "preparing" | "ready" | "completed" | "cancelled";
 
@@ -37,12 +38,23 @@ export default function SellerOrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [needsShopSetup, setNeedsShopSetup] = useState(false);
   const [chattingOrderId, setChattingOrderId] = useState<string | null>(null);
 
   const load = useCallback(() => {
     apiRequest<Order[]>("/seller/orders", { auth: true })
       .then(setOrders)
-      .catch((requestError) => setError(apiErrorMessage(requestError)));
+      .catch((requestError) => {
+        if (
+          requestError instanceof ApiClientError &&
+          requestError.status === 403 &&
+          requestError.code === "SELLER_SHOP_REQUIRED"
+        ) {
+          setNeedsShopSetup(true);
+          return;
+        }
+        setError(apiErrorMessage(requestError));
+      });
   }, []);
 
   useEffect(() => {
@@ -87,8 +99,12 @@ export default function SellerOrdersPage() {
         description="Track preparation, collection, and delivery progress."
       />
 
+      {needsShopSetup && (
+        <ShopSetupRequired description="Create your shop profile before tracking seller orders." />
+      )}
+
       <div className="space-y-4">
-        {orders.map((order) => {
+        {!needsShopSetup && orders.map((order) => {
           const next = nextStatus[order.status];
           return (
             <article key={order.id} className="rounded-2xl border bg-white p-5 shadow-sm">
@@ -148,8 +164,8 @@ export default function SellerOrdersPage() {
           );
         })}
 
-        {!orders.length && !error && <p className="text-slate-500">No seller orders yet.</p>}
-        {error && <ProtectedRequestError message={error} />}
+        {!needsShopSetup && !orders.length && !error && <p className="text-slate-500">No seller orders yet.</p>}
+        {!needsShopSetup && error && <ProtectedRequestError message={error} />}
       </div>
     </div>
   );
