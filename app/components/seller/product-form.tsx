@@ -27,6 +27,8 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
   const generatedUrls = useRef<string[]>([]);
   const pendingFiles = useRef<Map<string, File>>(new Map());
   const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState(false);
   const [existing, setExisting] = useState<ManagedProduct | null>(null);
   const [serverImages, setServerImages] = useState<string[]>([]);
   const [ready, setReady] = useState(mode === "create");
@@ -36,7 +38,16 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
   const router = useRouter();
 
   useEffect(() => {
-    apiPublic<ApiCategory[]>("/categories").then(setCategories).catch(() => setCategories([]));
+    apiPublic<ApiCategory[]>("/categories")
+      .then((items) => {
+        setCategories(items);
+        setCategoriesError(false);
+      })
+      .catch(() => {
+        setCategories([]);
+        setCategoriesError(true);
+      })
+      .finally(() => setCategoriesLoading(false));
     if (mode === "edit" && productId) {
       apiRequest<ManagedProduct[]>("/seller/products?limit=100", { auth: true })
         .then((items) => {
@@ -201,7 +212,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <h2 className="font-bold text-slate-950">Product details</h2>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+          <div className="mt-5 grid gap-6 sm:grid-cols-2">
             <label className="sm:col-span-2">
               <span className="mb-2 block text-sm font-semibold text-slate-700">Product title</span>
               <input
@@ -221,13 +232,26 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 name="category"
                 defaultValue={existing?.category_id||""}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                disabled={categoriesLoading || categories.length === 0}
+                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500"
               >
-                <option value="" disabled>Select a category</option>
+                <option value="" disabled>
+                  {categoriesLoading ? "Loading categories..." : "Select a category"}
+                </option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </select>
+              {categoriesError && (
+                <p className="mt-2 text-xs font-medium text-red-600">
+                  Categories could not be loaded. Refresh the page before publishing.
+                </p>
+              )}
+              {!categoriesLoading && !categoriesError && categories.length === 0 && (
+                <p className="mt-2 text-xs font-medium text-red-600">
+                  No product categories are available yet.
+                </p>
+              )}
             </label>
 
             <label>
