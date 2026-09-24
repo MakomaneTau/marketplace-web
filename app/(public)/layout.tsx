@@ -1,5 +1,6 @@
 import { Header } from "@/app/components/layout/Header";
 import { Footer } from "@/app/components/layout/Footer";
+import { OnboardingProvider } from "@/app/components/onboarding/onboarding-provider";
 
 
 interface PublicLayoutProps {
@@ -10,19 +11,21 @@ export default function PublicLayout({
   children,
 }: PublicLayoutProps) {
   return (
-    <div className="buyer-theme min-h-[100dvh] overflow-x-clip bg-background">
-      <Header />
+    <OnboardingProvider role="buyer">
+      <div className="buyer-theme min-h-[100dvh] overflow-x-clip bg-background">
+        <Header />
 
       {/*
        * pb-20 prevents the fixed mobile
        * navigation from covering content.
        */}
 
-      <main className="min-h-screen pb-20 md:pb-0">
-        {children}
-      </main>
+        <main className="min-h-screen pb-20 md:pb-0">
+          {children}
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </OnboardingProvider>
   );
 }

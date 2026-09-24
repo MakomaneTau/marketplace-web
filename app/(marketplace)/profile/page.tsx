@@ -28,6 +28,7 @@ import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
 import { Container } from "@/app/components/layout/Container";
 import { PageHeader } from "@/app/components/layout/PageHeader";
+import { OnboardingHelpButton } from "@/app/components/onboarding/onboarding-help-button";
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
 import {
@@ -267,6 +268,7 @@ export default function ProfilePage() {
         description="Keep your details current so people across the marketplace can recognise and trust you."
         icon={UserRound}
       />
+      <OnboardingHelpButton className="mt-4" />
 
       {success && (
         <div role="status" aria-live="polite" className="mt-6 flex items-center gap-3 rounded-card border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
