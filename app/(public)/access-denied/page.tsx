@@ -8,6 +8,8 @@ type AccessDeniedPageProps = {
 export default async function AccessDeniedPage({ searchParams }: AccessDeniedPageProps) {
   const { reason } = await searchParams;
   const unavailable = reason === "auth_unavailable";
+  const adminRequired = reason === "admin_required";
+  const suspended = reason === "account_suspended";
 
   return (
     <main className="grid min-h-[65vh] place-items-center px-4 py-12">
@@ -19,12 +21,16 @@ export default async function AccessDeniedPage({ searchParams }: AccessDeniedPag
           <ShieldAlert className="size-7" aria-hidden="true" />
         </span>
         <h1 id="access-title" className="mt-4 text-2xl font-bold text-foreground">
-          {unavailable ? "Authentication is temporarily unavailable" : "A seller account is required"}
+          {unavailable ? "Authentication is temporarily unavailable" : suspended ? "Account suspended" : adminRequired ? "Admin access is required" : "A seller account is required"}
         </h1>
         <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
           {unavailable
             ? "We could not verify your access right now. Please try again shortly."
-            : "This area is available to signed-in seller accounts. Your marketplace account and data remain unchanged."}
+            : suspended
+              ? "This account cannot access Marketplace right now. If you think this is a mistake, contact the Marketplace team."
+              : adminRequired
+                ? "This area is available only to accounts explicitly granted admin access."
+                : "This area is available to signed-in seller accounts. Your marketplace account and data remain unchanged."}
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

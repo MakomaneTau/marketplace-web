@@ -16,7 +16,10 @@ export interface AuthUser {
 
 export interface AuthProfile {
   role: "buyer" | "seller";
+  isAdmin?: boolean;
   displayName?: string;
+  verificationStatus?: "pending" | "verified" | "rejected";
+  createdAt?: string;
   [key: string]: unknown;
 }
 

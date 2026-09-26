@@ -344,6 +344,9 @@ export function MobileNav() {
 
           <div className="flex-1 overflow-y-auto px-3 py-4">
             <nav aria-label="Main mobile menu" className="space-y-1">
+              {auth?.profile?.isAdmin && (
+                <MobileMenuLink item={{ label: "Admin centre", href: "/admin", icon: ShieldCheck }} pathname={pathname} onClick={closeMenu} />
+              )}
               {mainMenuItems.map((item) => (
                 <MobileMenuLink
                   key={item.href}

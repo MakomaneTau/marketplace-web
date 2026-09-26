@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Heart, LogIn, MapPin, Search, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowLeft, Heart, LogIn, MapPin, Search, ShieldCheck, ShoppingBag, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -133,6 +133,12 @@ export function Header() {
                 </HeaderIconLink>
               </nav>
             </>
+          )}
+
+          {auth?.profile?.isAdmin && (
+            <Link href="/admin" className="inline-flex h-11 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground hover:bg-surface-muted">
+              <ShieldCheck className="size-4 text-primary" aria-hidden="true" />Admin
+            </Link>
           )}
 
           {ready && auth ? (

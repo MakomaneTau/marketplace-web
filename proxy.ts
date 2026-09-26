@@ -14,7 +14,7 @@ const UPSTREAM_API_URL = (
   "http://127.0.0.1:4000"
 ).replace(/\/$/, "");
 
-type CurrentUserPayload = { data?: { profile?: { role?: string } } };
+type CurrentUserPayload = { data?: { profile?: { role?: string; isAdmin?: boolean } } };
 type RefreshPayload = { data?: { session?: ApiSession | null } };
 
 async function currentUser(accessToken: string) {
@@ -47,7 +47,7 @@ function loginRedirect(request: NextRequest, expired = false) {
   return response;
 }
 
-function accessErrorRedirect(request: NextRequest, reason: "seller_required" | "auth_unavailable") {
+function accessErrorRedirect(request: NextRequest, reason: "seller_required" | "admin_required" | "account_suspended" | "auth_unavailable") {
   const url = new URL("/access-denied", request.url);
   url.searchParams.set("reason", reason);
   return NextResponse.redirect(url);
@@ -80,11 +80,18 @@ export async function proxy(request: NextRequest) {
   }
 
   if (authResponse.status === 401) return loginRedirect(request, true);
+  if (authResponse.status === 403) {
+    const blocked = (await authResponse.clone().json().catch(() => null)) as { error?: { code?: string } } | null;
+    if (blocked?.error?.code === "ACCOUNT_SUSPENDED") return accessErrorRedirect(request, "account_suspended");
+  }
   if (!authResponse.ok) return accessErrorRedirect(request, "auth_unavailable");
 
   const payload = (await authResponse.json().catch(() => null)) as CurrentUserPayload | null;
   if (request.nextUrl.pathname.startsWith("/seller") && payload?.data?.profile?.role !== "seller") {
     return accessErrorRedirect(request, "seller_required");
+  }
+  if (request.nextUrl.pathname.startsWith("/admin") && payload?.data?.profile?.isAdmin !== true) {
+    return accessErrorRedirect(request, "admin_required");
   }
 
   const response = NextResponse.next();
@@ -108,6 +115,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/seller/:path*",
+    "/admin/:path*",
     "/favourites/:path*",
     "/messages/:path*",
     "/orders/:path*",
