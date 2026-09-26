@@ -179,6 +179,9 @@ export default async function ProductDetailsPage({ params }: ProductDetailsPageP
               <Link href="/safety" className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-emerald-900 hover:underline">
                 Read the safety guide <ChevronRight className="size-3.5" aria-hidden="true" />
               </Link>
+              <Link href={`/report?product=${product.id}`} className="ml-4 inline-flex items-center text-xs font-semibold text-emerald-900 hover:underline">
+                Report this listing
+              </Link>
             </div>
           </aside>
         </section>

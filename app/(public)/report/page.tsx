@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { AlertTriangle } from "lucide-react";
 
 import { InformationPage } from "@/app/components/content/InformationPage";
+import { ReportForm } from "@/app/components/safety/report-form";
 
 export const metadata: Metadata = {
   title: "Report a problem",
-  description: "Steps for reporting unsafe activity, suspicious listings and technical problems.",
+  description: "Report unsafe activity and suspicious listings.",
 };
 
 const sections = [
@@ -30,19 +31,16 @@ const sections = [
       "Suspected scams, stolen goods, counterfeit products or misleading listings.",
       "Harassment, threats, hate speech or pressure to communicate outside the marketplace.",
       "Requests for unsafe payments, verification codes or unnecessary personal information.",
-      "Technical failures that prevent sign-in, listing management, messaging or order access.",
-    ],
-  },
-  {
-    title: "Current reporting boundary",
-    paragraphs: [
-      "A direct moderation-submission endpoint has not yet been connected to this application. This page therefore does not pretend to submit a report. Use the available support paths below, stop contact when necessary and retain the details for follow-up.",
+      "For technical failures, use the contact and support options below.",
     ],
   },
 ];
 
-export default function ReportPage() {
+export default async function ReportPage({ searchParams }: { searchParams: Promise<{ product?: string }> }) {
+  const { product } = await searchParams;
+  const productId = product && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(product) ? product : undefined;
   return (
+    <>
     <InformationPage
       icon={AlertTriangle}
       title="Report a problem"
@@ -55,5 +53,7 @@ export default function ReportPage() {
         { href: "/messages", label: "Review your messages" },
       ]}
     />
+    <div className="mx-auto w-full max-w-4xl px-4 pb-12 md:px-6"><ReportForm productId={productId} /></div>
+    </>
   );
 }

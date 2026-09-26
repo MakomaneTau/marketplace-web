@@ -93,8 +93,8 @@ export default function SafetyPage() {
           Save relevant details, stop communicating when necessary, and report the listing or account for review.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/help" className="rounded-control bg-white px-5 py-2.5 text-sm font-semibold text-primary hover:bg-white/90">
-            Visit help centre
+          <Link href="/report" className="rounded-control bg-white px-5 py-2.5 text-sm font-semibold text-primary hover:bg-white/90">
+            Submit a report
           </Link>
           <Link href="/messages" className="rounded-control border border-white/30 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10">
             Open messages
