@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  ArrowLeft,
   GraduationCap,
 } from "lucide-react";
 
@@ -8,8 +9,6 @@ import { SellerVerificationForm } from "@/app/components/verification/SellerVeri
 export default function SellerVerificationPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Small top bar */}
-
       <header
         className="
           border-b
@@ -25,6 +24,7 @@ export default function SellerVerificationPage() {
             w-full
             max-w-2xl
             items-center
+            justify-between
             px-4
             sm:px-6
           "
@@ -32,7 +32,6 @@ export default function SellerVerificationPage() {
           <Link
             href="/"
             className="
-              ml-3
               text-lg
               font-bold
               text-primary
@@ -40,10 +39,15 @@ export default function SellerVerificationPage() {
           >
             Marketplace
           </Link>
+          <Link
+            href="/seller"
+            className="inline-flex items-center gap-2 rounded-card border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-primary-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            Seller centre
+          </Link>
         </div>
       </header>
-
-      {/* Page */}
 
       <main
         className="
@@ -56,8 +60,6 @@ export default function SellerVerificationPage() {
           md:py-12
         "
       >
-        {/* Heading */}
-
         <div className="mb-8">
           <div
             className="
@@ -82,7 +84,7 @@ export default function SellerVerificationPage() {
               sm:text-3xl
             "
           >
-            Verify your vendor status
+            Verify your seller account
           </h1>
 
           <p
@@ -95,10 +97,17 @@ export default function SellerVerificationPage() {
               sm:text-base
             "
           >
-            We need two photos to verify your
-            vendor account before you can use
-            student marketplace features.
+            You can set up your shop and sell for seven days after sign-up.
+            After that, an admin must approve your verification before you can
+            keep selling. Submit your photos now to avoid an interruption.
           </p>
+          <Link
+            href="/seller"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Continue setting up shop
+            <span aria-hidden="true">→</span>
+          </Link>
         </div>
 
         <SellerVerificationForm />

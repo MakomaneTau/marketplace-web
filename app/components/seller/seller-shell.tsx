@@ -12,6 +12,7 @@ import { OnboardingProvider } from "@/app/components/onboarding/onboarding-provi
 import { SellerHeader } from "./seller-header";
 import { SellerMobileNav } from "./seller-mobile-nav";
 import { SellerSidebar } from "./seller-sidebar";
+import { SellerVerificationNotice } from "./seller-verification-notice";
 
 type SellerShellProps = {
   children: ReactNode;
@@ -70,6 +71,7 @@ export function SellerShell({ children }: SellerShellProps) {
           <div className="lg:pl-60">
             <SellerHeader onOpenMenu={() => setMenuOpen(true)} />
             <main className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-6 sm:px-6 sm:pt-7 lg:px-8 lg:pb-10">
+              <SellerVerificationNotice />
               {children}
             </main>
           </div>

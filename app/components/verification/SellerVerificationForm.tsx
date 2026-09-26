@@ -2,8 +2,10 @@
 
 import {
   type FormEvent,
+  useEffect,
   useState,
 } from "react";
+import Link from "next/link";
 import {
   CheckCircle2,
   ShieldCheck,
@@ -17,6 +19,8 @@ import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/app/libs/a
 import { ImageUploadField } from "./ImageUploadField";
 
 export function SellerVerificationForm() {
+  const [current, setCurrent] = useState<{ status: "pending" | "verified" | "rejected"; rejectionReason: string | null } | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selfie, setSelfie] =
     useState<File | null>(null);
 
@@ -29,8 +33,14 @@ export function SellerVerificationForm() {
   const [isSubmitting, setIsSubmitting] =
     useState(false);
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  useEffect(() => {
+    let active = true;
+    apiRequest<typeof current>("/verifications/seller", { auth: true })
+      .then((result) => { if (active) setCurrent(result); })
+      .catch((requestError) => { if (active) setError(apiErrorMessage(requestError)); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
@@ -69,7 +79,7 @@ export function SellerVerificationForm() {
       );
 
       await apiRequest("/verifications/seller", { method: "POST", auth: true, body: formData });
-      setSubmitted(true);
+      setCurrent({ status: "pending", rejectionReason: null });
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
     } finally {
@@ -77,11 +87,10 @@ export function SellerVerificationForm() {
     }
   }
 
-  /*
-   * Temporary submitted state.
-   */
+  if (loading) return <p role="status" className="text-sm text-muted">Checking verification status...</p>;
+  if (error === SESSION_ERROR_MESSAGE) return <ProtectedRequestError message={error} />;
 
-  if (submitted) {
+  if (current?.status === "pending" || current?.status === "verified") {
     return (
       <div
         className="
@@ -109,32 +118,29 @@ export function SellerVerificationForm() {
         </div>
 
         <h2 className="mt-4 text-xl font-bold text-foreground">
-          Verification submitted
+          {current.status === "verified" ? "Verification approved" : "Verification submitted"}
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          Your documents have been submitted
-          for verification.
+          {current.status === "verified" ? "An admin has approved your seller account." : "Your documents are waiting for admin review. You can continue selling during your seven-day grace period; after that, new sales pause until approval."}
         </p>
 
-        <Button
-          type="button"
-          className="mt-6"
-          fullWidth
-        >
-          Continue
-        </Button>
+        <Link href="/seller" className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary px-5 font-semibold text-white">Back to seller centre</Link>
       </div>
     );
   }
-
-  if (error === SESSION_ERROR_MESSAGE) return <ProtectedRequestError message={error} />;
 
   return (
     <form
       onSubmit={handleSubmit}
       className="space-y-8"
     >
+      {current?.status === "rejected" && <section aria-labelledby="verification-feedback-title" className="rounded-card border border-danger/25 bg-red-50 p-4 sm:p-5">
+        <h2 id="verification-feedback-title" className="font-bold text-foreground">Your last submission was rejected</h2>
+        <p className="mt-2 text-sm font-semibold text-foreground">Admin feedback</p>
+        <blockquote className="mt-1 whitespace-pre-wrap break-words rounded-control border border-danger/20 bg-surface p-3 text-sm leading-6 text-foreground">{current.rejectionReason || "No reason was provided. Review the document requirements before resubmitting."}</blockquote>
+        <p className="mt-3 text-sm leading-6 text-foreground">Use this feedback when preparing your new photos. Both images need to be uploaded again for admin review.</p>
+      </section>}
       {/* Security notice */}
 
       <div
