@@ -5,5 +5,9 @@ import { SellerShell } from "@/components/seller/seller-shell";
 export default function SellerLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  return <SellerShell>{children}</SellerShell>;
+  return (
+    <div className="seller-theme min-h-screen bg-background text-foreground">
+      <SellerShell>{children}</SellerShell>
+    </div>
+  );
 }

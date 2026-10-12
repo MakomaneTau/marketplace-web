@@ -43,7 +43,7 @@ export function OnboardingExperience(props: ExperienceProps) {
   const allComplete = completed === steps.length;
 
   return (
-    <>
+    <div className={cn("contents", `${props.role}-theme`)}>
       {props.welcomeOpen && (
         <WelcomeDialog
           role={props.role}
@@ -192,7 +192,7 @@ export function OnboardingExperience(props: ExperienceProps) {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
