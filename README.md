@@ -1,139 +1,81 @@
 # Marketplace Web
 
-Next.js frontend for the Marketplace application. The project uses the App
-Router, TypeScript, React, and Tailwind CSS.
+Next.js 16 App Router frontend for the student marketplace, using React 19,
+strict TypeScript, and Tailwind CSS 4. Public catalogue pages, buyer accounts,
+checkout/orders, favourites, messaging, seller operations, verification, and
+admin moderation connect to the separate `marketplace-api` repository.
 
-## Stack
+## Local setup
 
-- Next.js 16
-- React 19
-- TypeScript (strict mode)
-- Tailwind CSS 4
-- ESLint with the Next.js configuration
-
-## Prerequisites
-
-- Node.js 20.9 or newer
-- npm
-- The Marketplace API when working on API-backed features
-
-## Local development
-
-Install dependencies and start the development server:
+Prerequisites: Node.js 22.13 or newer and npm. Run from this repository:
 
 ```powershell
-cd marketplace-web
-npm ci
-npm run dev
+npm.cmd ci
+Copy-Item .env.example .env.local  # first setup only
+npm.cmd run dev
 ```
 
-Open `http://localhost:3000`. Changes under `app/` are compiled and refreshed
-automatically.
+Open `http://localhost:3000`. API-backed features require the API at port 4000
+and its Supabase stack. In the API repository, run `npm.cmd run supabase:start`
+and either `npm.cmd run dev` or `docker compose up --build -d`.
 
-### Connect to the local API
-
-Create `.env.local` in this directory:
+Configure the server-only upstream in `.env.local`:
 
 ```dotenv
-MARKETPLACE_API_URL=http://localhost:4000
+MARKETPLACE_API_URL=http://127.0.0.1:4000
 ```
 
-`MARKETPLACE_API_URL` is a server-only URL used by the Next.js API gateway.
-Browser requests stay on the web application's origin under `/api/marketplace`,
-and authentication credentials are kept in HttpOnly cookies. Do not put secrets
-in variables prefixed with `NEXT_PUBLIC_`, because Next.js includes those values
-in the browser bundle.
+The deprecated `NEXT_PUBLIC_API_URL` fallback remains for existing environments.
+Browser requests always use the same-origin `/api/marketplace/*` gateway.
+Sessions stay in HttpOnly cookies. Never put privileged keys or secrets in
+`NEXT_PUBLIC_*` values.
 
-The API's CORS configuration is still useful for trusted direct consumers, but
-normal web traffic reaches Express through the same-origin Next.js gateway.
+Local Supabase Storage/Studio use ports 55321/55323. Image allowlists in
+`next.config.ts` match the API's local port. Restart Next after changing server
+environment variables or Next configuration.
 
-## Run the complete local application
-
-Use separate terminals so each long-running process remains visible.
-
-Terminal 1 - local Supabase (needed once features use database/Auth services):
-
-```powershell
-cd marketplace-api
-npm run supabase:start
-```
-
-Terminal 2 - Express API:
-
-```powershell
-cd marketplace-api
-npm run dev
-```
-
-Terminal 3 - Next.js frontend:
-
-```powershell
-cd marketplace-web
-npm run dev
-```
-
-Then verify the API at `http://localhost:4000/api/health` and open the web app
-at `http://localhost:3000`.
-
-## Scripts
-
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the Next.js development server on port `3000`. |
-| `npm run lint` | Run ESLint across the package. |
-| `npm run build` | Create an optimized production build. |
-| `npm start` | Serve an existing production build on port `3000`. |
-
-Run a production-mode check locally with:
-
-```powershell
-npm run lint
-npm run build
-npm start
-```
-
-`npm start` requires a successful `npm run build` first.
-
-## Folder structure
+## Structure
 
 ```text
-marketplace-web/
-|-- app/
-|   |-- favicon.ico            # Browser icon
-|   |-- globals.css            # Tailwind import, theme variables, global styles
-|   |-- layout.tsx             # Root HTML layout, fonts, and page metadata
-|   `-- page.tsx               # Home route (`/`)
-|-- public/                    # Static files served from the site root
-|-- eslint.config.mjs          # ESLint configuration
-|-- next.config.ts             # Next.js configuration
-|-- postcss.config.mjs         # Tailwind/PostCSS integration
-|-- tsconfig.json              # TypeScript and `@/*` path-alias settings
-`-- package.json               # Dependencies and npm scripts
+app/                     Routes, layouts, metadata, error/loading boundaries
+  (public)/              Catalogue and information pages
+  (auth)/                Login, signup, recovery, and verification
+  (marketplace)/         Protected buyer/account routes
+  (seller)/              Seller routes and legacy product route aliases
+  (admin)/               Admin routes
+  api/marketplace/       Same-origin Express gateway
+src/
+  components/<feature>/  UI, feature hooks, local types, and screen models
+  hooks/                 Shared hooks
+  lib/                   API/session client, formatting, catalogue mapping, utilities
+    server/              Upstream requests and session refresh
+  types/                 Shared application types
+  data/                  Deliberate metadata/fallbacks
+  styles/                Design tokens imported by app/globals.css
+public/                  Served static assets
+tests/                   Node regression tests for sessions, gateway, and models
+proxy.ts                 Protected-page session and role guards
 ```
 
-## Development conventions
+The `@/` alias resolves to `src/`. Keep route entries small, colocate related
+feature code, and keep browser/server dependencies separate. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for ownership boundaries and change guidance.
 
-- Files in `app/` are Server Components by default. Add `"use client"` only
-  where browser state, effects, event handlers, or browser-only APIs are needed.
-- Add a directory under `app/` to create a route; for example,
-  `app/listings/page.tsx` becomes `/listings`.
-- Place reusable UI in a top-level `components/` directory and shared API or
-  utility code in `lib/` as those concerns are introduced.
-- Import project modules with the configured `@/` alias rather than long
-  relative paths.
-- Put static assets in `public/` and reference them from `/`, such as
-  `/logo.svg`.
-- Keep secrets and server-only credentials out of `NEXT_PUBLIC_*` variables.
+## Quality checks
 
-## Current development status
+```powershell
+npm.cmd run format       # apply formatting
+npm.cmd run lint:fix     # apply safe lint fixes
+npm.cmd run check        # formatting, zero-warning lint, route types/TypeScript, tests
+npm.cmd run build        # optimized production build
+npm.cmd run audit:production
+```
 
-The home route and metadata are still the generated Next.js starter content.
-No API client, application routes, tests, or authentication UI have been added
-yet. When API integration begins, centralize the base URL and request/error
-handling rather than repeating raw URLs across components.
+Serve a successful production build with `npm.cmd start`. CI runs the check
+suite and production build on pushes and pull requests. Tests use controlled
+fetch responses; visual and click-level verification still require a browser.
 
-## Related application
-
-The Express/Supabase backend lives in the separate `marketplace-api` package.
-Its README documents API environment variables, the health endpoint, and the
-local Supabase workflow.
+[docs/API_INTEGRATION.md](docs/API_INTEGRATION.md) describes connected flows and
+manual acceptance. [docs/MAINTENANCE.md](docs/MAINTENANCE.md) records remaining
+work and unresolved development-tool advisories. Generated build output,
+Playwright reports, logs, and local environment files stay out of Git.

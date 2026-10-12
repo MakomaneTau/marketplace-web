@@ -1,9 +1,5 @@
 # Marketplace API integration
 
-## Branch
-
-Frontend integration is isolated on `feat/api-integration`. Do not merge it until the API branch has been reviewed and merged first.
-
 ## Connected flows
 
 - Authentication: signup, login, refresh, logout, current session, and password recovery.
@@ -22,7 +18,7 @@ API:
 
 ```powershell
 cd "C:\Workspace\marketpalce application\marketplace-api"
-npm.cmd install
+npm.cmd ci
 npm.cmd run dev
 ```
 
@@ -31,7 +27,7 @@ Web:
 ```powershell
 cd "C:\Workspace\marketpalce application\marketplace-web"
 Copy-Item .env.example .env.local
-npm.cmd install
+npm.cmd ci
 npm.cmd run dev
 ```
 
@@ -45,7 +41,7 @@ npm.cmd test
 
 cd "C:\Workspace\marketpalce application\marketplace-web"
 npm.cmd run lint
-npx.cmd tsc --noEmit
+npm.cmd run typecheck
 npm.cmd run build
 ```
 
