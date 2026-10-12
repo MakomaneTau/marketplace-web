@@ -1,175 +1,94 @@
-/*
-|--------------------------------------------------------------------------
-| MARKETPLACE DESIGN SYSTEM
-|--------------------------------------------------------------------------
-|
-| Do not hard-code brand colours inside components.
-| Change the design system here instead.
-|
-*/
-
+/* Campus Connect colors from the supplied brand reference. */
 @theme {
-  /*
-  |--------------------------------------------------------------------------
-  | Brand colours
-  |--------------------------------------------------------------------------
-  */
-
-  --color-primary: #155eef;
-  --color-primary-hover: #0b4fd6;
-  --color-primary-soft: #eef4ff;
-
-  --color-secondary: #10b981;
-  --color-secondary-hover: #059669;
-  --color-secondary-soft: #ecfdf5;
-
-  --color-accent: #e85d3f;
-  --color-accent-hover: #cf482d;
-  --color-accent-soft: #fff3ef;
-
-  /*
-  |--------------------------------------------------------------------------
-  | Surfaces
-  |--------------------------------------------------------------------------
-  */
-
-  --color-background: #f7f9fc;
+  --color-brand-blue: #2f80ed;
+  --color-brand-navy: #16324f;
+  --color-brand-yellow: #f2c94c;
+  --color-brand-gray: #64748b;
+  --color-background: #f8fafc;
   --color-surface: #ffffff;
   --color-surface-muted: #f1f5f9;
-
-  /*
-  |--------------------------------------------------------------------------
-  | Typography
-  |--------------------------------------------------------------------------
-  */
-
-  --color-foreground: #101828;
-  --color-muted: #667085;
-  --color-subtle: #94a3b8;
-
-  /*
-  |--------------------------------------------------------------------------
-  | Borders
-  |--------------------------------------------------------------------------
-  */
-
+  --color-foreground: #1f2937;
+  --color-muted: #64748b;
+  --color-subtle: #64748b;
   --color-border: #e2e8f0;
   --color-border-strong: #cbd5e1;
-
-  /*
-  |--------------------------------------------------------------------------
-  | Status colours
-  |--------------------------------------------------------------------------
-  */
-
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
+  /* Status colors retain their meaning across both roles. */
+  --color-success: #15803d;
+  --color-warning: #92400e;
   --color-danger: #dc2626;
-  --color-info: #2563eb;
-
-  /*
-  |--------------------------------------------------------------------------
-  | Border radius
-  |--------------------------------------------------------------------------
-  */
-
+  --color-info: #2469c4;
   --radius-control: 0.5rem;
   --radius-card: 0.5rem;
   --radius-modal: 0.75rem;
-
-  /*
-  |--------------------------------------------------------------------------
-  | Semantic typography
-  |--------------------------------------------------------------------------
-  */
-
   --text-page-title: 1.875rem;
   --text-page-title--line-height: 2.25rem;
   --text-page-title--font-weight: 700;
-
   --text-section-title: 1.25rem;
   --text-section-title--line-height: 1.75rem;
   --text-section-title--font-weight: 600;
-
   --text-card-title: 1rem;
   --text-card-title--line-height: 1.5rem;
   --text-card-title--font-weight: 600;
-
   --text-body: 1rem;
   --text-body--line-height: 1.5rem;
-
   --text-small: 0.875rem;
   --text-small--line-height: 1.25rem;
-
   --text-caption: 0.75rem;
   --text-caption--line-height: 1rem;
 }
-
-/*
-|--------------------------------------------------------------------------
-| Font
-|--------------------------------------------------------------------------
-|
-| --font-inter is supplied by next/font in layout.tsx.
-|
-| Tailwind recommends @theme inline when one theme variable references
-| another CSS variable.
-|
-*/
-
+/* Inline references inherit the nearest buyer or seller scope. */
 @theme inline {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  --color-primary: var(--role-primary);
+  --color-primary-action: var(--role-primary-action);
+  --color-primary-hover: var(--role-primary-hover);
+  --color-primary-soft: var(--role-primary-soft);
+  --color-primary-text: var(--role-primary-text);
+  --color-primary-foreground: var(--role-primary-foreground);
+  --color-secondary: var(--role-secondary);
+  --color-secondary-hover: var(--role-secondary-hover);
+  --color-secondary-soft: var(--role-secondary-soft);
+  --color-secondary-foreground: var(--role-secondary-foreground);
+  --color-accent: var(--role-accent);
+  --color-accent-hover: var(--role-accent-hover);
+  --color-accent-soft: var(--role-accent-soft);
+  --color-accent-foreground: var(--role-accent-foreground);
 }
-
-/*
-|--------------------------------------------------------------------------
-| Role colour schemes
-|--------------------------------------------------------------------------
-|
-| Buyer/public pages use an energetic blue and orange marketplace palette.
-| Seller pages use a focused violet and teal management palette. Components
-| using semantic colour utilities automatically inherit the active scheme.
-|
-*/
-
+/* Public, buyer, and sign-in pages default to blue and navy. */
+:root,
 .buyer-theme {
-  --color-primary: #155eef;
-  --color-primary-hover: #0b4fd6;
-  --color-primary-soft: #eef4ff;
-  --color-secondary: #10b981;
-  --color-secondary-hover: #059669;
-  --color-secondary-soft: #ecfdf5;
-  --color-accent: #e85d3f;
-  --color-accent-hover: #cf482d;
-  --color-accent-soft: #fff3ef;
-  --color-background: #f7f9fc;
-  --color-surface-muted: #f1f5f9;
+  --role-primary: #2f80ed;
+  /* Darker action/link shades keep normal-size white labels readable. */
+  --role-primary-action: #2469c4;
+  --role-primary-hover: #1c56a3;
+  --role-primary-soft: #eaf2fe;
+  --role-primary-text: #2469c4;
+  --role-primary-foreground: #ffffff;
+  --role-secondary: #16324f;
+  --role-secondary-hover: #10263d;
+  --role-secondary-soft: #eaf0f6;
+  --role-secondary-foreground: #ffffff;
+  --role-accent: #16324f;
+  --role-accent-hover: #10263d;
+  --role-accent-soft: #eaf0f6;
+  --role-accent-foreground: #ffffff;
 }
-
+/* Seller: yellow fills, gray secondary actions, dark labels. */
 .seller-theme {
-  --color-primary: #155eef;
-  --color-primary-hover: #0b4fd6;
-  --color-primary-soft: #eef4ff;
-  --color-secondary: #079455;
-  --color-secondary-hover: #067647;
-  --color-secondary-soft: #ecfdf3;
-  --color-accent: #dc6803;
-  --color-accent-hover: #b54708;
-  --color-accent-soft: #fffaeb;
-  --color-background: #f7f9fc;
-  --color-surface-muted: #f2f4f7;
-
-  /* Bridge existing seller utilities to the scoped semantic palette. */
-  --color-violet-50: var(--color-primary-soft);
-  --color-violet-100: #dbe7ff;
-  --color-violet-200: #b2ccff;
-  --color-violet-400: #528bff;
-  --color-violet-500: #2970ff;
-  --color-violet-600: #155eef;
-  --color-violet-700: var(--color-primary);
-  --color-violet-800: var(--color-primary-hover);
-  --color-violet-900: #194185;
-  --color-violet-950: #102a56;
+  --role-primary: #f2c94c;
+  --role-primary-action: #f2c94c;
+  --role-primary-hover: #e5b735;
+  --role-primary-soft: #fff7da;
+  --role-primary-text: #725a12;
+  --role-primary-foreground: #1f2937;
+  --role-secondary: #64748b;
+  --role-secondary-hover: #475569;
+  --role-secondary-soft: #edf1f5;
+  --role-secondary-foreground: #ffffff;
+  --role-accent: #f2c94c;
+  --role-accent-hover: #e5b735;
+  --role-accent-soft: #fff7da;
+  --role-accent-foreground: #1f2937;
 }

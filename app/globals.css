@@ -58,7 +58,7 @@ img {
 */
 
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--role-primary);
   outline-offset: 2px;
 }
 
@@ -69,6 +69,6 @@ img {
 */
 
 ::selection {
-  background-color: var(--color-primary-soft);
+  background-color: var(--role-primary-soft);
   color: var(--color-foreground);
 }
