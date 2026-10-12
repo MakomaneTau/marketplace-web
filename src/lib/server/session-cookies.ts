@@ -19,3 +19,35 @@ export function sessionCookieOptions(persistent: boolean, maxAge?: number) {
     ...(persistent && maxAge ? { maxAge } : {}),
   };
 }
+import type { NextResponse } from "next/server";
+
+export function setSessionCookies(
+  response: NextResponse,
+  session: ApiSession,
+  persistent: boolean,
+) {
+  response.cookies.set(
+    ACCESS_COOKIE,
+    session.accessToken,
+    sessionCookieOptions(persistent, Math.max(1, session.expiresIn)),
+  );
+  response.cookies.set(
+    REFRESH_COOKIE,
+    session.refreshToken,
+    sessionCookieOptions(persistent, 60 * 60 * 24 * 30),
+  );
+  response.cookies.set(
+    PERSISTENT_COOKIE,
+    persistent ? "true" : "false",
+    sessionCookieOptions(persistent, 60 * 60 * 24 * 30),
+  );
+}
+
+export function clearSessionCookies(response: NextResponse) {
+  for (const name of [ACCESS_COOKIE, REFRESH_COOKIE, PERSISTENT_COOKIE]) {
+    response.cookies.set(name, "", {
+      ...sessionCookieOptions(false),
+      maxAge: 0,
+    });
+  }
+}

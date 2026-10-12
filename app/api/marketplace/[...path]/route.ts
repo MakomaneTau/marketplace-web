@@ -1,25 +1,25 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+import { refreshSession, upstreamRequest } from "@/lib/server/marketplace";
 import {
   ACCESS_COOKIE,
   PERSISTENT_COOKIE,
   REFRESH_COOKIE,
   type ApiSession,
-  sessionCookieOptions,
+  setSessionCookies,
+  clearSessionCookies,
 } from "@/lib/server/session-cookies";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const UPSTREAM_API_URL = (
-  process.env.MARKETPLACE_API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  "http://127.0.0.1:4000"
-).replace(/\/$/, "");
-
 type RouteContext = { params: Promise<{ path: string[] }> };
 type AuthPayload = {
-  data?: { session?: ApiSession | null; user?: unknown; authenticated?: boolean };
+  data?: {
+    session?: ApiSession | null;
+    user?: unknown;
+    authenticated?: boolean;
+  };
 };
 
 function isUnsafeMethod(method: string) {
@@ -35,9 +35,15 @@ function originIsAllowed(request: NextRequest) {
 
   try {
     const originUrl = new URL(origin);
-    const forwardedProtocol = request.headers.get("x-forwarded-proto")?.split(",", 1)[0]?.trim();
-    const requestProtocol = forwardedProtocol || request.nextUrl.protocol.replace(":", "");
-    return originUrl.protocol === `${requestProtocol}:` && originUrl.host === host;
+    const forwardedProtocol = request.headers
+      .get("x-forwarded-proto")
+      ?.split(",", 1)[0]
+      ?.trim();
+    const requestProtocol =
+      forwardedProtocol || request.nextUrl.protocol.replace(":", "");
+    return (
+      originUrl.protocol === `${requestProtocol}:` && originUrl.host === host
+    );
   } catch {
     return false;
   }
@@ -50,7 +56,8 @@ function upstreamHeaders(request: NextRequest, accessToken?: string) {
     if (value) headers.set(name, value);
   }
   const explicitAuthorization = request.headers.get("authorization");
-  if (explicitAuthorization) headers.set("authorization", explicitAuthorization);
+  if (explicitAuthorization)
+    headers.set("authorization", explicitAuthorization);
   else if (accessToken) headers.set("authorization", `Bearer ${accessToken}`);
   return headers;
 }
@@ -65,49 +72,13 @@ async function callUpstream(
   body: ArrayBuffer | undefined,
   accessToken?: string,
 ) {
-  return fetch(`${UPSTREAM_API_URL}/api/v1/${path}${request.nextUrl.search}`, {
+  return upstreamRequest(`${path}${request.nextUrl.search}`, {
     method: request.method,
     headers: upstreamHeaders(request, accessToken),
     body,
     cache: "no-store",
     redirect: "manual",
   });
-}
-
-async function refreshSession(refreshToken: string) {
-  const response = await fetch(`${UPSTREAM_API_URL}/api/v1/auth/refresh`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
-    cache: "no-store",
-  });
-  if (!response.ok) return null;
-  const payload = (await response.json().catch(() => null)) as AuthPayload | null;
-  return payload?.data?.session || null;
-}
-
-function setSessionCookies(response: NextResponse, session: ApiSession, persistent: boolean) {
-  response.cookies.set(
-    ACCESS_COOKIE,
-    session.accessToken,
-    sessionCookieOptions(persistent, Math.max(1, session.expiresIn)),
-  );
-  response.cookies.set(
-    REFRESH_COOKIE,
-    session.refreshToken,
-    sessionCookieOptions(persistent, 60 * 60 * 24 * 30),
-  );
-  response.cookies.set(
-    PERSISTENT_COOKIE,
-    persistent ? "true" : "false",
-    sessionCookieOptions(persistent, 60 * 60 * 24 * 30),
-  );
-}
-
-function clearSessionCookies(response: NextResponse) {
-  for (const name of [ACCESS_COOKIE, REFRESH_COOKIE, PERSISTENT_COOKIE]) {
-    response.cookies.set(name, "", { ...sessionCookieOptions(false), maxAge: 0 });
-  }
 }
 
 async function toNextResponse(upstream: Response, path: string) {
@@ -125,12 +96,18 @@ async function toNextResponse(upstream: Response, path: string) {
   }
 
   let responseBody: BodyInit | null = bytes.byteLength ? bytes : null;
-  if ((path === "auth/login" || path === "auth/signup") && upstream.ok && bytes.byteLength) {
+  if (
+    (path === "auth/login" || path === "auth/signup") &&
+    upstream.ok &&
+    bytes.byteLength
+  ) {
     const payload = JSON.parse(new TextDecoder().decode(bytes)) as AuthPayload;
     if (payload.data) {
       payload.data = {
         user: payload.data.user,
-        ...(path === "auth/signup" ? { authenticated: Boolean(payload.data.session) } : {}),
+        ...(path === "auth/signup"
+          ? { authenticated: Boolean(payload.data.session) }
+          : {}),
       };
       responseBody = JSON.stringify(payload);
       headers.set("content-type", "application/json");
@@ -143,7 +120,12 @@ async function toNextResponse(upstream: Response, path: string) {
 async function handle(request: NextRequest, context: RouteContext) {
   if (isUnsafeMethod(request.method) && !originIsAllowed(request)) {
     return NextResponse.json(
-      { error: { code: "ORIGIN_NOT_ALLOWED", message: "The request origin is not allowed." } },
+      {
+        error: {
+          code: "ORIGIN_NOT_ALLOWED",
+          message: "The request origin is not allowed.",
+        },
+      },
       { status: 403 },
     );
   }
@@ -176,13 +158,21 @@ async function handle(request: NextRequest, context: RouteContext) {
   ) {
     refreshedSession = await refreshSession(refreshToken);
     if (refreshedSession) {
-      upstream = await callUpstream(request, path, body, refreshedSession.accessToken);
+      upstream = await callUpstream(
+        request,
+        path,
+        body,
+        refreshedSession.accessToken,
+      );
     }
   }
 
   const authPayload =
     (path === "auth/login" || path === "auth/signup") && upstream.ok
-      ? ((await upstream.clone().json().catch(() => null)) as AuthPayload | null)
+      ? ((await upstream
+          .clone()
+          .json()
+          .catch(() => null)) as AuthPayload | null)
       : null;
   const response = await toNextResponse(upstream, path);
   response.headers.set("Cache-Control", "private, no-store");
@@ -192,7 +182,10 @@ async function handle(request: NextRequest, context: RouteContext) {
   } else if (refreshedSession) {
     setSessionCookies(response, refreshedSession, persistent);
   }
-  if (path === "auth/logout" || (needsAuth && upstream.status === 401 && !refreshedSession)) {
+  if (
+    path === "auth/logout" ||
+    (needsAuth && upstream.status === 401 && !refreshedSession)
+  ) {
     clearSessionCookies(response);
   }
   return response;
