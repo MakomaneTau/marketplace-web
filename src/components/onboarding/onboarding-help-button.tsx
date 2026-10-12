@@ -11,8 +11,15 @@ export function OnboardingHelpButton({ className }: { className?: string }) {
   if (!onboarding) return null;
 
   return (
-    <Button type="button" variant="outline" size="sm" className={className} onClick={onboarding.open}>
-      <CircleHelp className="size-4" aria-hidden="true" />Getting started
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      className={className}
+      onClick={onboarding.open}
+    >
+      <CircleHelp className="size-4" aria-hidden="true" />
+      Getting started
     </Button>
   );
 }

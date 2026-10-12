@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import {
-  ShieldCheck,
-} from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 import { PageHeader } from "@/components/layout/PageHeader";
 import { CategoriesExplorer } from "@/components/category/CategoriesExplorer";
@@ -17,7 +15,7 @@ export default function CategoriesPage() {
   return (
     <Container className="py-6 md:py-8 lg:py-10">
       {/* Page heading */}
-    
+
       <PageHeader
         title="Browse categories"
         description="Explore products by category and find useful items being sold around your university community."
@@ -55,9 +53,8 @@ export default function CategoriesPage() {
           </p>
 
           <p className="mt-1 text-xs leading-5 text-muted sm:text-sm">
-            Check product details, seller profiles
-            and pickup information before agreeing
-            to a purchase.
+            Check product details, seller profiles and pickup information before
+            agreeing to a purchase.
           </p>
         </div>
       </section>

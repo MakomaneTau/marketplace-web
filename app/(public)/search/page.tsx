@@ -18,7 +18,7 @@ interface SearchPageProps {
 }
 
 function first(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -27,12 +27,19 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const initialCategory = first(resolvedSearchParams.category) || "all";
   const initialShop = first(resolvedSearchParams.shop);
   const conditionValue = first(resolvedSearchParams.condition);
-  const initialCondition: ConditionFilter = ["New", "Like new", "Good", "Fair"].includes(conditionValue)
-    ? conditionValue as ConditionFilter
+  const initialCondition: ConditionFilter = [
+    "New",
+    "Like new",
+    "Good",
+    "Fair",
+  ].includes(conditionValue)
+    ? (conditionValue as ConditionFilter)
     : "all";
   const sortValue = first(resolvedSearchParams.sort);
-  const initialSort: SortOption = ["price-low", "price-high"].includes(sortValue)
-    ? sortValue as SortOption
+  const initialSort: SortOption = ["price-low", "price-high"].includes(
+    sortValue,
+  )
+    ? (sortValue as SortOption)
     : "newest";
 
   return (

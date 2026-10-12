@@ -152,7 +152,9 @@ export function MobileNav() {
         element instanceof HTMLElement &&
         !element.hasAttribute("data-mobile-menu-layer"),
     );
-    const previousInertValues = backgroundElements.map((element) => element.inert);
+    const previousInertValues = backgroundElements.map(
+      (element) => element.inert,
+    );
     backgroundElements.forEach((element) => {
       element.inert = true;
     });
@@ -224,61 +226,62 @@ export function MobileNav() {
 
       {/* Drawer layer */}
 
-      {shouldRenderMenu && createPortal(
-        <div
-          data-mobile-menu-layer
-          onTransitionEnd={handleMenuTransitionEnd}
-          className={cn(
-            "fixed inset-0 z-60 md:hidden",
-            "transition-opacity duration-300 ease-out motion-reduce:duration-0",
-            isMenuVisible ? "opacity-100" : "pointer-events-none opacity-0",
-          )}
-        >
-        {/* Dark overlay */}
-
-          <button
-            type="button"
-            aria-label="Close navigation menu"
-            onClick={closeMenu}
-            className="absolute inset-0 bg-black/45"
-            tabIndex={isMenuVisible ? 0 : -1}
-          />
-
-        {/* Navigation drawer */}
-
-          <aside
-            ref={drawerRef}
-            id="mobile-menu-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            inert={!isMenuVisible}
+      {shouldRenderMenu &&
+        createPortal(
+          <div
+            data-mobile-menu-layer
+            onTransitionEnd={handleMenuTransitionEnd}
             className={cn(
-              "absolute inset-y-0 left-0",
-              "flex w-[86%] max-w-sm flex-col",
-              "bg-surface shadow-xl",
-              "transition-transform duration-300 ease-out motion-reduce:duration-0",
-              isMenuVisible ? "translate-x-0" : "-translate-x-full",
+              "fixed inset-0 z-60 md:hidden",
+              "transition-opacity duration-300 ease-out motion-reduce:duration-0",
+              isMenuVisible ? "opacity-100" : "pointer-events-none opacity-0",
             )}
           >
-          {/* Drawer header */}
-
-          <div className="flex h-16 items-center justify-between border-b border-border px-4">
-            <Link
-              href="/"
-              onClick={closeMenu}
-              className="flex items-center gap-2 text-lg font-bold text-primary"
-            >
-              <ShoppingBag className="size-5" />
-              Marketplace
-            </Link>
+            {/* Dark overlay */}
 
             <button
-              ref={closeButtonRef}
               type="button"
               aria-label="Close navigation menu"
               onClick={closeMenu}
-              className="
+              className="absolute inset-0 bg-black/45"
+              tabIndex={isMenuVisible ? 0 : -1}
+            />
+
+            {/* Navigation drawer */}
+
+            <aside
+              ref={drawerRef}
+              id="mobile-menu-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              inert={!isMenuVisible}
+              className={cn(
+                "absolute inset-y-0 left-0",
+                "flex w-[86%] max-w-sm flex-col",
+                "bg-surface shadow-xl",
+                "transition-transform duration-300 ease-out motion-reduce:duration-0",
+                isMenuVisible ? "translate-x-0" : "-translate-x-full",
+              )}
+            >
+              {/* Drawer header */}
+
+              <div className="flex h-16 items-center justify-between border-b border-border px-4">
+                <Link
+                  href="/"
+                  onClick={closeMenu}
+                  className="flex items-center gap-2 text-lg font-bold text-primary"
+                >
+                  <ShoppingBag className="size-5" />
+                  Marketplace
+                </Link>
+
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  aria-label="Close navigation menu"
+                  onClick={closeMenu}
+                  className="
                 flex
                 size-10
                 items-center
@@ -288,19 +291,19 @@ export function MobileNav() {
                 transition
                 hover:bg-surface-muted
               "
-            >
-              <X aria-hidden="true" className="size-5" />
-            </button>
-          </div>
+                >
+                  <X aria-hidden="true" className="size-5" />
+                </button>
+              </div>
 
-          {/* Account summary */}
+              {/* Account summary */}
 
-          {auth && (
-            <div className="border-b border-border p-4">
-              <Link
-                href="/profile"
-                onClick={closeMenu}
-                className="
+              {auth && (
+                <div className="border-b border-border p-4">
+                  <Link
+                    href="/profile"
+                    onClick={closeMenu}
+                    className="
                 flex
                 items-center
                 gap-3
@@ -310,9 +313,9 @@ export function MobileNav() {
                 transition
                 hover:bg-primary-soft
               "
-              >
-                <div
-                  className="
+                  >
+                    <div
+                      className="
                   flex
                   size-11
                   shrink-0
@@ -322,70 +325,78 @@ export function MobileNav() {
                   bg-primary
                   text-white
                 "
-                >
-                  <UserRound className="size-5" />
-                </div>
+                    >
+                      <UserRound className="size-5" />
+                    </div>
 
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-foreground">
-                    {displayName}
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {displayName}
+                      </p>
+
+                      <div className="mt-0.5 flex items-center gap-1 text-xs capitalize text-secondary">
+                        <ShieldCheck className="size-3.5" />
+                        {auth.user.user_metadata?.role || "Member"} account
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              )}
+
+              {/* Scrollable menu */}
+
+              <div className="flex-1 overflow-y-auto px-3 py-4">
+                <nav aria-label="Main mobile menu" className="space-y-1">
+                  {auth?.profile?.isAdmin && (
+                    <MobileMenuLink
+                      item={{
+                        label: "Admin centre",
+                        href: "/admin",
+                        icon: ShieldCheck,
+                      }}
+                      pathname={pathname}
+                      onClick={closeMenu}
+                    />
+                  )}
+                  {mainMenuItems.map((item) => (
+                    <MobileMenuLink
+                      key={item.href}
+                      item={item}
+                      pathname={pathname}
+                      onClick={closeMenu}
+                    />
+                  ))}
+                </nav>
+
+                {/* Support */}
+
+                <div className="mt-6 border-t border-border pt-4">
+                  <p className="px-3 text-xs font-semibold uppercase tracking-wide text-muted">
+                    Support
                   </p>
 
-                  <div className="mt-0.5 flex items-center gap-1 text-xs capitalize text-secondary">
-                    <ShieldCheck className="size-3.5" />
-                    {auth.user.user_metadata?.role || "Member"} account
-                  </div>
+                  <nav aria-label="Support menu" className="mt-2 space-y-1">
+                    {supportMenuItems.map((item) => (
+                      <MobileMenuLink
+                        key={item.href}
+                        item={item}
+                        pathname={pathname}
+                        onClick={closeMenu}
+                      />
+                    ))}
+                  </nav>
                 </div>
-              </Link>
-            </div>
-          )}
+              </div>
 
-          {/* Scrollable menu */}
+              {/* Authentication area */}
 
-          <div className="flex-1 overflow-y-auto px-3 py-4">
-            <nav aria-label="Main mobile menu" className="space-y-1">
-              {auth?.profile?.isAdmin && (
-                <MobileMenuLink item={{ label: "Admin centre", href: "/admin", icon: ShieldCheck }} pathname={pathname} onClick={closeMenu} />
-              )}
-              {mainMenuItems.map((item) => (
-                <MobileMenuLink
-                  key={item.href}
-                  item={item}
-                  pathname={pathname}
-                  onClick={closeMenu}
-                />
-              ))}
-            </nav>
-
-            {/* Support */}
-
-            <div className="mt-6 border-t border-border pt-4">
-              <p className="px-3 text-xs font-semibold uppercase tracking-wide text-muted">
-                Support
-              </p>
-
-              <nav aria-label="Support menu" className="mt-2 space-y-1">
-                {supportMenuItems.map((item) => (
-                  <MobileMenuLink
-                    key={item.href}
-                    item={item}
-                    pathname={pathname}
-                    onClick={closeMenu}
-                  />
-                ))}
-              </nav>
-            </div>
-          </div>
-
-          {/* Authentication area */}
-
-          <div className="border-t border-border p-4">
-            {ready &&
-              (auth ? (
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="
+              <div className="border-t border-border p-4">
+                {ready &&
+                  (auth ? (
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="
                   flex
                   h-11
                   w-full
@@ -403,15 +414,15 @@ export function MobileNav() {
                   transition
                   hover:bg-surface-muted
                 "
-                >
-                  <LogOut className="size-5" />
-                  Sign out
-                </button>
-              ) : (
-                <Link
-                  href="/login"
-                  onClick={closeMenu}
-                  className="
+                    >
+                      <LogOut className="size-5" />
+                      Sign out
+                    </button>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={closeMenu}
+                      className="
                   flex
                   h-11
                   w-full
@@ -428,16 +439,16 @@ export function MobileNav() {
                   transition
                   hover:bg-surface-muted
                 "
-                >
-                  <LogIn className="size-5" />
-                  Login
-                </Link>
-              ))}
-          </div>
-          </aside>
-        </div>,
-        document.body,
-      )}
+                    >
+                      <LogIn className="size-5" />
+                      Login
+                    </Link>
+                  ))}
+              </div>
+            </aside>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

@@ -41,12 +41,18 @@ export default function MarketplacePage() {
             description="Fresh items from students around you."
             href="/search?sort=newest"
           />
-          {loading ? <ProductGridSkeleton /> : products.length > 0 ? (
+          {loading ? (
+            <ProductGridSkeleton />
+          ) : products.length > 0 ? (
             <ProductGrid products={products} />
           ) : (
             <div className="border-y border-border py-12 text-center">
-              <p className="font-semibold text-foreground">No fresh listings yet</p>
-              <p className="mt-1 text-sm text-muted">Be the first student to add something useful.</p>
+              <p className="font-semibold text-foreground">
+                No fresh listings yet
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                Be the first student to add something useful.
+              </p>
             </div>
           )}
         </section>
@@ -57,7 +63,9 @@ export default function MarketplacePage() {
             description="Spend less time arranging collection."
             href="/search?nearby=true"
           />
-          {loading ? <ProductGridSkeleton count={4} /> : products.length > 0 ? (
+          {loading ? (
+            <ProductGridSkeleton count={4} />
+          ) : products.length > 0 ? (
             <ProductGrid products={products.slice(0, 4)} />
           ) : (
             <p className="border-y border-border py-8 text-center text-sm text-muted">

@@ -69,7 +69,10 @@ export function InformationPage({
       </div>
 
       {actions.length > 0 && (
-        <nav className="mt-8 flex flex-wrap gap-3" aria-label={`${title} actions`}>
+        <nav
+          className="mt-8 flex flex-wrap gap-3"
+          aria-label={`${title} actions`}
+        >
           {actions.map((action, index) => (
             <Link
               key={action.href}

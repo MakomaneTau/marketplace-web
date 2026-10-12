@@ -9,7 +9,11 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { apiErrorMessage, login } from "@/lib/api";
 
-export function LoginForm({ sessionExpired = false }: { sessionExpired?: boolean }) {
+export function LoginForm({
+  sessionExpired = false,
+}: {
+  sessionExpired?: boolean;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,12 +37,23 @@ export function LoginForm({ sessionExpired = false }: { sessionExpired?: boolean
       setIsSubmitting(true);
 
       const result = await login(email, password, remember);
-      const requestedPath = new URLSearchParams(window.location.search).get("next");
+      const requestedPath = new URLSearchParams(window.location.search).get(
+        "next",
+      );
       const safeRequestedPath =
-        requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !/[\\\x00-\x1f\x7f]/.test(requestedPath)
+        requestedPath?.startsWith("/") &&
+        !requestedPath.startsWith("//") &&
+        !/[\\\x00-\x1f\x7f]/.test(requestedPath)
           ? requestedPath
           : null;
-      router.replace(safeRequestedPath || (result.profile?.isAdmin ? "/admin" : result.profile?.role === "seller" ? "/seller" : "/"));
+      router.replace(
+        safeRequestedPath ||
+          (result.profile?.isAdmin
+            ? "/admin"
+            : result.profile?.role === "seller"
+              ? "/seller"
+              : "/"),
+      );
       router.refresh();
     } catch (error) {
       setError(apiErrorMessage(error));
@@ -50,7 +65,10 @@ export function LoginForm({ sessionExpired = false }: { sessionExpired?: boolean
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {sessionExpired && !error && (
-        <div role="status" className="flex gap-3 rounded-control border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <div
+          role="status"
+          className="flex gap-3 rounded-control border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700"
+        >
           <Clock3 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <p>Your session ended. Sign in again to continue.</p>
         </div>

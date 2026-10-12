@@ -55,12 +55,18 @@ export default function ForgotPasswordPage() {
         />
 
         {message && (
-          <p role="status" className="rounded-control border border-secondary/20 bg-secondary-soft px-4 py-3 text-sm text-secondary">
+          <p
+            role="status"
+            className="rounded-control border border-secondary/20 bg-secondary-soft px-4 py-3 text-sm text-secondary"
+          >
             {message}
           </p>
         )}
         {error && (
-          <p role="alert" className="rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger">
+          <p
+            role="alert"
+            className="rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger"
+          >
             {error}
           </p>
         )}

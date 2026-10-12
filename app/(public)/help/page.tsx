@@ -59,14 +59,18 @@ export default function HelpPage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-xl font-bold text-foreground">Frequently asked questions</h2>
+        <h2 className="text-xl font-bold text-foreground">
+          Frequently asked questions
+        </h2>
         <div className="mt-4 divide-y divide-border rounded-card border border-border bg-surface px-5 sm:px-6">
           {frequentlyAskedQuestions.map((item) => (
             <details key={item.question} className="group py-5">
               <summary className="cursor-pointer list-none pr-6 text-sm font-semibold text-foreground marker:hidden sm:text-base">
                 {item.question}
               </summary>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">{item.answer}</p>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
+                {item.answer}
+              </p>
             </details>
           ))}
         </div>
@@ -100,7 +104,13 @@ interface SupportCardProps {
   linkText: string;
 }
 
-function SupportCard({ icon: Icon, title, description, href, linkText }: SupportCardProps) {
+function SupportCard({
+  icon: Icon,
+  title,
+  description,
+  href,
+  linkText,
+}: SupportCardProps) {
   return (
     <article className="rounded-card border border-border bg-surface p-5">
       <span className="flex size-11 items-center justify-center rounded-card bg-primary-soft text-primary">
@@ -108,7 +118,10 @@ function SupportCard({ icon: Icon, title, description, href, linkText }: Support
       </span>
       <h2 className="mt-4 text-base font-semibold text-foreground">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-muted">{description}</p>
-      <Link href={href} className="mt-4 inline-block text-sm font-semibold text-primary hover:underline">
+      <Link
+        href={href}
+        className="mt-4 inline-block text-sm font-semibold text-primary hover:underline"
+      >
         {linkText}
       </Link>
     </article>

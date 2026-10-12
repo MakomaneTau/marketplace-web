@@ -8,10 +8,9 @@ import {
   useState,
 } from "react";
 
-import { cn } from "../../libs/utils";
+import { cn } from "@/lib/utils";
 
-interface InputProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   hint?: string;
@@ -48,27 +47,24 @@ export function Input({
 
       <div className="relative">
         {icon && (
-          <span className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-muted" aria-hidden="true">
+          <span
+            className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-muted"
+            aria-hidden="true"
+          >
             {icon}
           </span>
         )}
         <input
           id={inputId}
           aria-invalid={Boolean(error)}
-          aria-describedby={
-            error || hint
-              ? helpId
-              : undefined
-          }
+          aria-describedby={error || hint ? helpId : undefined}
           className={cn(
             "h-11 w-full rounded-control border bg-surface px-3",
             "text-sm text-foreground placeholder:text-subtle",
             "transition-colors",
             "outline-none",
             "focus:border-primary focus:ring-2 focus:ring-primary/20",
-            error
-              ? "border-danger"
-              : "border-border",
+            error ? "border-danger" : "border-border",
             className,
             icon && "pl-11",
             isPassword && "pr-12",
@@ -86,7 +82,11 @@ export function Input({
             onClick={() => setPasswordVisible((visible) => !visible)}
             className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-control text-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-50"
           >
-            {passwordVisible ? <EyeOff className="size-5" aria-hidden="true" /> : <Eye className="size-5" aria-hidden="true" />}
+            {passwordVisible ? (
+              <EyeOff className="size-5" aria-hidden="true" />
+            ) : (
+              <Eye className="size-5" aria-hidden="true" />
+            )}
           </button>
         )}
       </div>
@@ -94,12 +94,7 @@ export function Input({
       {(error || hint) && (
         <p
           id={helpId}
-          className={cn(
-            "mt-1 text-xs",
-            error
-              ? "text-danger"
-              : "text-muted",
-          )}
+          className={cn("mt-1 text-xs", error ? "text-danger" : "text-muted")}
         >
           {error ?? hint}
         </p>

@@ -32,9 +32,17 @@ const icons = {
 };
 
 const trustItems = [
-  { icon: ShieldCheck, label: "Verified sellers", detail: "Clear account status" },
+  {
+    icon: ShieldCheck,
+    label: "Verified sellers",
+    detail: "Clear account status",
+  },
   { icon: UsersRound, label: "Safer meetups", detail: "Campus-first guidance" },
-  { icon: MessageCircle, label: "Private messaging", detail: "Keep plans in the app" },
+  {
+    icon: MessageCircle,
+    label: "Private messaging",
+    detail: "Keep plans in the app",
+  },
 ];
 
 export function AuthShell({
@@ -53,11 +61,19 @@ export function AuthShell({
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-foreground">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-xl font-bold text-foreground"
+          >
             <ShoppingBag className="size-6 text-primary" aria-hidden="true" />
-            <span>Market<span className="text-primary">place</span></span>
+            <span>
+              Market<span className="text-primary">place</span>
+            </span>
           </Link>
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
             <ArrowLeft className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Back to marketplace</span>
             <span className="sm:hidden">Back</span>
@@ -72,28 +88,48 @@ export function AuthShell({
               <ContextIcon className="size-6" aria-hidden="true" />
             </span>
             <h1 className="mt-5 text-3xl font-bold text-foreground">{title}</h1>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-muted sm:text-base">{description}</p>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-muted sm:text-base">
+              {description}
+            </p>
           </header>
 
-          <section className="mt-7 rounded-card border border-border bg-surface p-5 sm:p-7" aria-label={`${title} form`}>
+          <section
+            className="mt-7 rounded-card border border-border bg-surface p-5 sm:p-7"
+            aria-label={`${title} form`}
+          >
             {children}
           </section>
 
           <p className="mt-6 text-center text-sm text-muted">
             {footerText}{" "}
-            <Link href={footerHref} className="font-semibold text-primary hover:underline">
+            <Link
+              href={footerHref}
+              className="font-semibold text-primary hover:underline"
+            >
               {footerLinkText}
             </Link>
           </p>
         </div>
 
-        <section aria-label="Marketplace trust" className="mx-auto mt-10 grid w-full max-w-3xl gap-4 border-t border-border pt-6 sm:grid-cols-3 sm:gap-0">
+        <section
+          aria-label="Marketplace trust"
+          className="mx-auto mt-10 grid w-full max-w-3xl gap-4 border-t border-border pt-6 sm:grid-cols-3 sm:gap-0"
+        >
           {trustItems.map(({ icon: Icon, label, detail }, index) => (
-            <div key={label} className={cn("flex items-center gap-3 px-3", index > 0 && "sm:border-l sm:border-border sm:pl-6")}>
+            <div
+              key={label}
+              className={cn(
+                "flex items-center gap-3 px-3",
+                index > 0 && "sm:border-l sm:border-border sm:pl-6",
+              )}
+            >
               <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary-soft text-secondary">
                 <Icon className="size-4" aria-hidden="true" />
               </span>
-              <div><p className="text-sm font-semibold">{label}</p><p className="text-xs text-muted">{detail}</p></div>
+              <div>
+                <p className="text-sm font-semibold">{label}</p>
+                <p className="text-xs text-muted">{detail}</p>
+              </div>
             </div>
           ))}
         </section>
@@ -102,7 +138,17 @@ export function AuthShell({
       <footer className="border-t border-border bg-surface">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 text-xs text-muted sm:px-6 lg:px-8">
           <p>Marketplace for South African students</p>
-          <nav aria-label="Legal" className="flex gap-5"><Link href="/safety" className="hover:text-primary">Safety</Link><Link href="/help" className="hover:text-primary">Help</Link><Link href="/privacy" className="hover:text-primary">Privacy</Link></nav>
+          <nav aria-label="Legal" className="flex gap-5">
+            <Link href="/safety" className="hover:text-primary">
+              Safety
+            </Link>
+            <Link href="/help" className="hover:text-primary">
+              Help
+            </Link>
+            <Link href="/privacy" className="hover:text-primary">
+              Privacy
+            </Link>
+          </nav>
         </div>
       </footer>
     </div>

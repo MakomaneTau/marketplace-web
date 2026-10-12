@@ -14,7 +14,11 @@ interface ProductActionsProps {
   initialSaved?: boolean;
 }
 
-export function ProductActions({ productId, productName, initialSaved = false }: ProductActionsProps) {
+export function ProductActions({
+  productId,
+  productName,
+  initialSaved = false,
+}: ProductActionsProps) {
   const router = useRouter();
   const [saved, setSaved] = useState(initialSaved);
   const [busyAction, setBusyAction] = useState<"save" | "message" | null>(null);
@@ -77,8 +81,14 @@ export function ProductActions({ productId, productName, initialSaved = false }:
         setFeedback("Product link copied");
       }
     } catch (shareError) {
-      if (shareError instanceof DOMException && shareError.name === "AbortError") return;
-      setError("The product link could not be shared. Please copy it from your browser.");
+      if (
+        shareError instanceof DOMException &&
+        shareError.name === "AbortError"
+      )
+        return;
+      setError(
+        "The product link could not be shared. Please copy it from your browser.",
+      );
     }
   }
 
@@ -92,12 +102,16 @@ export function ProductActions({ productId, productName, initialSaved = false }:
           className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           <MessageCircle className="size-5" aria-hidden="true" />
-          {busyAction === "message" ? "Opening conversation..." : "Message seller"}
+          {busyAction === "message"
+            ? "Opening conversation..."
+            : "Message seller"}
         </button>
         <button
           type="button"
           disabled={!ready}
-          onClick={() => { if (guard()) router.push(`/cart?product=${productId}`); }}
+          onClick={() => {
+            if (guard()) router.push(`/cart?product=${productId}`);
+          }}
           className="inline-flex h-12 items-center justify-center gap-2 rounded-control border border-primary bg-white px-5 text-sm font-semibold text-primary transition hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-60"
         >
           <ShoppingCart className="size-5" aria-hidden="true" />
@@ -114,7 +128,11 @@ export function ProductActions({ productId, productName, initialSaved = false }:
           title={saved ? "Remove from favourites" : "Save to favourites"}
           className="flex size-11 items-center justify-center rounded-control border border-border-strong bg-white text-foreground transition hover:border-primary hover:text-primary disabled:opacity-60"
         >
-          <Bookmark className="size-5" fill={saved ? "currentColor" : "none"} aria-hidden="true" />
+          <Bookmark
+            className="size-5"
+            fill={saved ? "currentColor" : "none"}
+            aria-hidden="true"
+          />
         </button>
         <button
           type="button"
@@ -127,14 +145,31 @@ export function ProductActions({ productId, productName, initialSaved = false }:
         </button>
       </div>
 
-      {feedback && <p className="mt-3 text-sm font-medium text-secondary" role="status">{feedback}</p>}
+      {feedback && (
+        <p className="mt-3 text-sm font-medium text-secondary" role="status">
+          {feedback}
+        </p>
+      )}
       {error && (
-        <div role="alert" className="mt-3 rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger">
+        <div
+          role="alert"
+          className="mt-3 rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger"
+        >
           <p>{error}</p>
           {error === SESSION_ERROR_MESSAGE && (
             <div className="mt-3 flex flex-wrap gap-2">
-              <Link href="/login" className="rounded-control bg-primary px-4 py-2 font-semibold text-white">Sign in</Link>
-              <Link href="/" className="rounded-control border border-border bg-white px-4 py-2 font-semibold text-foreground">Back to marketplace</Link>
+              <Link
+                href="/login"
+                className="rounded-control bg-primary px-4 py-2 font-semibold text-white"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/"
+                className="rounded-control border border-border bg-white px-4 py-2 font-semibold text-foreground"
+              >
+                Back to marketplace
+              </Link>
             </div>
           )}
         </div>

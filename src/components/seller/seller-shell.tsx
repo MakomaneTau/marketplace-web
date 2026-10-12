@@ -30,17 +30,33 @@ export function SellerShell({ children }: SellerShellProps) {
   }, [menuOpen]);
 
   if (!ready) {
-    return <p role="status" className="p-8 text-center text-muted">Checking seller access...</p>;
+    return (
+      <p role="status" className="p-8 text-center text-muted">
+        Checking seller access...
+      </p>
+    );
   }
   if (!auth) return <ProtectedRequestError message={SESSION_ERROR_MESSAGE} />;
   if (auth.profile?.role !== "seller") {
     return (
       <section className="mx-auto max-w-lg space-y-4 px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">A seller profile is required</h1>
-        <p className="text-muted">Register as a seller before creating listings or managing a shop.</p>
+        <p className="text-muted">
+          Register as a seller before creating listings or managing a shop.
+        </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/signup" className="rounded-control bg-primary px-5 py-3 font-semibold text-white">Register as a seller</Link>
-          <Link href="/" className="rounded-control border border-border px-5 py-3 font-semibold">Back to marketplace</Link>
+          <Link
+            href="/signup"
+            className="rounded-control bg-primary px-5 py-3 font-semibold text-white"
+          >
+            Register as a seller
+          </Link>
+          <Link
+            href="/"
+            className="rounded-control border border-border px-5 py-3 font-semibold"
+          >
+            Back to marketplace
+          </Link>
         </div>
       </section>
     );

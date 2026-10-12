@@ -1,6 +1,15 @@
 "use client";
 
-import { ArrowLeft, Heart, LogIn, MapPin, Search, ShieldCheck, ShoppingBag, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  LogIn,
+  MapPin,
+  Search,
+  ShieldCheck,
+  ShoppingBag,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -18,9 +27,14 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <Container>
         <div className="grid h-16 min-w-0 grid-cols-3 items-center md:hidden">
-          <div className="justify-self-start"><MobileNav /></div>
+          <div className="justify-self-start">
+            <MobileNav />
+          </div>
 
-          <Link href="/" className="justify-self-center text-lg font-black text-foreground">
+          <Link
+            href="/"
+            className="justify-self-center text-lg font-black text-foreground"
+          >
             Market<span className="text-primary">place</span>
           </Link>
 
@@ -39,7 +53,11 @@ export function Header() {
               hover:bg-surface-muted
             "
           >
-            {isSeller ? <ArrowLeft className="size-5" /> : <Heart className="size-5" />}
+            {isSeller ? (
+              <ArrowLeft className="size-5" />
+            ) : (
+              <Heart className="size-5" />
+            )}
           </Link>
         </div>
 
@@ -58,10 +76,16 @@ export function Header() {
           >
             <ShoppingBag className="size-6 text-primary" />
 
-            <span>Market<span className="text-primary">place</span></span>
+            <span>
+              Market<span className="text-primary">place</span>
+            </span>
           </Link>
 
-          <form role="search" action="/search" className="relative max-w-xl flex-1">
+          <form
+            role="search"
+            action="/search"
+            className="relative max-w-xl flex-1"
+          >
             <Search
               aria-hidden="true"
               className="
@@ -136,8 +160,12 @@ export function Header() {
           )}
 
           {auth?.profile?.isAdmin && (
-            <Link href="/admin" className="inline-flex h-11 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground hover:bg-surface-muted">
-              <ShieldCheck className="size-4 text-primary" aria-hidden="true" />Admin
+            <Link
+              href="/admin"
+              className="inline-flex h-11 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground hover:bg-surface-muted"
+            >
+              <ShieldCheck className="size-4 text-primary" aria-hidden="true" />
+              Admin
             </Link>
           )}
 

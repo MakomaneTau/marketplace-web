@@ -9,10 +9,13 @@ interface ProductGalleryProps {
 }
 
 export function ProductGallery({ productName, images }: ProductGalleryProps) {
-  const safeImages = images.length > 0 ? images : ["/images/product-placeholder.svg"];
+  const safeImages =
+    images.length > 0 ? images : ["/images/product-placeholder.svg"];
   const [activeImage, setActiveImage] = useState(safeImages[0]);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
-  const displayImage = failedImages.has(activeImage) ? "/images/product-placeholder.svg" : activeImage;
+  const displayImage = failedImages.has(activeImage)
+    ? "/images/product-placeholder.svg"
+    : activeImage;
   const isRemoteImage = /^https?:\/\//.test(displayImage);
 
   function markImageFailed(image: string) {
@@ -38,7 +41,9 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
         <div className="grid grid-cols-4 gap-2 md:col-start-1 md:row-start-1 md:grid-cols-1 md:self-start">
           {safeImages.map((image, index) => {
             const selected = image === activeImage;
-            const thumbnailSrc = failedImages.has(image) ? "/images/product-placeholder.svg" : image;
+            const thumbnailSrc = failedImages.has(image)
+              ? "/images/product-placeholder.svg"
+              : image;
             const isRemoteThumbnail = /^https?:\/\//.test(thumbnailSrc);
 
             return (
@@ -49,7 +54,9 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
                 aria-label={`View product image ${index + 1}`}
                 aria-pressed={selected}
                 className={`relative aspect-square overflow-hidden rounded-control border ${
-                  selected ? "border-primary ring-2 ring-primary/20" : "border-border"
+                  selected
+                    ? "border-primary ring-2 ring-primary/20"
+                    : "border-border"
                 }`}
               >
                 <Image

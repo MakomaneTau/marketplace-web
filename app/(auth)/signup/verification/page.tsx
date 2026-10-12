@@ -1,1 +1,3 @@
-export { default } from "../../verifcation/page";
+import VerificationPage from "@/components/verification/verification-page";
+
+export default VerificationPage;

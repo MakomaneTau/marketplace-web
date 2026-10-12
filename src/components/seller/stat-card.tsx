@@ -10,7 +10,14 @@ export type StatCardProps = {
   icon: LucideIcon;
 };
 
-export function StatCard({ label, value, change, helper, icon: Icon, href }: StatCardProps) {
+export function StatCard({
+  label,
+  value,
+  change,
+  helper,
+  icon: Icon,
+  href,
+}: StatCardProps) {
   const content = (
     <article className="rounded-lg border border-slate-200 bg-white p-4">
       <div className="flex items-start justify-between gap-4">
@@ -24,11 +31,23 @@ export function StatCard({ label, value, change, helper, icon: Icon, href }: Sta
       </div>
       {(change || helper) && (
         <p className="mt-3 text-xs text-slate-500">
-          {change && <span className="font-semibold text-emerald-700">{change}</span>}{" "}
+          {change && (
+            <span className="font-semibold text-emerald-700">{change}</span>
+          )}{" "}
           {helper}
         </p>
       )}
     </article>
   );
-  return href ? <Link href={href} aria-label={`View ${label.toLowerCase()}`} className="block rounded-lg transition hover:border-primary focus-visible:outline-2 focus-visible:outline-primary">{content}</Link> : content;
+  return href ? (
+    <Link
+      href={href}
+      aria-label={`View ${label.toLowerCase()}`}
+      className="block rounded-lg transition hover:border-primary focus-visible:outline-2 focus-visible:outline-primary"
+    >
+      {content}
+    </Link>
+  ) : (
+    content
+  );
 }

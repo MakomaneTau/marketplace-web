@@ -7,9 +7,7 @@ interface CategoryCardProps {
   category: Category;
 }
 
-export function CategoryCard({
-  category,
-}: CategoryCardProps) {
+export function CategoryCard({ category }: CategoryCardProps) {
   const Icon = category.icon;
 
   return (
@@ -48,10 +46,7 @@ export function CategoryCard({
             group-hover:text-white
           "
         >
-          <Icon
-            aria-hidden="true"
-            className="size-5"
-          />
+          <Icon aria-hidden="true" className="size-5" />
         </span>
 
         {category.featured && (
@@ -97,7 +92,6 @@ export function CategoryCard({
           "
         >
           Browse
-
           <ArrowRight
             aria-hidden="true"
             className="

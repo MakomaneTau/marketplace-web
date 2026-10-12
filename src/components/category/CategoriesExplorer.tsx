@@ -9,15 +9,27 @@ import { apiPublic } from "@/lib/api";
 import type { ApiCategory } from "@/lib/catalog";
 
 export function CategoriesExplorer() {
-  const [searchQuery, setSearchQuery] =
-    useState("");
-  const[categories,setCategories]=useState<Category[]>([]);
-  useEffect(()=>{apiPublic<ApiCategory[]>("/categories").then(items=>setCategories(items.map(item=>({name:item.name,slug:item.slug,description:item.description,productCount:item.product_count,featured:item.is_featured,icon:PackageOpen})))).catch(()=>setCategories([]));},[]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  useEffect(() => {
+    apiPublic<ApiCategory[]>("/categories")
+      .then((items) =>
+        setCategories(
+          items.map((item) => ({
+            name: item.name,
+            slug: item.slug,
+            description: item.description,
+            productCount: item.product_count,
+            featured: item.is_featured,
+            icon: PackageOpen,
+          })),
+        ),
+      )
+      .catch(() => setCategories([]));
+  }, []);
 
   const filteredCategories = useMemo(() => {
-    const normalizedQuery = searchQuery
-      .trim()
-      .toLowerCase();
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
     if (!normalizedQuery) {
       return categories;
@@ -25,12 +37,8 @@ export function CategoriesExplorer() {
 
     return categories.filter((category) => {
       return (
-        category.name
-          .toLowerCase()
-          .includes(normalizedQuery) ||
-        category.description
-          .toLowerCase()
-          .includes(normalizedQuery)
+        category.name.toLowerCase().includes(normalizedQuery) ||
+        category.description.toLowerCase().includes(normalizedQuery)
       );
     });
   }, [categories, searchQuery]);
@@ -55,9 +63,7 @@ export function CategoriesExplorer() {
         <input
           type="search"
           value={searchQuery}
-          onChange={(event) =>
-            setSearchQuery(event.target.value)
-          }
+          onChange={(event) => setSearchQuery(event.target.value)}
           placeholder="Search categories"
           aria-label="Search categories"
           className="
@@ -86,9 +92,7 @@ export function CategoriesExplorer() {
       <div className="mt-6 flex items-center justify-between">
         <p className="text-sm text-muted">
           {filteredCategories.length}{" "}
-          {filteredCategories.length === 1
-            ? "category"
-            : "categories"}
+          {filteredCategories.length === 1 ? "category" : "categories"}
         </p>
       </div>
 
@@ -107,14 +111,9 @@ export function CategoriesExplorer() {
             lg:gap-6
           "
         >
-          {filteredCategories.map(
-            (category) => (
-              <CategoryCard
-                key={category.slug}
-                category={category}
-              />
-            ),
-          )}
+          {filteredCategories.map((category) => (
+            <CategoryCard key={category.slug} category={category} />
+          ))}
         </div>
       ) : (
         <div
@@ -153,8 +152,8 @@ export function CategoriesExplorer() {
           </h2>
 
           <p className="mt-1 max-w-sm text-sm text-muted">
-            Try searching for something else,
-            such as textbooks, phones or furniture.
+            Try searching for something else, such as textbooks, phones or
+            furniture.
           </p>
 
           <button

@@ -79,10 +79,13 @@ export default function SellerOrdersPage() {
     try {
       setChattingOrderId(order.id);
       setError(null);
-      const conversation = await apiRequest<{ id: string }>(`/conversations/orders/${order.id}`, {
-        method: "POST",
-        auth: true,
-      });
+      const conversation = await apiRequest<{ id: string }>(
+        `/conversations/orders/${order.id}`,
+        {
+          method: "POST",
+          auth: true,
+        },
+      );
       router.push(`/seller/messages?conversation=${conversation.id}`);
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
@@ -104,67 +107,78 @@ export default function SellerOrdersPage() {
       )}
 
       <div className="space-y-4">
-        {!needsShopSetup && orders.map((order) => {
-          const next = nextStatus[order.status];
-          return (
-            <article key={order.id} className="rounded-2xl border bg-white p-5 shadow-sm">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-bold">Order {order.id.slice(0, 8)}</h2>
-                  <p className="text-xs text-slate-500">
-                    {order.buyer.display_name} · {new Date(order.created_at).toLocaleString()}
-                  </p>
+        {!needsShopSetup &&
+          orders.map((order) => {
+            const next = nextStatus[order.status];
+            return (
+              <article
+                key={order.id}
+                className="rounded-2xl border bg-white p-5 shadow-sm"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <h2 className="font-bold">Order {order.id.slice(0, 8)}</h2>
+                    <p className="text-xs text-slate-500">
+                      {order.buyer.display_name} ·{" "}
+                      {new Date(order.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold capitalize text-violet-800">
+                    {order.status.replaceAll("_", " ")}
+                  </span>
                 </div>
-                <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold capitalize text-violet-800">
-                  {order.status.replaceAll("_", " ")}
-                </span>
-              </div>
 
-              <ul className="mt-4 text-sm text-slate-700">
-                {order.items.map((item) => (
-                  <li key={item.id}>{item.quantity} × {item.product_name}</li>
-                ))}
-              </ul>
+                <ul className="mt-4 text-sm text-slate-700">
+                  {order.items.map((item) => (
+                    <li key={item.id}>
+                      {item.quantity} × {item.product_name}
+                    </li>
+                  ))}
+                </ul>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <strong>{money(order.total_amount)}</strong>
-                <div className="flex flex-wrap gap-2">
-                  {!isClosedOrder(order.status) && (
-                    <button
-                      type="button"
-                      onClick={() => void openDeliveryChat(order)}
-                      disabled={chattingOrderId === order.id}
-                      className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      <MessageCircle className="size-4" aria-hidden="true" />
-                      {chattingOrderId === order.id ? "Opening..." : "Delivery chat"}
-                    </button>
-                  )}
-                  {next && (
-                    <button
-                      type="button"
-                      onClick={() => void transition(order, next)}
-                      className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-semibold text-white"
-                    >
-                      Mark {next.replaceAll("_", " ")}
-                    </button>
-                  )}
-                  {!isClosedOrder(order.status) && (
-                    <button
-                      type="button"
-                      onClick={() => void transition(order, "cancelled")}
-                      className="rounded-xl border px-4 py-2 text-sm"
-                    >
-                      Cancel
-                    </button>
-                  )}
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                  <strong>{money(order.total_amount)}</strong>
+                  <div className="flex flex-wrap gap-2">
+                    {!isClosedOrder(order.status) && (
+                      <button
+                        type="button"
+                        onClick={() => void openDeliveryChat(order)}
+                        disabled={chattingOrderId === order.id}
+                        className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <MessageCircle className="size-4" aria-hidden="true" />
+                        {chattingOrderId === order.id
+                          ? "Opening..."
+                          : "Delivery chat"}
+                      </button>
+                    )}
+                    {next && (
+                      <button
+                        type="button"
+                        onClick={() => void transition(order, next)}
+                        className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-semibold text-white"
+                      >
+                        Mark {next.replaceAll("_", " ")}
+                      </button>
+                    )}
+                    {!isClosedOrder(order.status) && (
+                      <button
+                        type="button"
+                        onClick={() => void transition(order, "cancelled")}
+                        className="rounded-xl border px-4 py-2 text-sm"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
+              </article>
+            );
+          })}
 
-        {!needsShopSetup && !orders.length && !error && <p className="text-slate-500">No seller orders yet.</p>}
+        {!needsShopSetup && !orders.length && !error && (
+          <p className="text-slate-500">No seller orders yet.</p>
+        )}
         {!needsShopSetup && error && <ProtectedRequestError message={error} />}
       </div>
     </div>

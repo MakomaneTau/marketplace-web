@@ -1,6 +1,11 @@
 "use client";
 
-import { LayoutDashboard, MessageSquare, Package, ShoppingBag } from "lucide-react";
+import {
+  LayoutDashboard,
+  MessageSquare,
+  Package,
+  ShoppingBag,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,7 +28,10 @@ export function SellerMobileNav() {
       aria-label="Seller mobile navigation"
     >
       {items.map((item) => {
-        const active = item.href === "/seller" ? pathname === item.href : pathname.startsWith(item.href);
+        const active =
+          item.href === "/seller"
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
         const Icon = item.icon;
         return (
           <Link
@@ -36,7 +44,11 @@ export function SellerMobileNav() {
           >
             <span className="relative">
               <Icon className="h-5 w-5" aria-hidden="true" />
-              {item.href === "/seller/messages" && <span className="absolute -right-4 -top-2"><UnreadMessageBadge /></span>}
+              {item.href === "/seller/messages" && (
+                <span className="absolute -right-4 -top-2">
+                  <UnreadMessageBadge />
+                </span>
+              )}
             </span>
             {item.label}
           </Link>

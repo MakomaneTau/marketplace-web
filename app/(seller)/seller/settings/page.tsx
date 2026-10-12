@@ -5,10 +5,26 @@ import { type FormEvent, useEffect, useState } from "react";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { OnboardingHelpButton } from "@/components/onboarding/onboarding-help-button";
 import { SectionHeading } from "@/components/seller/section-heading";
-import { apiErrorMessage, apiRequest, notifySellerDataChanged, SESSION_ERROR_MESSAGE } from "@/lib/api";
+import {
+  apiErrorMessage,
+  apiRequest,
+  notifySellerDataChanged,
+  SESSION_ERROR_MESSAGE,
+} from "@/lib/api";
 
-type Profile = { firstName: string; lastName: string; displayName: string; phone: string | null; verificationStatus: string };
-type Settings = { notify_new_orders: boolean; notify_new_messages: boolean; notify_listing_updates: boolean; notify_marketplace_tips: boolean };
+type Profile = {
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  phone: string | null;
+  verificationStatus: string;
+};
+type Settings = {
+  notify_new_orders: boolean;
+  notify_new_messages: boolean;
+  notify_listing_updates: boolean;
+  notify_marketplace_tips: boolean;
+};
 
 const labels: Record<keyof Settings, string> = {
   notify_new_orders: "New orders",
@@ -39,16 +55,18 @@ export default function SellerSettingsPage() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      setProfile(await apiRequest<Profile>("/profile", {
-        method: "PATCH",
-        auth: true,
-        body: JSON.stringify({
-          firstName: data.get("firstName"),
-          lastName: data.get("lastName"),
-          displayName: data.get("displayName"),
-          phone: data.get("phone") || null,
+      setProfile(
+        await apiRequest<Profile>("/profile", {
+          method: "PATCH",
+          auth: true,
+          body: JSON.stringify({
+            firstName: data.get("firstName"),
+            lastName: data.get("lastName"),
+            displayName: data.get("displayName"),
+            phone: data.get("phone") || null,
+          }),
         }),
-      }));
+      );
       notifySellerDataChanged();
       setMessage("Account saved.");
     } catch (requestError) {
@@ -61,18 +79,21 @@ export default function SellerSettingsPage() {
     const next = { ...settings, [key]: !settings[key] };
     setSettings(next);
     try {
-      setSettings(await apiRequest<Settings>("/settings", {
-        method: "PATCH",
-        auth: true,
-        body: JSON.stringify({ [key]: next[key] }),
-      }));
+      setSettings(
+        await apiRequest<Settings>("/settings", {
+          method: "PATCH",
+          auth: true,
+          body: JSON.stringify({ [key]: next[key] }),
+        }),
+      );
     } catch (requestError) {
       setSettings(settings);
       setError(apiErrorMessage(requestError));
     }
   }
 
-  if (error === SESSION_ERROR_MESSAGE) return <ProtectedRequestError message={error} />;
+  if (error === SESSION_ERROR_MESSAGE)
+    return <ProtectedRequestError message={error} />;
 
   return (
     <div className="space-y-6">
@@ -84,16 +105,44 @@ export default function SellerSettingsPage() {
       />
 
       {profile && (
-        <form key={profile.displayName} onSubmit={saveProfile} className="rounded-2xl border bg-white p-6 shadow-sm">
+        <form
+          key={profile.displayName}
+          onSubmit={saveProfile}
+          className="rounded-2xl border bg-white p-6 shadow-sm"
+        >
           <h2 className="font-bold">Seller account</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <input name="firstName" defaultValue={profile.firstName} placeholder="First name" className="rounded-xl border px-4 py-3" />
-            <input name="lastName" defaultValue={profile.lastName} placeholder="Last name" className="rounded-xl border px-4 py-3" />
-            <input name="displayName" defaultValue={profile.displayName} placeholder="Display name" className="rounded-xl border px-4 py-3" />
-            <input name="phone" defaultValue={profile.phone || ""} placeholder="Phone" className="rounded-xl border px-4 py-3" />
+            <input
+              name="firstName"
+              defaultValue={profile.firstName}
+              placeholder="First name"
+              className="rounded-xl border px-4 py-3"
+            />
+            <input
+              name="lastName"
+              defaultValue={profile.lastName}
+              placeholder="Last name"
+              className="rounded-xl border px-4 py-3"
+            />
+            <input
+              name="displayName"
+              defaultValue={profile.displayName}
+              placeholder="Display name"
+              className="rounded-xl border px-4 py-3"
+            />
+            <input
+              name="phone"
+              defaultValue={profile.phone || ""}
+              placeholder="Phone"
+              className="rounded-xl border px-4 py-3"
+            />
           </div>
-          <button className="mt-5 rounded-xl bg-violet-700 px-4 py-2.5 font-semibold text-white">Save account</button>
-          <p className="mt-3 text-xs text-slate-500">Verification: {profile.verificationStatus}</p>
+          <button className="mt-5 rounded-xl bg-violet-700 px-4 py-2.5 font-semibold text-white">
+            Save account
+          </button>
+          <p className="mt-3 text-xs text-slate-500">
+            Verification: {profile.verificationStatus}
+          </p>
         </form>
       )}
 
@@ -104,7 +153,12 @@ export default function SellerSettingsPage() {
             {(Object.keys(labels) as (keyof Settings)[]).map((key) => (
               <label key={key} className="flex justify-between py-4">
                 <span>{labels[key]}</span>
-                <input type="checkbox" checked={settings[key]} onChange={() => toggle(key)} className="h-5 w-5 accent-violet-700" />
+                <input
+                  type="checkbox"
+                  checked={settings[key]}
+                  onChange={() => toggle(key)}
+                  className="h-5 w-5 accent-violet-700"
+                />
               </label>
             ))}
           </div>
@@ -112,7 +166,11 @@ export default function SellerSettingsPage() {
       )}
 
       {message && <p className="text-emerald-700">{message}</p>}
-      {error && <p role="alert" className="text-red-700">{error}</p>}
+      {error && (
+        <p role="alert" className="text-red-700">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

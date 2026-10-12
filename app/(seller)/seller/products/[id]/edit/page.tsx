@@ -5,7 +5,9 @@ type EditSellerProductPageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default async function EditSellerProductPage({ params }: EditSellerProductPageProps) {
+export default async function EditSellerProductPage({
+  params,
+}: EditSellerProductPageProps) {
   const { id } = await params;
 
   return (

@@ -1,6 +1,15 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { usePathname } from "next/navigation";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -20,7 +29,13 @@ export function useOnboarding() {
   return useContext(OnboardingContext);
 }
 
-export function OnboardingProvider({ children, role }: { children: ReactNode; role: OnboardingRole }) {
+export function OnboardingProvider({
+  children,
+  role,
+}: {
+  children: ReactNode;
+  role: OnboardingRole;
+}) {
   const pathname = usePathname();
   const { auth, ready } = useAuth();
   const [state, setState] = useState<OnboardingState | null>(null);
@@ -38,7 +53,9 @@ export function OnboardingProvider({ children, role }: { children: ReactNode; ro
     setLoading(true);
     setError(null);
     try {
-      const next = await apiRequest<OnboardingState>("/onboarding", { auth: true });
+      const next = await apiRequest<OnboardingState>("/onboarding", {
+        auth: true,
+      });
       setState(next);
       if (initializedUser.current !== auth.user.id) {
         initializedUser.current = auth.user.id;
@@ -57,24 +74,27 @@ export function OnboardingProvider({ children, role }: { children: ReactNode; ro
     return () => window.clearTimeout(timeout);
   }, [load, pathname]);
 
-  const update = useCallback(async (input: { welcomeSeen?: true; dismissed?: boolean }) => {
-    setSaving(true);
-    setError(null);
-    try {
-      const next = await apiRequest<OnboardingState>("/onboarding", {
-        method: "PATCH",
-        auth: true,
-        body: JSON.stringify(input),
-      });
-      setState(next);
-      return true;
-    } catch (updateError) {
-      setError(apiErrorMessage(updateError));
-      return false;
-    } finally {
-      setSaving(false);
-    }
-  }, []);
+  const update = useCallback(
+    async (input: { welcomeSeen?: true; dismissed?: boolean }) => {
+      setSaving(true);
+      setError(null);
+      try {
+        const next = await apiRequest<OnboardingState>("/onboarding", {
+          method: "PATCH",
+          auth: true,
+          body: JSON.stringify(input),
+        });
+        setState(next);
+        return true;
+      } catch (updateError) {
+        setError(apiErrorMessage(updateError));
+        return false;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [],
+  );
 
   const open = useCallback(() => {
     setWelcomeOpen(false);
@@ -82,7 +102,10 @@ export function OnboardingProvider({ children, role }: { children: ReactNode; ro
     if (state?.dismissed) void update({ dismissed: false });
   }, [state?.dismissed, update]);
 
-  const contextValue = useMemo(() => ({ open, refresh: () => void load() }), [load, open]);
+  const contextValue = useMemo(
+    () => ({ open, refresh: () => void load() }),
+    [load, open],
+  );
 
   return (
     <OnboardingContext.Provider value={contextValue}>

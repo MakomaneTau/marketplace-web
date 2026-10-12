@@ -4,7 +4,10 @@ import { PackageOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { apiPublic } from "@/lib/api";
-import { categories as localCategories, getCategoryBySlug } from "@/data/categories";
+import {
+  categories as localCategories,
+  getCategoryBySlug,
+} from "@/data/categories";
 import type { ApiCategory } from "@/lib/catalog";
 
 const HOME_CATEGORY_LIMIT = 6;
@@ -21,10 +24,14 @@ const fallbackCategories: ApiCategory[] = localCategories
   }));
 
 export function CategoryList() {
-  const [categories,setCategories]=useState<ApiCategory[]>(fallbackCategories);
-  useEffect(()=>{apiPublic<ApiCategory[]>("/categories?featured=true").then(setCategories).catch(()=>setCategories(fallbackCategories));},[]);
-  const homeCategories = categories
-    .slice(0, HOME_CATEGORY_LIMIT);
+  const [categories, setCategories] =
+    useState<ApiCategory[]>(fallbackCategories);
+  useEffect(() => {
+    apiPublic<ApiCategory[]>("/categories?featured=true")
+      .then(setCategories)
+      .catch(() => setCategories(fallbackCategories));
+  }, []);
+  const homeCategories = categories.slice(0, HOME_CATEGORY_LIMIT);
 
   return (
     <div className="grid grid-cols-3 overflow-hidden rounded-card border border-border bg-surface sm:grid-cols-6">

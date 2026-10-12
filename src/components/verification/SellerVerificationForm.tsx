@@ -1,16 +1,8 @@
 "use client";
 
-import {
-  type FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  CheckCircle2,
-  ShieldCheck,
-} from "lucide-react";
-
+import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { Button } from "@/components/ui/Button";
@@ -19,47 +11,48 @@ import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
 import { ImageUploadField } from "./ImageUploadField";
 
 export function SellerVerificationForm() {
-  const [current, setCurrent] = useState<{ status: "pending" | "verified" | "rejected"; rejectionReason: string | null } | null>(null);
+  const [current, setCurrent] = useState<{
+    status: "pending" | "verified" | "rejected";
+    rejectionReason: string | null;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selfie, setSelfie] =
-    useState<File | null>(null);
+  const [selfie, setSelfie] = useState<File | null>(null);
 
-  const [sellerId, setSellerId] =
-    useState<File | null>(null);
+  const [sellerId, setSellerId] = useState<File | null>(null);
 
-  const [error, setError] =
-    useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let active = true;
     apiRequest<typeof current>("/verifications/seller", { auth: true })
-      .then((result) => { if (active) setCurrent(result); })
-      .catch((requestError) => { if (active) setError(apiErrorMessage(requestError)); })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+      .then((result) => {
+        if (active) setCurrent(result);
+      })
+      .catch((requestError) => {
+        if (active) setError(apiErrorMessage(requestError));
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setError(null);
 
     if (!selfie) {
-      setError(
-        "Please upload a clear photo of yourself.",
-      );
+      setError("Please upload a clear photo of yourself.");
       return;
     }
 
     if (!sellerId) {
-      setError(
-        "Please upload your ID card.",
-      );
+      setError("Please upload your ID card.");
       return;
     }
 
@@ -68,17 +61,15 @@ export function SellerVerificationForm() {
 
       const formData = new FormData();
 
-      formData.append(
-        "selfie",
-        selfie,
-      );
+      formData.append("selfie", selfie);
 
-      formData.append(
-        "sellerId",
-        sellerId,
-      );
+      formData.append("sellerId", sellerId);
 
-      await apiRequest("/verifications/seller", { method: "POST", auth: true, body: formData });
+      await apiRequest("/verifications/seller", {
+        method: "POST",
+        auth: true,
+        body: formData,
+      });
       setCurrent({ status: "pending", rejectionReason: null });
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
@@ -87,8 +78,14 @@ export function SellerVerificationForm() {
     }
   }
 
-  if (loading) return <p role="status" className="text-sm text-muted">Checking verification status...</p>;
-  if (error === SESSION_ERROR_MESSAGE) return <ProtectedRequestError message={error} />;
+  if (loading)
+    return (
+      <p role="status" className="text-sm text-muted">
+        Checking verification status...
+      </p>
+    );
+  if (error === SESSION_ERROR_MESSAGE)
+    return <ProtectedRequestError message={error} />;
 
   if (current?.status === "pending" || current?.status === "verified") {
     return (
@@ -118,29 +115,53 @@ export function SellerVerificationForm() {
         </div>
 
         <h2 className="mt-4 text-xl font-bold text-foreground">
-          {current.status === "verified" ? "Verification approved" : "Verification submitted"}
+          {current.status === "verified"
+            ? "Verification approved"
+            : "Verification submitted"}
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          {current.status === "verified" ? "An admin has approved your seller account." : "Your documents are waiting for admin review. You can continue selling during your seven-day grace period; after that, new sales pause until approval."}
+          {current.status === "verified"
+            ? "An admin has approved your seller account."
+            : "Your documents are waiting for admin review. You can continue selling during your seven-day grace period; after that, new sales pause until approval."}
         </p>
 
-        <Link href="/seller" className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary px-5 font-semibold text-white">Back to seller centre</Link>
+        <Link
+          href="/seller"
+          className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary px-5 font-semibold text-white"
+        >
+          Back to seller centre
+        </Link>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-8"
-    >
-      {current?.status === "rejected" && <section aria-labelledby="verification-feedback-title" className="rounded-card border border-danger/25 bg-red-50 p-4 sm:p-5">
-        <h2 id="verification-feedback-title" className="font-bold text-foreground">Your last submission was rejected</h2>
-        <p className="mt-2 text-sm font-semibold text-foreground">Admin feedback</p>
-        <blockquote className="mt-1 whitespace-pre-wrap break-words rounded-control border border-danger/20 bg-surface p-3 text-sm leading-6 text-foreground">{current.rejectionReason || "No reason was provided. Review the document requirements before resubmitting."}</blockquote>
-        <p className="mt-3 text-sm leading-6 text-foreground">Use this feedback when preparing your new photos. Both images need to be uploaded again for admin review.</p>
-      </section>}
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {current?.status === "rejected" && (
+        <section
+          aria-labelledby="verification-feedback-title"
+          className="rounded-card border border-danger/25 bg-red-50 p-4 sm:p-5"
+        >
+          <h2
+            id="verification-feedback-title"
+            className="font-bold text-foreground"
+          >
+            Your last submission was rejected
+          </h2>
+          <p className="mt-2 text-sm font-semibold text-foreground">
+            Admin feedback
+          </p>
+          <blockquote className="mt-1 whitespace-pre-wrap break-words rounded-control border border-danger/20 bg-surface p-3 text-sm leading-6 text-foreground">
+            {current.rejectionReason ||
+              "No reason was provided. Review the document requirements before resubmitting."}
+          </blockquote>
+          <p className="mt-3 text-sm leading-6 text-foreground">
+            Use this feedback when preparing your new photos. Both images need
+            to be uploaded again for admin review.
+          </p>
+        </section>
+      )}
       {/* Security notice */}
 
       <div
@@ -169,8 +190,8 @@ export function SellerVerificationForm() {
           </p>
 
           <p className="mt-1 text-xs leading-5 text-muted">
-            These images are used to help verify
-            that you are an eligible vendor.
+            These images are used to help verify that you are an eligible
+            vendor.
           </p>
         </div>
       </div>
@@ -221,20 +242,13 @@ export function SellerVerificationForm() {
         type="submit"
         size="lg"
         fullWidth
-        disabled={
-          isSubmitting ||
-          !selfie ||
-          !sellerId
-        }
+        disabled={isSubmitting || !selfie || !sellerId}
       >
-        {isSubmitting
-          ? "Uploading..."
-          : "Submit verification"}
+        {isSubmitting ? "Uploading..." : "Submit verification"}
       </Button>
 
       <p className="text-center text-xs leading-5 text-muted">
-        Make sure both images are clear before
-        submitting.
+        Make sure both images are clear before submitting.
       </p>
     </form>
   );

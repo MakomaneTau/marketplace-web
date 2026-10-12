@@ -16,9 +16,7 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<RootLayoutProps>) {
+export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className="font-sans antialiased">

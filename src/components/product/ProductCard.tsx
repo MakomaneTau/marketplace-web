@@ -19,7 +19,9 @@ interface ProductCardProps {
 export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
   const [isFavourite, setIsFavourite] = useState(Boolean(product.isFavourite));
   const [imageFailed, setImageFailed] = useState(false);
-  const imageSrc = imageFailed ? "/images/product-placeholder.svg" : product.imageUrl;
+  const imageSrc = imageFailed
+    ? "/images/product-placeholder.svg"
+    : product.imageUrl;
   const isRemoteImage = /^https?:\/\//.test(imageSrc);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,9 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
     } catch (requestError: unknown) {
       setIsFavourite(!nextValue);
       setError(apiErrorMessage(requestError));
-      setSignInRequired(requestError instanceof ApiClientError && requestError.status === 401);
+      setSignInRequired(
+        requestError instanceof ApiClientError && requestError.status === 401,
+      );
     } finally {
       setBusy(false);
     }
@@ -74,13 +78,20 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
 
         <button
           type="button"
-          aria-label={isFavourite ? `Remove ${product.name} from favourites` : `Add ${product.name} to favourites`}
+          aria-label={
+            isFavourite
+              ? `Remove ${product.name} from favourites`
+              : `Add ${product.name} to favourites`
+          }
           aria-pressed={isFavourite}
           onClick={toggleFavourite}
           disabled={busy || !ready}
           className="absolute right-2 top-2 flex size-10 items-center justify-center rounded-full border border-black/5 bg-white/95 text-foreground shadow-sm backdrop-blur transition hover:text-primary"
         >
-          <Heart className="size-5" fill={isFavourite ? "currentColor" : "none"} />
+          <Heart
+            className="size-5"
+            fill={isFavourite ? "currentColor" : "none"}
+          />
         </button>
       </div>
 
@@ -90,8 +101,12 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
             <p>{error}</p>
             {signInRequired && (
               <div className="mt-1 flex flex-wrap gap-3">
-                <Link href="/login" className="underline">Sign in</Link>
-                <Link href="/" className="underline">Back to marketplace</Link>
+                <Link href="/login" className="underline">
+                  Sign in
+                </Link>
+                <Link href="/" className="underline">
+                  Back to marketplace
+                </Link>
               </div>
             )}
           </div>
@@ -101,9 +116,14 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
             {product.name}
           </h3>
         </Link>
-        <p className="mt-1 text-lg font-black text-foreground">{formatZAR(product.price)}</p>
+        <p className="mt-1 text-lg font-black text-foreground">
+          {formatZAR(product.price)}
+        </p>
         <div className="mt-2 flex min-w-0 items-center gap-1 text-xs text-muted">
-          <MapPin className="size-3.5 shrink-0 text-primary" aria-hidden="true" />
+          <MapPin
+            className="size-3.5 shrink-0 text-primary"
+            aria-hidden="true"
+          />
           <span className="truncate">{product.location}</span>
           <span aria-hidden="true">/</span>
           <span className="shrink-0">{product.condition}</span>

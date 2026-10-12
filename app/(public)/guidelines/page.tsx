@@ -5,7 +5,8 @@ import { InformationPage } from "@/components/content/InformationPage";
 
 export const metadata: Metadata = {
   title: "Community guidelines",
-  description: "Rules for respectful and safe participation in the student marketplace.",
+  description:
+    "Rules for respectful and safe participation in the student marketplace.",
 };
 
 const sections = [

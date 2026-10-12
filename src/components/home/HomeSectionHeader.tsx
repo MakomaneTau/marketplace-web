@@ -35,9 +35,7 @@ export function HomeSectionHeader({
         </h2>
 
         {description && (
-          <p className="mt-1 text-sm text-muted">
-            {description}
-          </p>
+          <p className="mt-1 text-sm text-muted">{description}</p>
         )}
       </div>
 
@@ -55,7 +53,6 @@ export function HomeSectionHeader({
           "
         >
           See all
-
           <ChevronRight className="size-4" />
         </Link>
       )}

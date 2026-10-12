@@ -41,4 +41,8 @@ export type SellerVerification = {
   reviewedAt: string | null;
 };
 
-export type PageResult<T, K extends string> = { total: number; page: number; limit: number } & Record<K, T[]>;
+export type PageResult<T, K extends string> = {
+  total: number;
+  page: number;
+  limit: number;
+} & Record<K, T[]>;

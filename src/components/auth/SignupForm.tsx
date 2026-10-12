@@ -3,7 +3,17 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LockKeyhole, Mail, MailCheck, RotateCcw, ShoppingBag, Store, UserPlus, UserRound, type LucideIcon } from "lucide-react";
+import {
+  LockKeyhole,
+  Mail,
+  MailCheck,
+  RotateCcw,
+  ShoppingBag,
+  Store,
+  UserPlus,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -11,7 +21,11 @@ import { apiErrorMessage, apiPublic, signup } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/types/auth";
 
-interface UniversityOption { id: string; name: string; slug: string }
+interface UniversityOption {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 export function SignupForm() {
   const router = useRouter();
@@ -21,7 +35,9 @@ export function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [error, setError] = useState<string | null>(null);
-  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(
+    null,
+  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [universities, setUniversities] = useState<UniversityOption[]>([]);
@@ -96,15 +112,36 @@ export function SignupForm() {
     }
   }
 
-  if (confirmationEmail) return (
-    <section role="status" aria-live="polite" className="space-y-5 text-center">
-      <MailCheck className="mx-auto size-12 text-primary" aria-hidden="true" />
-      <h2 className="text-2xl font-bold">Check your email</h2>
-      <p>Check <strong className="break-all">{confirmationEmail}</strong> for your verification email. Follow the link to confirm your email address, then return here to sign in.</p>
-      <p className="text-sm text-muted">{"You aren't signed in yet. If the email hasn't arrived, check your spam folder and allow a few minutes."}</p>
-      <Link href="/login" className="inline-flex h-11 items-center rounded-control bg-primary px-6 text-sm font-semibold text-white hover:bg-primary-hover">Continue to sign in</Link>
-    </section>
-  );
+  if (confirmationEmail)
+    return (
+      <section
+        role="status"
+        aria-live="polite"
+        className="space-y-5 text-center"
+      >
+        <MailCheck
+          className="mx-auto size-12 text-primary"
+          aria-hidden="true"
+        />
+        <h2 className="text-2xl font-bold">Check your email</h2>
+        <p>
+          Check <strong className="break-all">{confirmationEmail}</strong> for
+          your verification email. Follow the link to confirm your email
+          address, then return here to sign in.
+        </p>
+        <p className="text-sm text-muted">
+          {
+            "You aren't signed in yet. If the email hasn't arrived, check your spam folder and allow a few minutes."
+          }
+        </p>
+        <Link
+          href="/login"
+          className="inline-flex h-11 items-center rounded-control bg-primary px-6 text-sm font-semibold text-white hover:bg-primary-hover"
+        >
+          Continue to sign in
+        </Link>
+      </section>
+    );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -178,33 +215,35 @@ export function SignupForm() {
           STUDENT INFORMATION
       ======================================== */}
 
-        <div className="space-y-4 border-t border-border pt-6">
-          <div>
-            <h2 className="text-sm font-semibold text-foreground">
-              Your university
-            </h2>
+      <div className="space-y-4 border-t border-border pt-6">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">
+            Your university
+          </h2>
 
-            <p className="mt-1 text-xs text-muted">
-              {isBuyer ? "Choose your university to help us show relevant items in your area." : "Optionally select a university near your shop."}
-            </p>
-          </div>
+          <p className="mt-1 text-xs text-muted">
+            {isBuyer
+              ? "Choose your university to help us show relevant items in your area."
+              : "Optionally select a university near your shop."}
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="university"
-                className="mb-1.5 block text-sm font-medium text-foreground"
-              >
-                University{!isBuyer && " (optional)"}
-              </label>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label
+              htmlFor="university"
+              className="mb-1.5 block text-sm font-medium text-foreground"
+            >
+              University{!isBuyer && " (optional)"}
+            </label>
 
-              <select
-                id="university"
-                name="university"
-                required={isBuyer}
-                defaultValue=""
-                disabled={universitiesLoading || Boolean(universityError)}
-                className="
+            <select
+              id="university"
+              name="university"
+              required={isBuyer}
+              defaultValue=""
+              disabled={universitiesLoading || Boolean(universityError)}
+              className="
                   h-11
                   w-full
                   rounded-control
@@ -221,25 +260,39 @@ export function SignupForm() {
                   disabled:cursor-not-allowed
                   disabled:bg-surface-muted
                 "
-              >
-                <option value="" disabled={isBuyer}>
-                  {universitiesLoading ? "Loading universities..." : universityError ? "Universities unavailable" : "Select university"}
+            >
+              <option value="" disabled={isBuyer}>
+                {universitiesLoading
+                  ? "Loading universities..."
+                  : universityError
+                    ? "Universities unavailable"
+                    : "Select university"}
+              </option>
+
+              {universities.map((university) => (
+                <option key={university.id} value={university.slug}>
+                  {university.name}
                 </option>
-
-                {universities.map((university) => <option key={university.id} value={university.slug}>{university.name}</option>)}
-              </select>
-              {universityError && (
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-                  <p role="alert" className="text-danger">{universityError}</p>
-                  <button type="button" onClick={() => void retryUniversities()} className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
-                    <RotateCcw className="size-3.5" aria-hidden="true" />Retry
-                  </button>
-                </div>
-              )}
-            </div>
-
+              ))}
+            </select>
+            {universityError && (
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <p role="alert" className="text-danger">
+                  {universityError}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void retryUniversities()}
+                  className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                >
+                  <RotateCcw className="size-3.5" aria-hidden="true" />
+                  Retry
+                </button>
+              </div>
+            )}
           </div>
         </div>
+      </div>
 
       {/* ========================================
           PASSWORD
@@ -283,7 +336,10 @@ export function SignupForm() {
 
         <span className="text-sm leading-5 text-muted">
           I agree to the{" "}
-          <Link href="/terms" className="font-medium text-primary hover:underline">
+          <Link
+            href="/terms"
+            className="font-medium text-primary hover:underline"
+          >
             Terms of Service
           </Link>{" "}
           and{" "}
@@ -323,7 +379,15 @@ export function SignupForm() {
           SUBMIT
       ======================================== */}
 
-      <Button type="submit" size="lg" fullWidth disabled={isSubmitting || (isBuyer && (universitiesLoading || Boolean(universityError)))}>
+      <Button
+        type="submit"
+        size="lg"
+        fullWidth
+        disabled={
+          isSubmitting ||
+          (isBuyer && (universitiesLoading || Boolean(universityError)))
+        }
+      >
         <UserPlus className="size-5" aria-hidden="true" />
         {isSubmitting ? "Creating account..." : "Create account"}
       </Button>
@@ -366,9 +430,22 @@ function RoleButton({
       )}
     >
       <span className="flex items-start gap-3">
-        <Icon className={cn("mt-0.5 size-5 shrink-0", selected ? "text-primary" : "text-muted")} aria-hidden="true" />
+        <Icon
+          className={cn(
+            "mt-0.5 size-5 shrink-0",
+            selected ? "text-primary" : "text-muted",
+          )}
+          aria-hidden="true"
+        />
         <span>
-          <span className={cn("block text-sm font-semibold", selected ? "text-primary" : "text-foreground")}>{title}</span>
+          <span
+            className={cn(
+              "block text-sm font-semibold",
+              selected ? "text-primary" : "text-foreground",
+            )}
+          >
+            {title}
+          </span>
           <span className="mt-1 block text-xs text-muted">{description}</span>
         </span>
       </span>

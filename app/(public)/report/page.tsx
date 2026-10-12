@@ -36,24 +36,36 @@ const sections = [
   },
 ];
 
-export default async function ReportPage({ searchParams }: { searchParams: Promise<{ product?: string }> }) {
+export default async function ReportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ product?: string }>;
+}) {
   const { product } = await searchParams;
-  const productId = product && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(product) ? product : undefined;
+  const productId =
+    product &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      product,
+    )
+      ? product
+      : undefined;
   return (
     <>
-    <InformationPage
-      icon={AlertTriangle}
-      title="Report a problem"
-      description="Respond safely to suspicious activity, harmful conduct or technical problems."
-      notice="Reports should be factual and limited to information needed to understand the issue. Do not publish another person's private information."
-      sections={sections}
-      actions={[
-        { href: "/contact", label: "View support options" },
-        { href: "/safety", label: "Read safety guidance" },
-        { href: "/messages", label: "Review your messages" },
-      ]}
-    />
-    <div className="mx-auto w-full max-w-4xl px-4 pb-12 md:px-6"><ReportForm productId={productId} /></div>
+      <InformationPage
+        icon={AlertTriangle}
+        title="Report a problem"
+        description="Respond safely to suspicious activity, harmful conduct or technical problems."
+        notice="Reports should be factual and limited to information needed to understand the issue. Do not publish another person's private information."
+        sections={sections}
+        actions={[
+          { href: "/contact", label: "View support options" },
+          { href: "/safety", label: "Read safety guidance" },
+          { href: "/messages", label: "Review your messages" },
+        ]}
+      />
+      <div className="mx-auto w-full max-w-4xl px-4 pb-12 md:px-6">
+        <ReportForm productId={productId} />
+      </div>
     </>
   );
 }

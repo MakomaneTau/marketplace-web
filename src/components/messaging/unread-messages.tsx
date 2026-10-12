@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { apiRequest } from "@/lib/api";
 
@@ -20,7 +26,10 @@ export function UnreadMessagesProvider({ children }: { children: ReactNode }) {
       if (document.visibilityState !== "visible") return;
       const current = ++sequence;
       try {
-        const result = await apiRequest<{ count: number }>("/conversations/unread-count", { auth: true });
+        const result = await apiRequest<{ count: number }>(
+          "/conversations/unread-count",
+          { auth: true },
+        );
         if (active && current === sequence) setCount(result.count);
       } catch {
         if (active && current === sequence) setCount(null);
@@ -37,11 +46,20 @@ export function UnreadMessagesProvider({ children }: { children: ReactNode }) {
       document.removeEventListener("visibilitychange", refresh);
     };
   }, []);
-  return <UnreadContext.Provider value={count}>{children}</UnreadContext.Provider>;
+  return (
+    <UnreadContext.Provider value={count}>{children}</UnreadContext.Provider>
+  );
 }
 
 export function UnreadMessageBadge() {
   const count = useUnreadMessages();
   if (!count) return null;
-  return <span aria-label={`${count} unread messages`} className="inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold leading-4 text-white">{count > 99 ? "99+" : count}</span>;
+  return (
+    <span
+      aria-label={`${count} unread messages`}
+      className="inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold leading-4 text-white"
+    >
+      {count > 99 ? "99+" : count}
+    </span>
+  );
 }

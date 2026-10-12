@@ -5,7 +5,8 @@ import { InformationPage } from "@/components/content/InformationPage";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
-  description: "How the marketplace handles account, listing and transaction information.",
+  description:
+    "How the marketplace handles account, listing and transaction information.",
 };
 
 const sections = [

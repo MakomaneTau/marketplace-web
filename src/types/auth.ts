@@ -6,16 +6,16 @@ export interface LoginFormData {
 }
 
 export interface SignupFormData {
-    firstName: string;
-    lastName:string;
-    email: string;
-    password:string;
-    confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 
-    roel : UserRole;
+  roel: UserRole;
 
-    isStudent: boolean;
+  isStudent: boolean;
 
-    university?: string;
-    studentNumber?: string;
+  university?: string;
+  studentNumber?: string;
 }

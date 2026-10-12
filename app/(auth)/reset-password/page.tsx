@@ -7,11 +7,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import {
-  ApiClientError,
-  apiErrorMessage,
-  resetPassword,
-} from "@/lib/api";
+import { ApiClientError, apiErrorMessage, resetPassword } from "@/lib/api";
 
 type RecoveryState =
   | { status: "checking" }
@@ -23,7 +19,9 @@ const INVALID_LINK_MESSAGE =
   "This password reset link is invalid or has expired. Request a new link to continue.";
 
 export default function ResetPasswordPage() {
-  const [recovery, setRecovery] = useState<RecoveryState>({ status: "checking" });
+  const [recovery, setRecovery] = useState<RecoveryState>({
+    status: "checking",
+  });
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +33,10 @@ export default function ResetPasswordPage() {
       const accessToken = parameters.get("access_token");
       const recoveryType = parameters.get("type");
       const expiresAt = Number(parameters.get("expires_at"));
-      const isExpired = Number.isFinite(expiresAt) && expiresAt > 0
-        ? expiresAt * 1000 <= Date.now()
-        : false;
+      const isExpired =
+        Number.isFinite(expiresAt) && expiresAt > 0
+          ? expiresAt * 1000 <= Date.now()
+          : false;
 
       if (recoveryType === "recovery" && accessToken && !isExpired) {
         setRecovery({ status: "ready", accessToken });
@@ -79,7 +78,10 @@ export default function ResetPasswordPage() {
       setConfirmPassword("");
       setRecovery({ status: "success" });
     } catch (requestError) {
-      if (requestError instanceof ApiClientError && requestError.status === 401) {
+      if (
+        requestError instanceof ApiClientError &&
+        requestError.status === 401
+      ) {
         window.history.replaceState(null, "", window.location.pathname);
         setRecovery({ status: "invalid" });
         setError(null);
@@ -109,7 +111,10 @@ export default function ResetPasswordPage() {
 
       {recovery.status === "invalid" && (
         <div className="space-y-5">
-          <p role="alert" className="rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger">
+          <p
+            role="alert"
+            className="rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger"
+          >
             {INVALID_LINK_MESSAGE}
           </p>
           <Link
@@ -150,7 +155,10 @@ export default function ResetPasswordPage() {
           />
 
           {error && (
-            <p role="alert" className="rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger">
+            <p
+              role="alert"
+              className="rounded-control border border-danger/20 bg-red-50 px-4 py-3 text-sm text-danger"
+            >
               {error}
             </p>
           )}
@@ -163,8 +171,12 @@ export default function ResetPasswordPage() {
 
       {recovery.status === "success" && (
         <div className="space-y-5">
-          <p role="status" className="rounded-control border border-secondary/20 bg-secondary-soft px-4 py-3 text-sm text-secondary">
-            Your password has been updated successfully. You can now sign in with your new password.
+          <p
+            role="status"
+            className="rounded-control border border-secondary/20 bg-secondary-soft px-4 py-3 text-sm text-secondary"
+          >
+            Your password has been updated successfully. You can now sign in
+            with your new password.
           </p>
           <Link
             href="/login"

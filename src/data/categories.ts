@@ -27,8 +27,7 @@ export const categories: Category[] = [
   {
     name: "Textbooks",
     slug: "textbooks",
-    description:
-      "Academic books, study guides and course materials.",
+    description: "Academic books, study guides and course materials.",
     productCount: 126,
     icon: BookOpen,
     featured: true,
@@ -36,8 +35,7 @@ export const categories: Category[] = [
   {
     name: "Laptops",
     slug: "laptops",
-    description:
-      "Laptops, chargers, computer accessories and parts.",
+    description: "Laptops, chargers, computer accessories and parts.",
     productCount: 48,
     icon: Laptop,
     featured: true,
@@ -45,8 +43,7 @@ export const categories: Category[] = [
   {
     name: "Phones",
     slug: "phones",
-    description:
-      "Smartphones, phone cases, chargers and accessories.",
+    description: "Smartphones, phone cases, chargers and accessories.",
     productCount: 73,
     icon: Smartphone,
     featured: true,
@@ -54,8 +51,7 @@ export const categories: Category[] = [
   {
     name: "Calculators",
     slug: "calculators",
-    description:
-      "Scientific, financial and graphing calculators.",
+    description: "Scientific, financial and graphing calculators.",
     productCount: 41,
     icon: Calculator,
     featured: true,
@@ -63,16 +59,14 @@ export const categories: Category[] = [
   {
     name: "Furniture",
     slug: "furniture",
-    description:
-      "Desks, chairs, shelves and residence furniture.",
+    description: "Desks, chairs, shelves and residence furniture.",
     productCount: 52,
     icon: Armchair,
   },
   {
     name: "Clothing",
     slug: "clothing",
-    description:
-      "Everyday clothing, formal wear, shoes and accessories.",
+    description: "Everyday clothing, formal wear, shoes and accessories.",
     productCount: 89,
     icon: Shirt,
     featured: true,
@@ -80,16 +74,14 @@ export const categories: Category[] = [
   {
     name: "Gaming",
     slug: "gaming",
-    description:
-      "Consoles, games, controllers and gaming accessories.",
+    description: "Consoles, games, controllers and gaming accessories.",
     productCount: 35,
     icon: Gamepad2,
   },
   {
     name: "Audio",
     slug: "audio",
-    description:
-      "Headphones, speakers, microphones and audio equipment.",
+    description: "Headphones, speakers, microphones and audio equipment.",
     productCount: 44,
     icon: Headphones,
     featured: true,
@@ -97,41 +89,33 @@ export const categories: Category[] = [
   {
     name: "Sports",
     slug: "sports",
-    description:
-      "Sportswear, gym equipment and sporting accessories.",
+    description: "Sportswear, gym equipment and sporting accessories.",
     productCount: 31,
     icon: Dumbbell,
   },
   {
     name: "Transport",
     slug: "transport",
-    description:
-      "Bicycles, skateboards and student transport accessories.",
+    description: "Bicycles, skateboards and student transport accessories.",
     productCount: 18,
     icon: Bike,
   },
   {
     name: "Kitchen",
     slug: "kitchen",
-    description:
-      "Cookware, appliances and residence kitchen essentials.",
+    description: "Cookware, appliances and residence kitchen essentials.",
     productCount: 56,
     icon: Utensils,
   },
   {
     name: "Other",
     slug: "other",
-    description:
-      "Useful student items that do not fit another category.",
+    description: "Useful student items that do not fit another category.",
     productCount: 22,
     icon: PackageOpen,
   },
 ];
 
-export function getCategoryBySlug(
-  slug: string,
-): Category | undefined {
-  return categories.find(
-    (category) => category.slug === slug,
-  );
+export function getCategoryBySlug(slug: string): Category | undefined {
+  return categories.find((category) => category.slug === slug);
 }

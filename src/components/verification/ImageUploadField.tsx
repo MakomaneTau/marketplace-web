@@ -222,7 +222,9 @@ export function ImageUploadField({
             alt={`${title} preview`}
             fill
             unoptimized
-            sizes={variant === "square" ? "18rem" : "(max-width: 768px) 100vw, 50vw"}
+            sizes={
+              variant === "square" ? "18rem" : "(max-width: 768px) 100vw, 50vw"
+            }
             className="h-full w-full object-cover"
           />
 

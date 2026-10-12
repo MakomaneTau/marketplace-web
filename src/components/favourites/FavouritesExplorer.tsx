@@ -10,7 +10,9 @@ import { ApiClientError, apiErrorMessage, apiRequest } from "@/lib/api";
 import { mapProduct, type ApiProduct } from "@/lib/catalog";
 
 export function FavouritesExplorer() {
-  const [favourites, setFavourites] = useState<ReturnType<typeof mapProduct>[]>([]);
+  const [favourites, setFavourites] = useState<ReturnType<typeof mapProduct>[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [signInRequired, setSignInRequired] = useState(false);
@@ -21,12 +23,17 @@ export function FavouritesExplorer() {
     apiRequest<ApiProduct[]>("/favourites", { auth: true })
       .then((items) => {
         if (active) {
-          setFavourites(items.map((item) => ({ ...mapProduct(item), isFavourite: true })));
+          setFavourites(
+            items.map((item) => ({ ...mapProduct(item), isFavourite: true })),
+          );
         }
       })
       .catch((requestError: unknown) => {
         if (active) {
-          setSignInRequired(requestError instanceof ApiClientError && requestError.status === 401);
+          setSignInRequired(
+            requestError instanceof ApiClientError &&
+              requestError.status === 401,
+          );
           setError(apiErrorMessage(requestError));
         }
       })
@@ -43,12 +50,18 @@ export function FavouritesExplorer() {
 
   function handleFavouriteChange(productId: string, isFavourite: boolean) {
     if (!isFavourite) {
-      setFavourites((current) => current.filter((product) => product.id !== productId));
+      setFavourites((current) =>
+        current.filter((product) => product.id !== productId),
+      );
     }
   }
 
   if (loading) {
-    return <p className="py-12 text-center text-sm text-muted">Loading saved products...</p>;
+    return (
+      <p className="py-12 text-center text-sm text-muted">
+        Loading saved products...
+      </p>
+    );
   }
 
   if (error) {
@@ -60,7 +73,9 @@ export function FavouritesExplorer() {
       >
         <HeartOff className="size-8 text-danger" aria-hidden="true" />
         <h2 className="mt-4 text-lg font-semibold text-foreground">
-          {signInRequired ? "Sign in to view your favourites" : "Favourites could not be loaded"}
+          {signInRequired
+            ? "Sign in to view your favourites"
+            : "Favourites could not be loaded"}
         </h2>
         <p className="mt-2 max-w-md text-sm text-danger">{error}</p>
         {signInRequired && (
@@ -81,11 +96,16 @@ export function FavouritesExplorer() {
         <span className="flex size-14 items-center justify-center rounded-full bg-surface-muted text-muted">
           <HeartOff className="size-7" />
         </span>
-        <h2 className="mt-4 text-lg font-semibold text-foreground">No saved products</h2>
+        <h2 className="mt-4 text-lg font-semibold text-foreground">
+          No saved products
+        </h2>
         <p className="mt-1 max-w-md text-sm text-muted">
           Tap the heart on a product to save it here for later.
         </p>
-        <Link href="/search" className="mt-5 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover">
+        <Link
+          href="/search"
+          className="mt-5 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover"
+        >
           Browse products
         </Link>
       </div>
@@ -95,9 +115,13 @@ export function FavouritesExplorer() {
   return (
     <div>
       <p className="mb-5 text-sm text-muted">
-        {favourites.length} saved {favourites.length === 1 ? "product" : "products"}
+        {favourites.length} saved{" "}
+        {favourites.length === 1 ? "product" : "products"}
       </p>
-      <ProductGrid products={favourites} onFavouriteChange={handleFavouriteChange} />
+      <ProductGrid
+        products={favourites}
+        onFavouriteChange={handleFavouriteChange}
+      />
     </div>
   );
 }

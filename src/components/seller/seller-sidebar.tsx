@@ -35,7 +35,10 @@ type SellerSidebarProps = {
 
 export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
   const pathname = usePathname();
-  const [shopHealth, setShopHealth] = useState<{ percentage: number; hasShop: boolean } | null>(null);
+  const [shopHealth, setShopHealth] = useState<{
+    percentage: number;
+    hasShop: boolean;
+  } | null>(null);
 
   useEffect(() => {
     const loadShopHealth = () => {
@@ -46,11 +49,23 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
         logo_url: string | null;
         banner_url: string | null;
         pickup_areas: unknown[];
-      } | null>("/seller/shop", { auth: true }).then((shop) => {
-        if (!shop) return setShopHealth({ percentage: 0, hasShop: false });
-        const completed = [shop.name, shop.tagline, shop.description, shop.logo_url, shop.banner_url, shop.pickup_areas.length > 0].filter(Boolean).length;
-        setShopHealth({ percentage: Math.round(completed / 6 * 100), hasShop: true });
-      }).catch(() => setShopHealth(null));
+      } | null>("/seller/shop", { auth: true })
+        .then((shop) => {
+          if (!shop) return setShopHealth({ percentage: 0, hasShop: false });
+          const completed = [
+            shop.name,
+            shop.tagline,
+            shop.description,
+            shop.logo_url,
+            shop.banner_url,
+            shop.pickup_areas.length > 0,
+          ].filter(Boolean).length;
+          setShopHealth({
+            percentage: Math.round((completed / 6) * 100),
+            hasShop: true,
+          });
+        })
+        .catch(() => setShopHealth(null));
     };
     loadShopHealth();
     window.addEventListener(SELLER_DATA_EVENT, loadShopHealth);
@@ -65,13 +80,21 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
       )}
     >
       <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5">
-        <Link href="/seller" className="flex items-center gap-2.5" onClick={onClose}>
+        <Link
+          href="/seller"
+          className="flex items-center gap-2.5"
+          onClick={onClose}
+        >
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-sm font-black text-white">
             M
           </span>
           <span>
-            <span className="block text-sm font-black tracking-tight text-slate-950">MarketPal</span>
-            <span className="block text-[11px] font-medium text-slate-500">Seller centre</span>
+            <span className="block text-sm font-black tracking-tight text-slate-950">
+              MarketPal
+            </span>
+            <span className="block text-[11px] font-medium text-slate-500">
+              Seller centre
+            </span>
           </span>
         </Link>
         {mobile && (
@@ -89,7 +112,9 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
       <nav className="flex-1 space-y-1 p-3" aria-label="Seller navigation">
         {navigation.map((item) => {
           const isOverview = item.href === "/seller";
-          const active = isOverview ? pathname === item.href : pathname.startsWith(item.href);
+          const active = isOverview
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
           const Icon = item.icon;
 
           return (
@@ -105,24 +130,37 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
               )}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
-              {item.label}{item.href === "/seller/messages" && <UnreadMessageBadge />}
+              {item.label}
+              {item.href === "/seller/messages" && <UnreadMessageBadge />}
             </Link>
           );
         })}
       </nav>
 
-      {shopHealth && shopHealth.percentage < 100 && <div className="border-t border-slate-200 p-4">
-        <div className="rounded-lg bg-slate-950 p-4 text-white">
-          <p className="text-xs font-semibold text-blue-200">Store health</p>
-          <p className="mt-1 text-sm font-bold">{shopHealth.hasShop ? `Your shop is ${shopHealth.percentage}% complete` : "Create your shop profile"}</p>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15">
-            <div className="h-full rounded-full bg-blue-400 transition-[width]" style={{ width: `${shopHealth.percentage}%` }} />
+      {shopHealth && shopHealth.percentage < 100 && (
+        <div className="border-t border-slate-200 p-4">
+          <div className="rounded-lg bg-slate-950 p-4 text-white">
+            <p className="text-xs font-semibold text-blue-200">Store health</p>
+            <p className="mt-1 text-sm font-bold">
+              {shopHealth.hasShop
+                ? `Your shop is ${shopHealth.percentage}% complete`
+                : "Create your shop profile"}
+            </p>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15">
+              <div
+                className="h-full rounded-full bg-blue-400 transition-[width]"
+                style={{ width: `${shopHealth.percentage}%` }}
+              />
+            </div>
+            <Link
+              href="/seller/shop"
+              className="mt-3 inline-block text-xs font-semibold text-white underline"
+            >
+              {shopHealth.hasShop ? "Complete shop profile" : "Set up shop"}
+            </Link>
           </div>
-          <Link href="/seller/shop" className="mt-3 inline-block text-xs font-semibold text-white underline">
-            {shopHealth.hasShop ? "Complete shop profile" : "Set up shop"}
-          </Link>
         </div>
-      </div>}
+      )}
     </aside>
   );
 }

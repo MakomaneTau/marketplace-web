@@ -1,5 +1,12 @@
 import Image from "next/image";
-import { ArrowRight, Leaf, MapPin, Search, ShieldCheck, UsersRound } from "lucide-react";
+import {
+  ArrowRight,
+  Leaf,
+  MapPin,
+  Search,
+  ShieldCheck,
+  UsersRound,
+} from "lucide-react";
 
 export function HeroSection() {
   return (
@@ -11,17 +18,27 @@ export function HeroSection() {
         </p>
 
         <h1 className="mt-4 max-w-xl text-4xl font-black leading-[1.04] text-foreground sm:text-5xl lg:text-6xl">
-          Find it nearby.<br />Buy it safely.
+          Find it nearby.
+          <br />
+          Buy it safely.
         </h1>
 
         <p className="hero-mobile-bound mt-5 w-full break-words text-base leading-7 text-muted sm:text-lg">
-          Second-hand goods from students at your campus. Real finds, real people, fewer delivery headaches.
+          Second-hand goods from students at your campus. Real finds, real
+          people, fewer delivery headaches.
         </p>
 
-        <form role="search" action="/search" className="hero-mobile-bound mt-7 flex w-full min-w-0 flex-col gap-2 sm:flex-row">
+        <form
+          role="search"
+          action="/search"
+          className="hero-mobile-bound mt-7 flex w-full min-w-0 flex-col gap-2 sm:flex-row"
+        >
           <label className="relative min-w-0 flex-1">
             <span className="sr-only">Search marketplace</span>
-            <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden="true" />
+            <Search
+              className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted"
+              aria-hidden="true"
+            />
             <input
               name="q"
               type="search"
@@ -29,15 +46,28 @@ export function HeroSection() {
               className="h-12 w-full rounded-control border border-border-strong bg-white pl-10 pr-4 text-sm text-foreground outline-none placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </label>
-          <button type="submit" className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover">
-            Search marketplace <ArrowRight className="size-4" aria-hidden="true" />
+          <button
+            type="submit"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover"
+          >
+            Search marketplace{" "}
+            <ArrowRight className="size-4" aria-hidden="true" />
           </button>
         </form>
 
         <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-muted sm:text-sm">
-          <span className="flex items-center gap-1.5"><ShieldCheck className="size-4 text-secondary" aria-hidden="true" />Student verified</span>
-          <span className="flex items-center gap-1.5"><UsersRound className="size-4 text-secondary" aria-hidden="true" />Same campus or nearby</span>
-          <span className="flex items-center gap-1.5"><Leaf className="size-4 text-secondary" aria-hidden="true" />A more sustainable campus</span>
+          <span className="flex items-center gap-1.5">
+            <ShieldCheck className="size-4 text-secondary" aria-hidden="true" />
+            Student verified
+          </span>
+          <span className="flex items-center gap-1.5">
+            <UsersRound className="size-4 text-secondary" aria-hidden="true" />
+            Same campus or nearby
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Leaf className="size-4 text-secondary" aria-hidden="true" />A more
+            sustainable campus
+          </span>
         </div>
       </div>
 

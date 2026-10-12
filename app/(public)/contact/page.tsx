@@ -5,7 +5,8 @@ import { InformationPage } from "@/components/content/InformationPage";
 
 export const metadata: Metadata = {
   title: "Contact and support",
-  description: "Find the appropriate support path for marketplace questions and problems.",
+  description:
+    "Find the appropriate support path for marketplace questions and problems.",
 };
 
 const sections = [

@@ -5,14 +5,12 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import {
-  mapProduct,
-  type ApiCategory,
-  type ApiProduct,
-} from "@/lib/catalog";
+import { mapProduct, type ApiCategory, type ApiProduct } from "@/lib/catalog";
 
 const API_URL =
-  process.env.MARKETPLACE_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4000";
+  process.env.MARKETPLACE_API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:4000";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;

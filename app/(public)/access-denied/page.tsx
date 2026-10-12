@@ -5,7 +5,9 @@ type AccessDeniedPageProps = {
   searchParams: Promise<{ reason?: string }>;
 };
 
-export default async function AccessDeniedPage({ searchParams }: AccessDeniedPageProps) {
+export default async function AccessDeniedPage({
+  searchParams,
+}: AccessDeniedPageProps) {
   const { reason } = await searchParams;
   const unavailable = reason === "auth_unavailable";
   const adminRequired = reason === "admin_required";
@@ -20,8 +22,17 @@ export default async function AccessDeniedPage({ searchParams }: AccessDeniedPag
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-primary-soft text-primary">
           <ShieldAlert className="size-7" aria-hidden="true" />
         </span>
-        <h1 id="access-title" className="mt-4 text-2xl font-bold text-foreground">
-          {unavailable ? "Authentication is temporarily unavailable" : suspended ? "Account suspended" : adminRequired ? "Admin access is required" : "A seller account is required"}
+        <h1
+          id="access-title"
+          className="mt-4 text-2xl font-bold text-foreground"
+        >
+          {unavailable
+            ? "Authentication is temporarily unavailable"
+            : suspended
+              ? "Account suspended"
+              : adminRequired
+                ? "Admin access is required"
+                : "A seller account is required"}
         </h1>
         <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
           {unavailable
