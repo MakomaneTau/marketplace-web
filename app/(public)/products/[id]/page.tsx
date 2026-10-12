@@ -3,12 +3,12 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { CalendarDays, ChevronRight, MapPin, ShieldCheck, Star } from "lucide-react";
 
-import { Container } from "@/app/components/layout/Container";
-import { ProductActions } from "@/app/components/product/ProductActions";
-import { ProductGallery } from "@/app/components/product/ProductGallery";
-import { ProductGrid } from "@/app/components/product/ProductGrid";
-import { formatZAR } from "@/app/libs/format";
-import { mapProduct, type ApiProduct } from "@/app/libs/catalog";
+import { Container } from "@/components/layout/Container";
+import { ProductActions } from "@/components/product/ProductActions";
+import { ProductGallery } from "@/components/product/ProductGallery";
+import { ProductGrid } from "@/components/product/ProductGrid";
+import { formatZAR } from "@/lib/format";
+import { mapProduct, type ApiProduct } from "@/lib/catalog";
 
 interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;

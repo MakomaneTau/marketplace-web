@@ -4,7 +4,7 @@ import {
   GraduationCap,
 } from "lucide-react";
 
-import { SellerVerificationForm } from "@/app/components/verification/SellerVerificationForm";
+import { SellerVerificationForm } from "@/components/verification/SellerVerificationForm";
 
 export default function SellerVerificationPage() {
   return (

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FileText } from "lucide-react";
 
-import { InformationPage } from "@/app/components/content/InformationPage";
+import { InformationPage } from "@/components/content/InformationPage";
 
 export const metadata: Metadata = {
   title: "Terms of service",

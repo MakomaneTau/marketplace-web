@@ -4,14 +4,14 @@ import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
-import { AuthShell } from "@/app/components/auth/AuthShell";
-import { Button } from "@/app/components/ui/Button";
-import { Input } from "@/app/components/ui/Input";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import {
   ApiClientError,
   apiErrorMessage,
   resetPassword,
-} from "@/app/libs/api";
+} from "@/lib/api";
 
 type RecoveryState =
   | { status: "checking" }

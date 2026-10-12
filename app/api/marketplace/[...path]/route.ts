@@ -6,7 +6,7 @@ import {
   REFRESH_COOKIE,
   type ApiSession,
   sessionCookieOptions,
-} from "@/app/libs/session-cookies";
+} from "@/lib/server/session-cookies";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

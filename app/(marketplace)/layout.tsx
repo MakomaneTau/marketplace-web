@@ -1,6 +1,6 @@
-import { Header } from "@/app/components/layout/Header";
-import { Footer } from "@/app/components/layout/Footer";
-import { OnboardingProvider } from "@/app/components/onboarding/onboarding-provider";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { OnboardingProvider } from "@/components/onboarding/onboarding-provider";
 
 
 interface MarketPlaceLayoutProps {

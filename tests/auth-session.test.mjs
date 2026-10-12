@@ -8,7 +8,7 @@ import ts from 'typescript';
 function client(fetch) {
   const exports = {};
   const window = new EventTarget();
-  const source = fs.readFileSync('app/libs/api.ts', 'utf8');
+  const source = fs.readFileSync('src/lib/api.ts', 'utf8');
   vm.runInNewContext(ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText, { exports, window, fetch, Headers, FormData, AbortSignal, Event });

@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import { CategoryList } from "@/app/components/home/CategoryList";
-import { HeroSection } from "@/app/components/home/HeroSection";
-import { HomeSectionHeader } from "@/app/components/home/HomeSectionHeader";
-import { Container } from "@/app/components/layout/Container";
-import { ProductGrid } from "@/app/components/product/ProductGrid";
-import { apiPublic } from "@/app/libs/api";
-import { mapProduct, type ApiProduct } from "@/app/libs/catalog";
+import { CategoryList } from "@/components/home/CategoryList";
+import { HeroSection } from "@/components/home/HeroSection";
+import { HomeSectionHeader } from "@/components/home/HomeSectionHeader";
+import { Container } from "@/components/layout/Container";
+import { ProductGrid } from "@/components/product/ProductGrid";
+import { apiPublic } from "@/lib/api";
+import { mapProduct, type ApiProduct } from "@/lib/catalog";
 
 export default function MarketplacePage() {
   const [products, setProducts] = useState<ReturnType<typeof mapProduct>[]>([]);

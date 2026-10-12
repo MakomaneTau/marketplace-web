@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { SessionBootstrap } from "@/app/components/auth/session-bootstrap";
+import { SessionBootstrap } from "@/components/auth/session-bootstrap";
 
 import "./globals.css";
 

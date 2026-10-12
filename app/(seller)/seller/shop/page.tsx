@@ -2,11 +2,11 @@
 
 import { type FormEvent, useEffect, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { PickupCampusPicker, type PickupCampus } from "@/app/components/seller/pickup-campus-picker";
-import { SectionHeading } from "@/app/components/seller/section-heading";
-import { useAuth } from "@/app/hooks/use-auth";
-import { apiErrorMessage, apiRequest, notifySellerDataChanged, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { PickupCampusPicker, type PickupCampus } from "@/components/seller/pickup-campus-picker";
+import { SectionHeading } from "@/components/seller/section-heading";
+import { useAuth } from "@/hooks/use-auth";
+import { apiErrorMessage, apiRequest, notifySellerDataChanged, SESSION_ERROR_MESSAGE } from "@/lib/api";
 
 type University = { id: string; name: string; slug: string };
 type Campus = { id: string; name: string };

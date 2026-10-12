@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CircleHelp, Mail, MessageCircle, Search } from "lucide-react";
 
-import { Container } from "@/app/components/layout/Container";
-import { PageHeader } from "@/app/components/layout/PageHeader";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
   title: "Help centre",

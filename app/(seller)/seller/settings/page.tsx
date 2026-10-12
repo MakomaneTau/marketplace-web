@@ -2,10 +2,10 @@
 
 import { type FormEvent, useEffect, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { OnboardingHelpButton } from "@/app/components/onboarding/onboarding-help-button";
-import { SectionHeading } from "@/app/components/seller/section-heading";
-import { apiErrorMessage, apiRequest, notifySellerDataChanged, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { OnboardingHelpButton } from "@/components/onboarding/onboarding-help-button";
+import { SectionHeading } from "@/components/seller/section-heading";
+import { apiErrorMessage, apiRequest, notifySellerDataChanged, SESSION_ERROR_MESSAGE } from "@/lib/api";
 
 type Profile = { firstName: string; lastName: string; displayName: string; phone: string | null; verificationStatus: string };
 type Settings = { notify_new_orders: boolean; notify_new_messages: boolean; notify_listing_updates: boolean; notify_marketplace_tips: boolean };

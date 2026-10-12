@@ -1,5 +1,5 @@
-import { ProductForm } from "@/app/components/seller/product-form";
-import { SectionHeading } from "@/app/components/seller/section-heading";
+import { ProductForm } from "@/components/seller/product-form";
+import { SectionHeading } from "@/components/seller/section-heading";
 
 export default function NewSellerProductPage() {
   return (

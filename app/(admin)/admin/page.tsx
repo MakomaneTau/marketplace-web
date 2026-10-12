@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { AdminDashboard } from "@/app/components/admin/admin-dashboard";
+import { AdminDashboard } from "@/components/admin/admin-dashboard";
 
 export const metadata: Metadata = { title: "Admin centre | Marketplace", robots: { index: false, follow: false } };
 

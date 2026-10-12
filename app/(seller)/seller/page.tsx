@@ -14,14 +14,14 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { useUnreadMessages } from "@/app/components/messaging/unread-messages";
-import { SectionHeading } from "@/app/components/seller/section-heading";
-import { ShopSetupRequired } from "@/app/components/seller/shop-setup-required";
-import { StatCard } from "@/app/components/seller/stat-card";
-import { StatusBadge } from "@/app/components/seller/status-badge";
-import { ApiClientError, apiErrorMessage, apiRequest } from "@/app/libs/api";
-import { formatZAR } from "@/app/libs/format";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { useUnreadMessages } from "@/components/messaging/unread-messages";
+import { SectionHeading } from "@/components/seller/section-heading";
+import { ShopSetupRequired } from "@/components/seller/shop-setup-required";
+import { StatCard } from "@/components/seller/stat-card";
+import { StatusBadge } from "@/components/seller/status-badge";
+import { ApiClientError, apiErrorMessage, apiRequest } from "@/lib/api";
+import { formatZAR } from "@/lib/format";
 
 type Dashboard = {
   shop: { name: string };

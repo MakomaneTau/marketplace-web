@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 
-import { Container } from "@/app/components/layout/Container";
-import { PageHeader } from "@/app/components/layout/PageHeader";
-import { Conversations } from "@/app/components/messaging/Conversations";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { Conversations } from "@/components/messaging/Conversations";
 
 function MessagesContent() {
   const id = useSearchParams().get("conversation");

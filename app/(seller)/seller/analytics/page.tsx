@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { CircleDollarSign, Eye, ShoppingCart, TrendingUp } from "lucide-react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { SectionHeading } from "@/app/components/seller/section-heading";
-import { ShopSetupRequired } from "@/app/components/seller/shop-setup-required";
-import { StatCard } from "@/app/components/seller/stat-card";
-import { ApiClientError, apiErrorMessage, apiRequest } from "@/app/libs/api";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { SectionHeading } from "@/components/seller/section-heading";
+import { ShopSetupRequired } from "@/components/seller/shop-setup-required";
+import { StatCard } from "@/components/seller/stat-card";
+import { ApiClientError, apiErrorMessage, apiRequest } from "@/lib/api";
 
 type Analytics = { period_days: number; revenue: number; completed_orders: number; average_order_value: number; total_views: number; daily_revenue: { date: string; revenue: number }[]; top_products: { product_id: string; name: string; units: number; revenue: number }[] };
 

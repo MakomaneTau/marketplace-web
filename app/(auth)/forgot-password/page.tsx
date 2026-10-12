@@ -3,10 +3,10 @@
 import { FormEvent, useState } from "react";
 import { Mail } from "lucide-react";
 
-import { AuthShell } from "@/app/components/auth/AuthShell";
-import { Button } from "@/app/components/ui/Button";
-import { Input } from "@/app/components/ui/Input";
-import { apiErrorMessage, apiPublic } from "@/app/libs/api";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { apiErrorMessage, apiPublic } from "@/lib/api";
 
 export default function ForgotPasswordPage() {
   const [message, setMessage] = useState<string | null>(null);

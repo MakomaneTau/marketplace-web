@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Container } from "@/app/components/layout/Container";
-import { PageHeader } from "@/app/components/layout/PageHeader";
-import { ProductGrid } from "@/app/components/product/ProductGrid";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { ProductGrid } from "@/components/product/ProductGrid";
 import {
   mapProduct,
   type ApiCategory,
   type ApiProduct,
-} from "@/app/libs/catalog";
+} from "@/lib/catalog";
 
 const API_URL =
   process.env.MARKETPLACE_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4000";

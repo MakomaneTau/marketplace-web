@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Heart } from "lucide-react";
 
-import { FavouritesExplorer } from "@/app/components/favourites/FavouritesExplorer";
-import { Container } from "@/app/components/layout/Container";
-import { PageHeader } from "@/app/components/layout/PageHeader";
+import { FavouritesExplorer } from "@/components/favourites/FavouritesExplorer";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
   title: "Favourites",

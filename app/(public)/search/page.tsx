@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
-import { Container } from "@/app/components/layout/Container";
-import { PageHeader } from "@/app/components/layout/PageHeader";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   SearchProductsExplorer,
   type ConditionFilter,
   type SortOption,
-} from "@/app/components/search/SearchProductsExplorer";
+} from "@/components/search/SearchProductsExplorer";
 
 export const metadata: Metadata = {
   title: "Search",

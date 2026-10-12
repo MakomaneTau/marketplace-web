@@ -13,10 +13,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { Container } from "@/app/components/layout/Container";
-import { ReviewForm } from "@/app/components/orders/ReviewForm";
-import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { Container } from "@/components/layout/Container";
+import { ReviewForm } from "@/components/orders/ReviewForm";
+import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
 
 type OrderStatus = "new" | "preparing" | "ready" | "completed" | "cancelled";
 type OrderFilter = "all" | "active" | "completed" | "cancelled";

@@ -16,10 +16,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { Container } from "@/app/components/layout/Container";
-import { apiErrorMessage, apiPublic, apiRequest, SESSION_ERROR_MESSAGE } from "@/app/libs/api";
-import type { ApiProduct } from "@/app/libs/catalog";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { Container } from "@/components/layout/Container";
+import { apiErrorMessage, apiPublic, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
+import type { ApiProduct } from "@/lib/catalog";
 
 type Fulfilment = "delivery" | "campus_pickup";
 type Campus = {

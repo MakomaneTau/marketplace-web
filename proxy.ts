@@ -6,7 +6,7 @@ import {
   REFRESH_COOKIE,
   type ApiSession,
   sessionCookieOptions,
-} from "@/app/libs/session-cookies";
+} from "@/lib/server/session-cookies";
 
 const UPSTREAM_API_URL = (
   process.env.MARKETPLACE_API_URL ||

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Mail } from "lucide-react";
 
-import { InformationPage } from "@/app/components/content/InformationPage";
+import { InformationPage } from "@/components/content/InformationPage";
 
 export const metadata: Metadata = {
   title: "Contact and support",

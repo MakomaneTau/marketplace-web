@@ -3,9 +3,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import { PageHeader } from "@/app/components/layout/PageHeader";
-import { CategoriesExplorer } from "@/app/components/category/CategoriesExplorer";
-import { Container } from "@/app/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { CategoriesExplorer } from "@/components/category/CategoriesExplorer";
+import { Container } from "@/components/layout/Container";
 
 export const metadata: Metadata = {
   title: "Categories",

@@ -4,11 +4,11 @@ import { Package, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { SectionHeading } from "@/app/components/seller/section-heading";
-import { StatusBadge } from "@/app/components/seller/status-badge";
-import { apiErrorMessage, apiRequest } from "@/app/libs/api";
-import type { ApiProduct } from "@/app/libs/catalog";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { SectionHeading } from "@/components/seller/section-heading";
+import { StatusBadge } from "@/components/seller/status-badge";
+import { apiErrorMessage, apiRequest } from "@/lib/api";
+import type { ApiProduct } from "@/lib/catalog";
 
 type ListingStatus = "active" | "draft" | "sold" | "paused";
 type ProductSort = "newest" | "price_asc" | "price_desc" | "most_viewed";

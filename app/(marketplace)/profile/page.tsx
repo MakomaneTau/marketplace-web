@@ -25,20 +25,20 @@ import {
 import Link from "next/link";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { Container } from "@/app/components/layout/Container";
-import { PageHeader } from "@/app/components/layout/PageHeader";
-import { OnboardingHelpButton } from "@/app/components/onboarding/onboarding-help-button";
-import { Button } from "@/app/components/ui/Button";
-import { Input } from "@/app/components/ui/Input";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { OnboardingHelpButton } from "@/components/onboarding/onboarding-help-button";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import {
   apiErrorMessage,
   apiPublic,
   apiRequest,
   notifySellerDataChanged,
   SESSION_ERROR_MESSAGE,
-} from "@/app/libs/api";
-import { cn } from "@/app/libs/utils";
+} from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 interface University {
   id: string;

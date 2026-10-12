@@ -4,10 +4,10 @@ import { MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-import { ProtectedRequestError } from "@/app/components/auth/protected-request-error";
-import { SectionHeading } from "@/app/components/seller/section-heading";
-import { ShopSetupRequired } from "@/app/components/seller/shop-setup-required";
-import { ApiClientError, apiErrorMessage, apiRequest } from "@/app/libs/api";
+import { ProtectedRequestError } from "@/components/auth/protected-request-error";
+import { SectionHeading } from "@/components/seller/section-heading";
+import { ShopSetupRequired } from "@/components/seller/shop-setup-required";
+import { ApiClientError, apiErrorMessage, apiRequest } from "@/lib/api";
 
 type OrderStatus = "new" | "preparing" | "ready" | "completed" | "cancelled";
 

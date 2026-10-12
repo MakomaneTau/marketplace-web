@@ -1,5 +1,5 @@
-import { AuthShell } from "@/app/components/auth/AuthShell";
-import { LoginForm } from "@/app/components/auth/LoginForm";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 type LoginPageProps = {
   searchParams: Promise<{ reason?: string }>;

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { AlertTriangle } from "lucide-react";
 
-import { InformationPage } from "@/app/components/content/InformationPage";
-import { ReportForm } from "@/app/components/safety/report-form";
+import { InformationPage } from "@/components/content/InformationPage";
+import { ReportForm } from "@/components/safety/report-form";
 
 export const metadata: Metadata = {
   title: "Report a problem",
