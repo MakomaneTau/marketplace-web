@@ -12,13 +12,15 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "playwright-report/**",
+    "test-results/**",
   ]),
   // Project-specific overrides and additional rules/plugins
   {
     rules: {
       // General
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "no-debugger": "warn",
+      "no-debugger": "error",
 
       // TypeScript-specific (turn off base rules in favor of @typescript-eslint)
       "no-unused-vars": "off",
@@ -53,6 +55,27 @@ const eslintConfig = defineConfig([
 
       // React/Next
       "react/react-in-jsx-scope": "off",
+    },
+  },
+  {
+    files: [
+      "src/components/**/*.{ts,tsx}",
+      "src/hooks/**/*.{ts,tsx}",
+      "src/data/**/*.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/lib/server/**", "**/lib/server/**"],
+              message:
+                "Server helpers belong in the gateway and protected-page proxy.",
+            },
+          ],
+        },
+      ],
     },
   },
 ]);
