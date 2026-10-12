@@ -43,16 +43,15 @@ export function useProductForm({
         if (!signal.aborted) setCategoriesLoading(false);
       });
     if (mode === "edit" && productId) {
-      apiRequest<ManagedProduct[]>("/seller/products?limit=100", {
+      apiRequest<ManagedProduct>(`/seller/products/${productId}`, {
         auth: true,
         signal,
       })
-        .then((items) => {
+        .then((item) => {
           if (signal.aborted) return;
-          const item = items.find((value) => value.id === productId) || null;
           setExisting(item);
-          setServerImages(item?.image_urls || []);
-          setPreviews(item?.image_urls || []);
+          setServerImages(item.image_urls || []);
+          setPreviews(item.image_urls || []);
           setReady(true);
         })
         .catch((requestError) => {

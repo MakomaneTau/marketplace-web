@@ -31,6 +31,13 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
     );
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
+  if (mode === "edit" && !existing)
+    return (
+      <ProtectedRequestError
+        message={error || "This listing could not be loaded."}
+      />
+    );
+
   return (
     <form
       className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]"
