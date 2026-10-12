@@ -25,7 +25,7 @@ export function FooterColumn({ title, links }: FooterColumnProps) {
                 text-sm
                 text-muted
                 transition
-                hover:text-primary
+                hover:text-primary-text
               "
             >
               {link.label}

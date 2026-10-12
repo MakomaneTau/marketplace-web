@@ -31,7 +31,7 @@ export function Footer() {
                 gap-2
                 text-lg
                 font-bold
-                text-primary
+                text-primary-text
               "
             >
               <ShoppingBag className="size-5" />

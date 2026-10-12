@@ -35,7 +35,7 @@ export function Header() {
             href="/"
             className="justify-self-center text-lg font-black text-foreground"
           >
-            Market<span className="text-primary">place</span>
+            Market<span className="text-primary-text">place</span>
           </Link>
 
           <Link
@@ -74,10 +74,10 @@ export function Header() {
               text-foreground
             "
           >
-            <ShoppingBag className="size-6 text-primary" />
+            <ShoppingBag className="size-6 text-primary-text" />
 
             <span>
-              Market<span className="text-primary">place</span>
+              Market<span className="text-primary-text">place</span>
             </span>
           </Link>
 
@@ -116,9 +116,9 @@ export function Header() {
                 outline-none
                 transition
                 placeholder:text-muted
-                focus:border-primary
+                focus:border-primary-text
                 focus:ring-2
-                focus:ring-primary/20
+                focus:ring-primary-text/20
               "
             />
           </form>
@@ -128,7 +128,10 @@ export function Header() {
               href="/seller"
               className="inline-flex h-11 shrink-0 items-center gap-2 rounded-control border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-surface-muted"
             >
-              <ArrowLeft className="size-4 text-primary" aria-hidden="true" />
+              <ArrowLeft
+                className="size-4 text-primary-text"
+                aria-hidden="true"
+              />
               Go back to seller homepage
             </Link>
           ) : (
@@ -137,7 +140,10 @@ export function Header() {
                 href="/search?nearby=true"
                 className="hidden h-11 shrink-0 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-surface-muted xl:flex"
               >
-                <MapPin className="size-4 text-primary" aria-hidden="true" />
+                <MapPin
+                  className="size-4 text-primary-text"
+                  aria-hidden="true"
+                />
                 Near campus
               </Link>
 
@@ -164,7 +170,10 @@ export function Header() {
               href="/admin"
               className="inline-flex h-11 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground hover:bg-surface-muted"
             >
-              <ShieldCheck className="size-4 text-primary" aria-hidden="true" />
+              <ShieldCheck
+                className="size-4 text-primary-text"
+                aria-hidden="true"
+              />
               Admin
             </Link>
           )}
@@ -208,7 +217,7 @@ export function Header() {
                 justify-center 
                 gap-2 
                 rounded-control 
-                bg-primary
+                bg-primary-action
                 text-primary-foreground
                 px-4 
                 text-sm 

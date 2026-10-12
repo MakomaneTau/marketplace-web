@@ -75,7 +75,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
         <div className="fixed inset-0 z-[100] grid min-h-dvh place-items-center bg-background px-6 text-center">
           <div className="max-w-md" role="status" aria-live="polite">
             <ShoppingBag
-              className="mx-auto size-12 text-primary"
+              className="mx-auto size-12 text-primary-text"
               aria-hidden="true"
             />
             <p className="mt-4 text-2xl font-bold text-foreground">

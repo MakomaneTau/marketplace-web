@@ -128,7 +128,7 @@ export function SellerVerificationForm() {
 
         <Link
           href="/seller"
-          className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary px-5 font-semibold text-primary-foreground"
+          className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary-action px-5 font-semibold text-primary-foreground"
         >
           Back to seller centre
         </Link>
@@ -180,7 +180,7 @@ export function SellerVerificationForm() {
             mt-0.5
             size-5
             shrink-0
-            text-primary
+            text-primary-text
           "
         />
 

@@ -48,7 +48,7 @@ const filters: { value: OrderFilter; label: string }[] = [
 ];
 
 const statusStyles: Record<OrderStatus, string> = {
-  new: "border-blue-200 bg-primary-soft text-primary",
+  new: "border-blue-200 bg-primary-soft text-primary-text",
   preparing: "border-amber-200 bg-amber-50 text-amber-700",
   ready: "border-emerald-200 bg-secondary-soft text-emerald-700",
   completed: "border-border bg-surface-muted text-foreground",
@@ -171,7 +171,7 @@ function OrdersContent() {
             role="tab"
             aria-selected={filter === option.value}
             onClick={() => setFilter(option.value)}
-            className={`min-w-fit border-b-2 px-4 py-3 text-sm font-semibold transition ${filter === option.value ? "border-primary text-primary" : "border-transparent text-muted hover:text-foreground"}`}
+            className={`min-w-fit border-b-2 px-4 py-3 text-sm font-semibold transition ${filter === option.value ? "border-primary text-primary-text" : "border-transparent text-muted hover:text-foreground"}`}
           >
             {option.label}
           </button>
@@ -190,7 +190,7 @@ function OrdersContent() {
           <button
             type="button"
             onClick={() => void loadOrders()}
-            className="mt-5 inline-flex items-center gap-2 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+            className="mt-5 inline-flex items-center gap-2 rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <RotateCcw className="size-4" aria-hidden="true" />
             Try again
@@ -317,7 +317,7 @@ function OrdersContent() {
           {!orders.length && (
             <Link
               href="/search"
-              className="mt-5 inline-flex rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+              className="mt-5 inline-flex rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
             >
               Browse listings
             </Link>
@@ -332,7 +332,7 @@ export default function OrdersPage() {
   return (
     <Container className="py-8 sm:py-12">
       <header className="flex items-start gap-3">
-        <span className="mt-1 grid size-10 shrink-0 place-items-center rounded-control bg-primary-soft text-primary">
+        <span className="mt-1 grid size-10 shrink-0 place-items-center rounded-control bg-primary-soft text-primary-text">
           <PackageCheck className="size-5" aria-hidden="true" />
         </span>
         <div>

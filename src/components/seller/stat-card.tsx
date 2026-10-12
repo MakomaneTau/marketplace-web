@@ -25,7 +25,7 @@ export function StatCard({
           <p className="text-sm font-medium text-muted">{label}</p>
           <p className="mt-1 text-2xl font-black text-foreground">{value}</p>
         </div>
-        <span className="rounded-lg bg-primary-soft p-2.5 text-primary">
+        <span className="rounded-lg bg-primary-soft p-2.5 text-primary-text">
           <Icon className="h-5 w-5" aria-hidden="true" />
         </span>
       </div>
@@ -43,7 +43,7 @@ export function StatCard({
     <Link
       href={href}
       aria-label={`View ${label.toLowerCase()}`}
-      className="block rounded-lg transition hover:border-primary focus-visible:outline-2 focus-visible:outline-primary"
+      className="block rounded-lg transition hover:border-primary focus-visible:outline-2 focus-visible:outline-primary-text"
     >
       {content}
     </Link>

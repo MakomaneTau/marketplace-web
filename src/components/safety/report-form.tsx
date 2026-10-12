@@ -69,7 +69,7 @@ export function ReportForm({ productId }: { productId?: string }) {
       <p className="text-sm text-muted">
         <Link
           href="/login?next=/report"
-          className="font-semibold text-primary underline"
+          className="font-semibold text-primary-text underline"
         >
           Sign in
         </Link>{" "}
@@ -146,7 +146,7 @@ export function ReportForm({ productId }: { productId?: string }) {
         <button
           type="submit"
           disabled={busy}
-          className="min-h-11 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
+          className="min-h-11 rounded-control bg-primary-action px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
         >
           {busy ? "Submitting..." : "Submit report"}
         </button>

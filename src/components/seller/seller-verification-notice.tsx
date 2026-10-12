@@ -75,7 +75,7 @@ export function SellerVerificationNotice() {
           />
         ) : (
           <ShieldCheck
-            className="mt-0.5 size-5 shrink-0 text-primary"
+            className="mt-0.5 size-5 shrink-0 text-primary-text"
             aria-hidden="true"
           />
         )}
@@ -106,7 +106,7 @@ export function SellerVerificationNotice() {
             </p>
           )}
           {pending && (
-            <p className="mt-2 text-sm font-semibold text-primary">
+            <p className="mt-2 text-sm font-semibold text-primary-text">
               Documents submitted. Waiting for admin review.
             </p>
           )}
@@ -134,7 +134,7 @@ export function SellerVerificationNotice() {
       </div>
       <Link
         href="/signup/verification"
-        className="inline-flex min-h-11 items-center rounded-control bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="inline-flex min-h-11 items-center rounded-control bg-primary-action px-4 text-sm font-semibold text-primary-foreground hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
       >
         {pending
           ? "View submission"

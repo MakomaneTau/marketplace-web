@@ -69,7 +69,7 @@ export function CategoryList() {
                 bg-surface-muted
                 text-foreground
                 transition
-                group-hover:bg-primary
+                group-hover:bg-primary-action
                 group-hover:text-white
               "
             >

@@ -171,7 +171,7 @@ export default function SellerProductsPage() {
         action={
           <Link
             href="/seller/products/new"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary-action px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <Plus className="h-4 w-4" /> Add product
           </Link>
@@ -185,7 +185,7 @@ export default function SellerProductsPage() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search products"
-            className="w-full rounded-xl border border-border-strong py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
+            className="w-full rounded-xl border border-border-strong py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary-text focus:ring-4 focus:ring-primary-text/20"
           />
         </label>
         <select
@@ -194,7 +194,7 @@ export default function SellerProductsPage() {
             setStatus(event.target.value as ListingStatus | "")
           }
           aria-label="Filter by status"
-          className="rounded-xl border border-border-strong bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary"
+          className="rounded-xl border border-border-strong bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary-text"
         >
           <option value="">All statuses</option>
           {Object.entries(statusLabels).map(([value, label]) => (
@@ -207,7 +207,7 @@ export default function SellerProductsPage() {
           value={sort}
           onChange={(event) => setSort(event.target.value as ProductSort)}
           aria-label="Sort products"
-          className="rounded-xl border border-border-strong bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary"
+          className="rounded-xl border border-border-strong bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary-text"
         >
           <option value="newest">Newest</option>
           <option value="most_viewed">Most viewed</option>

@@ -14,7 +14,7 @@ export function ShopSetupRequired({
 }: ShopSetupRequiredProps) {
   return (
     <section className="mx-auto flex min-h-[28rem] max-w-2xl flex-col items-center justify-center text-center">
-      <span className="grid h-14 w-14 place-items-center rounded-lg bg-primary-soft text-primary">
+      <span className="grid h-14 w-14 place-items-center rounded-lg bg-primary-soft text-primary-text">
         <Store className="h-7 w-7" aria-hidden="true" />
       </span>
       <h1 className="mt-5 text-2xl font-bold text-foreground">{title}</h1>
@@ -23,7 +23,7 @@ export function ShopSetupRequired({
       </p>
       <Link
         href="/seller/shop"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
+        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary-action px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
       >
         Set up shop
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

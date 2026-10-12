@@ -31,14 +31,14 @@ export default function SellerVerificationPage() {
             className="
               text-lg
               font-bold
-              text-primary
+              text-primary-text
             "
           >
             Marketplace
           </Link>
           <Link
             href="/seller"
-            className="inline-flex items-center gap-2 rounded-card border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-primary-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="inline-flex items-center gap-2 rounded-card border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-primary-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             Seller centre
@@ -67,7 +67,7 @@ export default function SellerVerificationPage() {
               justify-center
               rounded-card
               bg-primary-soft
-              text-primary
+              text-primary-text
             "
           >
             <GraduationCap className="size-6" />
@@ -100,7 +100,7 @@ export default function SellerVerificationPage() {
           </p>
           <Link
             href="/seller"
-            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary-text hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
           >
             Continue setting up shop
             <span aria-hidden="true">→</span>

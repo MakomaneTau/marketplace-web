@@ -178,7 +178,7 @@ function CartContent() {
             <button
               type="button"
               onClick={() => void retryLoad()}
-              className="rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+              className="rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground"
             >
               Try again
             </button>
@@ -223,7 +223,7 @@ function CartContent() {
         aria-label="Breadcrumb"
         className="flex items-center gap-2 text-sm text-muted"
       >
-        <Link href={productHref} className="hover:text-primary">
+        <Link href={productHref} className="hover:text-primary-text">
           Product
         </Link>
         <span aria-hidden="true">/</span>
@@ -405,7 +405,7 @@ function CartContent() {
                   rows={4}
                   autoComplete="street-address"
                   placeholder="Street address, suburb, city and postal code"
-                  className="mt-2 w-full resize-y rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none placeholder:text-subtle focus:border-primary"
+                  className="mt-2 w-full resize-y rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none placeholder:text-subtle focus:border-primary-text"
                 />
               </label>
             ) : product.allows_campus_pickup ? (
@@ -420,7 +420,7 @@ function CartContent() {
                     onChange={(event) =>
                       setSelectedCampusId(event.target.value)
                     }
-                    className="mt-2 w-full rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none focus:border-primary disabled:bg-surface-muted"
+                    className="mt-2 w-full rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none focus:border-primary-text disabled:bg-surface-muted"
                   >
                     <option value="">
                       {pickupUnavailable
@@ -461,7 +461,7 @@ function CartContent() {
                       name="preferredBuilding"
                       maxLength={120}
                       placeholder="Library entrance, block C..."
-                      className="mt-2 h-12 w-full rounded-control border border-border-strong bg-white px-4 font-normal outline-none placeholder:text-subtle focus:border-primary"
+                      className="mt-2 h-12 w-full rounded-control border border-border-strong bg-white px-4 font-normal outline-none placeholder:text-subtle focus:border-primary-text"
                     />
                   </label>
                 </div>
@@ -488,9 +488,9 @@ function CartContent() {
                               current === time ? "" : time,
                             )
                           }
-                          className={`h-10 rounded-control border px-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                          className={`h-10 rounded-control border px-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-text/30 ${
                             isSelected
-                              ? "border-primary bg-primary text-primary-foreground"
+                              ? "border-primary bg-primary-action text-primary-foreground"
                               : "border-border-strong bg-white text-foreground hover:border-primary"
                           }`}
                         >
@@ -508,7 +508,7 @@ function CartContent() {
                     maxLength={240}
                     rows={3}
                     placeholder="Gate, parking, access instructions, or anything the seller should know"
-                    className="mt-2 w-full resize-y rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none placeholder:text-subtle focus:border-primary"
+                    className="mt-2 w-full resize-y rounded-control border border-border-strong bg-white px-4 py-3 font-normal outline-none placeholder:text-subtle focus:border-primary-text"
                   />
                 </label>
                 {campusError && (
@@ -522,7 +522,7 @@ function CartContent() {
 
           <aside className="mt-6 flex gap-3 rounded-control border border-blue-200 bg-primary-soft p-4 text-sm">
             <ShieldCheck
-              className="size-5 shrink-0 text-primary"
+              className="size-5 shrink-0 text-primary-text"
               aria-hidden="true"
             />
             <div>
@@ -533,7 +533,7 @@ function CartContent() {
               </p>
               <Link
                 href="/safety"
-                className="mt-2 inline-flex font-semibold text-primary hover:underline"
+                className="mt-2 inline-flex font-semibold text-primary-text hover:underline"
               >
                 Read safety tips
               </Link>
@@ -577,7 +577,7 @@ function CartContent() {
           </div>
           <button
             disabled={busy || !hasFulfilment || pickupUnavailable}
-            className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-control bg-primary-action px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LockKeyhole className="size-4" aria-hidden="true" />
             {busy ? "Placing order..." : "Place order"}
@@ -589,7 +589,7 @@ function CartContent() {
           )}
           <Link
             href={productHref}
-            className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary-text hover:underline"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             Back to product

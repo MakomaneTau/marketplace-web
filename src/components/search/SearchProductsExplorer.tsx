@@ -137,7 +137,7 @@ export function SearchProductsExplorer({
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Textbooks, laptops, furniture..."
-                className="h-11 w-full rounded-control border border-border bg-background pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                className="h-11 w-full rounded-control border border-border bg-background pl-9 pr-3 text-sm outline-none focus:border-primary-text focus:ring-2 focus:ring-primary-text/20"
               />
             </span>
           </label>
@@ -193,7 +193,7 @@ export function SearchProductsExplorer({
           <button
             type="button"
             onClick={clearFilters}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline"
           >
             <RotateCcw className="size-4" aria-hidden="true" />
             Clear filters
@@ -216,7 +216,7 @@ export function SearchProductsExplorer({
           <button
             type="button"
             onClick={() => setRetryKey((value) => value + 1)}
-            className="mt-4 rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+            className="mt-4 rounded-control bg-primary-action px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             Try again
           </button>
@@ -286,7 +286,7 @@ function FilterSelect({ label, value, onChange, children }: FilterSelectProps) {
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-control border border-border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        className="h-11 w-full rounded-control border border-border bg-background px-3 text-sm outline-none focus:border-primary-text focus:ring-2 focus:ring-primary-text/20"
       >
         {children}
       </select>

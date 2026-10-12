@@ -137,7 +137,7 @@ export default function SellerSettingsPage() {
               className="rounded-xl border px-4 py-3"
             />
           </div>
-          <button className="mt-5 rounded-xl bg-primary px-4 py-2.5 font-semibold text-primary-foreground">
+          <button className="mt-5 rounded-xl bg-primary-action px-4 py-2.5 font-semibold text-primary-foreground">
             Save account
           </button>
           <p className="mt-3 text-xs text-muted">

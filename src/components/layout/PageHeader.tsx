@@ -16,14 +16,14 @@ export function PageHeader({
     <header>
       <Link
         href="/"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-primary-text hover:underline"
       >
         <ArrowLeft className="size-4" />
         Back to marketplace
       </Link>
 
       <div className="mt-4 flex items-center gap-3">
-        {Icon && <Icon className="size-7 text-primary" />}
+        {Icon && <Icon className="size-7 text-primary-text" />}
         <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
           {title}
         </h1>

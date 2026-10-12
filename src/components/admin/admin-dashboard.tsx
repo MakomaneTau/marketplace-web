@@ -60,7 +60,7 @@ export function AdminDashboard() {
         </p>
         <Link
           href="/"
-          className="mt-5 inline-block font-semibold text-primary underline"
+          className="mt-5 inline-block font-semibold text-primary-text underline"
         >
           Return to Marketplace
         </Link>
@@ -72,7 +72,7 @@ export function AdminDashboard() {
       <div className="mx-auto max-w-7xl">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
           <div>
-            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary-text">
               <ShieldCheck className="size-4" aria-hidden="true" />
               Marketplace operations
             </p>
@@ -154,7 +154,7 @@ export function AdminDashboard() {
               type="button"
               onClick={() => setTab(item.id)}
               aria-current={tab === item.id ? "page" : undefined}
-              className={`min-h-11 shrink-0 border-b-2 px-4 text-sm font-semibold ${tab === item.id ? "border-primary text-primary" : "border-transparent text-muted hover:text-foreground"}`}
+              className={`min-h-11 shrink-0 border-b-2 px-4 text-sm font-semibold ${tab === item.id ? "border-primary text-primary-text" : "border-transparent text-muted hover:text-foreground"}`}
             >
               {item.label}
             </button>

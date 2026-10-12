@@ -60,7 +60,7 @@ export function OnboardingExperience(props: ExperienceProps) {
         >
           <div className="sticky top-0 border-b border-border bg-surface p-4 sm:p-5">
             <div className="flex items-start gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-primary-text">
                 <Sparkles className="size-4" aria-hidden="true" />
               </span>
               <div className="min-w-0 flex-1">
@@ -85,7 +85,7 @@ export function OnboardingExperience(props: ExperienceProps) {
               aria-hidden="true"
             >
               <div
-                className="h-full rounded-full bg-primary transition-[width] motion-reduce:transition-none"
+                className="h-full rounded-full bg-primary-action transition-[width] motion-reduce:transition-none"
                 style={{ width: `${(completed / steps.length) * 100}%` }}
               />
             </div>
@@ -100,7 +100,7 @@ export function OnboardingExperience(props: ExperienceProps) {
                     className={cn(
                       "mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border",
                       done
-                        ? "border-primary bg-primary text-primary-foreground"
+                        ? "border-primary bg-primary-action text-primary-foreground"
                         : "border-border-strong text-muted",
                     )}
                   >
@@ -128,7 +128,7 @@ export function OnboardingExperience(props: ExperienceProps) {
                     {!done && (
                       <Link
                         href={step.href}
-                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary-text hover:underline"
                       >
                         {step.action}
                         <ChevronRight className="size-3.5" aria-hidden="true" />
@@ -172,7 +172,7 @@ export function OnboardingExperience(props: ExperienceProps) {
             <button
               type="button"
               onClick={props.onOpen}
-              className="inline-flex min-h-11 items-center gap-2 rounded-control bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary-hover"
+              className="inline-flex min-h-11 items-center gap-2 rounded-control bg-primary-action px-4 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary-hover"
               disabled={props.loading || !props.state}
             >
               {props.loading && !props.state ? (
@@ -267,10 +267,10 @@ function WelcomeDialog({
         aria-describedby="onboarding-welcome-description"
         className="w-full max-w-lg rounded-card border border-border bg-surface p-6 shadow-2xl sm:p-8"
       >
-        <span className="grid size-11 place-items-center rounded-full bg-primary-soft text-primary">
+        <span className="grid size-11 place-items-center rounded-full bg-primary-soft text-primary-text">
           <Sparkles className="size-5" aria-hidden="true" />
         </span>
-        <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-primary">
+        <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-primary-text">
           Welcome to MarketPal
         </p>
         <h2 id="onboarding-welcome-title" className="mt-2 text-2xl font-bold">

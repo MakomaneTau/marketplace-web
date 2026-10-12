@@ -44,7 +44,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
       <div className="space-y-6">
         <section className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex items-center gap-3">
-            <span className="rounded-xl bg-primary-soft p-2 text-primary">
+            <span className="rounded-xl bg-primary-soft p-2 text-primary-text">
               <ImagePlus className="h-5 w-5" />
             </span>
             <div>
@@ -86,7 +86,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
 
             {previews.length < 5 && (
               <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted text-center transition hover:border-primary hover:bg-primary-soft">
-                <ImagePlus className="h-6 w-6 text-primary" />
+                <ImagePlus className="h-6 w-6 text-primary-text" />
                 <span className="mt-2 text-xs font-semibold text-foreground">
                   Add photos
                 </span>
@@ -116,7 +116,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 required
                 minLength={5}
                 maxLength={80}
-                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-subtle focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-subtle focus:border-primary-text focus:ring-4 focus:ring-primary-text/20"
               />
             </label>
 
@@ -129,7 +129,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 defaultValue={existing?.category_id || ""}
                 required
                 disabled={categoriesLoading || categories.length === 0}
-                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary-text focus:ring-4 focus:ring-primary-text/20 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted"
               >
                 <option value="" disabled>
                   {categoriesLoading
@@ -165,7 +165,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 name="condition"
                 defaultValue={existing?.condition || ""}
                 required
-                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary-text focus:ring-4 focus:ring-primary-text/20"
               >
                 <option value="" disabled>
                   Select condition
@@ -189,7 +189,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 placeholder="Describe the condition, what is included, and any defects the buyer should know about."
                 minLength={20}
                 maxLength={2000}
-                className="w-full resize-y rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-subtle focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="w-full resize-y rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-subtle focus:border-primary-text focus:ring-4 focus:ring-primary-text/20"
               />
             </label>
           </div>
@@ -202,7 +202,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               <span className="mb-2 block text-sm font-semibold text-foreground">
                 Price
               </span>
-              <div className="flex overflow-hidden rounded-xl border border-border-strong focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20">
+              <div className="flex overflow-hidden rounded-xl border border-border-strong focus-within:border-primary-text focus-within:ring-4 focus-within:ring-primary-text/20">
                 <span className="grid place-items-center border-r border-border-strong bg-surface-muted px-3 text-sm font-semibold text-muted">
                   R
                 </span>
@@ -229,7 +229,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 min="1"
                 defaultValue={existing?.stock_quantity || 1}
                 required
-                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary-text focus:ring-4 focus:ring-primary-text/20"
               />
             </label>
           </div>
@@ -237,7 +237,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
 
         <section className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-center gap-3">
-            <span className="rounded-xl bg-primary-soft p-2 text-primary">
+            <span className="rounded-xl bg-primary-soft p-2 text-primary-text">
               <MapPin className="h-5 w-5" />
             </span>
             <div>
@@ -259,7 +259,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 name="pickup_location"
                 defaultValue={existing?.pickup_location || ""}
                 placeholder="e.g. Main library entrance"
-                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary-text focus:ring-4 focus:ring-primary-text/20"
               />
             </label>
             <label className="flex gap-3 rounded-xl border border-border p-4">
@@ -301,7 +301,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
       <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
         <section className="rounded-2xl border border-border bg-white p-5 shadow-sm">
           <div className="flex items-center gap-2">
-            <PackageCheck className="h-5 w-5 text-primary" />
+            <PackageCheck className="h-5 w-5 text-primary-text" />
             <h2 className="font-bold text-foreground">Listing checklist</h2>
           </div>
           <ul className="mt-4 space-y-3 text-sm text-muted">
@@ -326,12 +326,12 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
 
         <section className="rounded-2xl border border-primary bg-primary-soft p-5">
           <div className="flex gap-3">
-            <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+            <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary-text" />
             <div>
-              <h2 className="text-sm font-bold text-primary">
+              <h2 className="text-sm font-bold text-primary-text">
                 Safety reminder
               </h2>
-              <p className="mt-1 text-xs leading-5 text-primary">
+              <p className="mt-1 text-xs leading-5 text-primary-text">
                 Keep communication in the marketplace and use well-lit public
                 collection points.
               </p>
@@ -362,7 +362,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             type="submit"
             disabled={submitting}
             onClick={publishListing}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-action px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
           >
             <PackageCheck className="h-4 w-4" />
             {mode === "edit" ? "Update listing" : "Publish listing"}

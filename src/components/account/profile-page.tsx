@@ -81,7 +81,7 @@ interface CampusResponse {
 }
 
 const selectClassName =
-  "h-11 w-full rounded-control border border-border bg-surface px-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted";
+  "h-11 w-full rounded-control border border-border bg-surface px-3 text-sm text-foreground outline-none transition-colors focus:border-primary-text focus:ring-2 focus:ring-primary-text/20 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted";
 
 function initials(profile: Profile) {
   const value =
@@ -355,7 +355,7 @@ export default function ProfilePage() {
           <div className="flex flex-wrap items-start justify-between gap-5 border-b border-border p-5 sm:p-6">
             <div className="flex min-w-0 items-center gap-4">
               <div
-                className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
+                className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary-action text-lg font-bold text-primary-foreground"
                 aria-hidden="true"
               >
                 {initials(profile)}
@@ -533,7 +533,7 @@ export default function ProfilePage() {
                       <button
                         type="button"
                         onClick={() => void loadLocations(profile)}
-                        className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                        className="inline-flex items-center gap-1 font-semibold text-primary-text hover:underline"
                       >
                         <RotateCcw className="size-4" aria-hidden="true" />
                         Retry locations

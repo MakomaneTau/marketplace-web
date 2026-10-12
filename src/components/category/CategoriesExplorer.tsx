@@ -80,9 +80,9 @@ export function CategoriesExplorer() {
             outline-none
             transition
             placeholder:text-muted
-            focus:border-primary
+            focus:border-primary-text
             focus:ring-2
-            focus:ring-primary/20
+            focus:ring-primary-text/20
           "
         />
       </div>
@@ -162,7 +162,7 @@ export function CategoriesExplorer() {
             className="
               mt-4
               rounded-control
-              bg-primary
+              bg-primary-action
               px-4
               py-2
               text-sm

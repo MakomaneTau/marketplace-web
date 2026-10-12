@@ -40,9 +40,9 @@ export function CategoryCard({ category }: CategoryCardProps) {
             justify-center
             rounded-card
             bg-primary-soft
-            text-primary
+            text-primary-text
             transition
-            group-hover:bg-primary
+            group-hover:bg-primary-action
             group-hover:text-white
           "
         >
@@ -88,7 +88,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
             gap-1
             text-xs
             font-semibold
-            text-primary
+            text-primary-text
           "
         >
           Browse

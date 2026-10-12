@@ -85,7 +85,7 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
           className="flex items-center gap-2.5"
           onClick={onClose}
         >
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-sm font-black text-primary-foreground">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary-action text-sm font-black text-primary-foreground">
             M
           </span>
           <span>
@@ -125,7 +125,7 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition",
                 active
-                  ? "bg-primary-soft text-primary"
+                  ? "bg-primary-soft text-primary-text"
                   : "text-muted hover:bg-surface-muted hover:text-foreground",
               )}
             >
@@ -140,7 +140,9 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
       {shopHealth && shopHealth.percentage < 100 && (
         <div className="border-t border-border p-4">
           <div className="rounded-lg bg-foreground p-4 text-white">
-            <p className="text-xs font-semibold text-primary">Store health</p>
+            <p className="text-xs font-semibold text-primary-text">
+              Store health
+            </p>
             <p className="mt-1 text-sm font-bold">
               {shopHealth.hasShop
                 ? `Your shop is ${shopHealth.percentage}% complete`

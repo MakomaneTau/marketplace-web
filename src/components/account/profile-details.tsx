@@ -15,7 +15,7 @@ export function ProfileDetail({
   return (
     <div className="flex gap-3">
       <Icon
-        className="mt-0.5 size-5 shrink-0 text-primary"
+        className="mt-0.5 size-5 shrink-0 text-primary-text"
         aria-hidden="true"
       />
       <div className="min-w-0">
@@ -60,10 +60,10 @@ export function AccountLink({
   return (
     <Link
       href={href}
-      className="group flex min-h-16 items-center gap-3 px-4 py-3 transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px]"
+      className="group flex min-h-16 items-center gap-3 px-4 py-3 transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-primary-text focus-visible:outline-offset-[-2px]"
     >
       <Icon
-        className="size-5 shrink-0 text-muted group-hover:text-primary"
+        className="size-5 shrink-0 text-muted group-hover:text-primary-text"
         aria-hidden="true"
       />
       <span className="min-w-0 flex-1">

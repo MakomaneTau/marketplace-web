@@ -99,7 +99,7 @@ export function ProductActions({
           type="button"
           onClick={message}
           disabled={Boolean(busyAction) || !ready}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary-action px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           <MessageCircle className="size-5" aria-hidden="true" />
           {busyAction === "message"
@@ -112,7 +112,7 @@ export function ProductActions({
           onClick={() => {
             if (guard()) router.push(`/cart?product=${productId}`);
           }}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-control border border-primary bg-white px-5 text-sm font-semibold text-primary transition hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-control border border-primary bg-white px-5 text-sm font-semibold text-primary-text transition hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-60"
         >
           <ShoppingCart className="size-5" aria-hidden="true" />
           Buy now
@@ -126,7 +126,7 @@ export function ProductActions({
           aria-label={saved ? "Remove from favourites" : "Save to favourites"}
           aria-pressed={saved}
           title={saved ? "Remove from favourites" : "Save to favourites"}
-          className="flex size-11 items-center justify-center rounded-control border border-border-strong bg-white text-foreground transition hover:border-primary hover:text-primary disabled:opacity-60"
+          className="flex size-11 items-center justify-center rounded-control border border-border-strong bg-white text-foreground transition hover:border-primary hover:text-primary-text disabled:opacity-60"
         >
           <Bookmark
             className="size-5"
@@ -139,7 +139,7 @@ export function ProductActions({
           onClick={share}
           aria-label="Share product"
           title="Share product"
-          className="flex size-11 items-center justify-center rounded-control border border-border-strong bg-white text-foreground transition hover:border-primary hover:text-primary"
+          className="flex size-11 items-center justify-center rounded-control border border-border-strong bg-white text-foreground transition hover:border-primary hover:text-primary-text"
         >
           <Share2 className="size-5" aria-hidden="true" />
         </button>
@@ -160,7 +160,7 @@ export function ProductActions({
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/login"
-                className="rounded-control bg-primary px-4 py-2 font-semibold text-primary-foreground"
+                className="rounded-control bg-primary-action px-4 py-2 font-semibold text-primary-foreground"
               >
                 Sign in
               </Link>

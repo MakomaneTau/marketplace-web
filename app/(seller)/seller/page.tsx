@@ -91,7 +91,7 @@ export default function SellerDashboardPage() {
         action={
           <Link
             href="/seller/products/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary-action px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add product
@@ -139,7 +139,7 @@ export default function SellerDashboardPage() {
             <h2 className="font-bold text-foreground">Recent orders</h2>
             <Link
               href="/seller/orders"
-              className="flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+              className="flex items-center gap-1 text-sm font-semibold text-primary-text hover:underline"
             >
               View all <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
@@ -180,7 +180,7 @@ export default function SellerDashboardPage() {
                       <td className="px-5 py-3.5 text-right">
                         <Link
                           href="/seller/orders"
-                          className="font-semibold text-primary hover:underline"
+                          className="font-semibold text-primary-text hover:underline"
                         >
                           View
                         </Link>
@@ -301,7 +301,7 @@ function ActionPanel({
 }) {
   return (
     <section className="flex items-center gap-4 rounded-lg border border-border bg-white p-5">
-      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary-text">
         <Icon className="h-5 w-5" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
@@ -310,7 +310,7 @@ function ActionPanel({
       </div>
       <Link
         href={href}
-        className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline sm:flex"
+        className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-primary-text hover:underline sm:flex"
       >
         {action} <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>

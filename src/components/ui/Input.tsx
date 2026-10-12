@@ -63,7 +63,7 @@ export function Input({
             "text-sm text-foreground placeholder:text-subtle",
             "transition-colors",
             "outline-none",
-            "focus:border-primary focus:ring-2 focus:ring-primary/20",
+            "focus:border-primary-text focus:ring-2 focus:ring-primary-text/20",
             error ? "border-danger" : "border-border",
             className,
             icon && "pl-11",
@@ -80,7 +80,7 @@ export function Input({
             aria-pressed={passwordVisible}
             disabled={props.disabled}
             onClick={() => setPasswordVisible((visible) => !visible)}
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-control text-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-50"
+            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-control text-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary-text disabled:opacity-50"
           >
             {passwordVisible ? (
               <EyeOff className="size-5" aria-hidden="true" />

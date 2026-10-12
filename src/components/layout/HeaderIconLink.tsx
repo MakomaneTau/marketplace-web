@@ -28,7 +28,7 @@ export function HeaderIconLink({
                 transition
                 hover:bg-surface-muted
                 hover:cursor-pointer
-                hover:text-primary
+                hover:text-primary-text
             "
     >
       {children}

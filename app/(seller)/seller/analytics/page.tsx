@@ -112,7 +112,7 @@ export default function SellerAnalyticsPage() {
                   >
                     <div
                       title={`R${item.revenue}`}
-                      className="w-full rounded-t bg-primary"
+                      className="w-full rounded-t bg-primary-action"
                       style={{
                         height: `${Math.max(4, (item.revenue / max) * 100)}%`,
                       }}

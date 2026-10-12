@@ -270,7 +270,7 @@ export function MobileNav() {
                 <Link
                   href="/"
                   onClick={closeMenu}
-                  className="flex items-center gap-2 text-lg font-bold text-primary"
+                  className="flex items-center gap-2 text-lg font-bold text-primary-text"
                 >
                   <ShoppingBag className="size-5" />
                   Marketplace
@@ -322,7 +322,7 @@ export function MobileNav() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-primary
+                  bg-primary-action
                   text-primary-foreground
                 "
                     >
@@ -475,7 +475,7 @@ function MobileMenuLink({ item, pathname, onClick }: MobileMenuLinkProps) {
         "text-sm font-medium transition-colors",
 
         isActive
-          ? "bg-primary-soft text-primary"
+          ? "bg-primary-soft text-primary-text"
           : "text-foreground hover:bg-surface-muted",
       )}
     >

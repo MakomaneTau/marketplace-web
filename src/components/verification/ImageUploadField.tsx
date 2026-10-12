@@ -167,7 +167,7 @@ export function ImageUploadField({
               justify-center
               rounded-full
               bg-primary-soft
-              text-primary
+              text-primary-text
             "
           >
             {capture ? (

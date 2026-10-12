@@ -65,14 +65,17 @@ export function AuthShell({
             href="/"
             className="flex items-center gap-2 text-xl font-bold text-foreground"
           >
-            <ShoppingBag className="size-6 text-primary" aria-hidden="true" />
+            <ShoppingBag
+              className="size-6 text-primary-text"
+              aria-hidden="true"
+            />
             <span>
-              Market<span className="text-primary">place</span>
+              Market<span className="text-primary-text">place</span>
             </span>
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-text hover:underline"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Back to marketplace</span>
@@ -84,7 +87,7 @@ export function AuthShell({
       <main className="flex flex-1 flex-col justify-center px-4 py-10 sm:px-6 sm:py-14">
         <div className={cn("mx-auto w-full", wide ? "max-w-2xl" : "max-w-lg")}>
           <header className="text-center">
-            <span className="mx-auto grid size-12 place-items-center rounded-control bg-primary-soft text-primary">
+            <span className="mx-auto grid size-12 place-items-center rounded-control bg-primary-soft text-primary-text">
               <ContextIcon className="size-6" aria-hidden="true" />
             </span>
             <h1 className="mt-5 text-3xl font-bold text-foreground">{title}</h1>
@@ -104,7 +107,7 @@ export function AuthShell({
             {footerText}{" "}
             <Link
               href={footerHref}
-              className="font-semibold text-primary hover:underline"
+              className="font-semibold text-primary-text hover:underline"
             >
               {footerLinkText}
             </Link>
@@ -139,13 +142,13 @@ export function AuthShell({
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 text-xs text-muted sm:px-6 lg:px-8">
           <p>Marketplace for South African students</p>
           <nav aria-label="Legal" className="flex gap-5">
-            <Link href="/safety" className="hover:text-primary">
+            <Link href="/safety" className="hover:text-primary-text">
               Safety
             </Link>
-            <Link href="/help" className="hover:text-primary">
+            <Link href="/help" className="hover:text-primary-text">
               Help
             </Link>
-            <Link href="/privacy" className="hover:text-primary">
+            <Link href="/privacy" className="hover:text-primary-text">
               Privacy
             </Link>
           </nav>

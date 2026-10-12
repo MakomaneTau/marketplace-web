@@ -48,7 +48,7 @@ export function HomeSectionHeader({
             items-center
             text-sm
             font-semibold
-            text-primary
+            text-primary-text
             hover:underline
           "
         >

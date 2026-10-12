@@ -9,7 +9,7 @@ const styles: Record<string, string> = {
   Draft: "bg-surface-muted text-foreground ring-slate-500/20",
   Sold: "bg-blue-50 text-blue-700 ring-blue-600/20",
   Paused: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  New: "bg-primary-soft text-primary ring-primary/20",
+  New: "bg-primary-soft text-primary-text ring-primary/20",
   Preparing: "bg-amber-50 text-amber-700 ring-amber-600/20",
   Ready: "bg-cyan-50 text-cyan-700 ring-cyan-600/20",
   Completed: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",

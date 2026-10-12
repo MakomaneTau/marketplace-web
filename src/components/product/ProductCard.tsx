@@ -86,7 +86,7 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
           aria-pressed={isFavourite}
           onClick={toggleFavourite}
           disabled={busy || !ready}
-          className="absolute right-2 top-2 flex size-10 items-center justify-center rounded-full border border-black/5 bg-white/95 text-foreground shadow-sm backdrop-blur transition hover:text-primary"
+          className="absolute right-2 top-2 flex size-10 items-center justify-center rounded-full border border-black/5 bg-white/95 text-foreground shadow-sm backdrop-blur transition hover:text-primary-text"
         >
           <Heart
             className="size-5"
@@ -121,7 +121,7 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
         </p>
         <div className="mt-2 flex min-w-0 items-center gap-1 text-xs text-muted">
           <MapPin
-            className="size-3.5 shrink-0 text-primary"
+            className="size-3.5 shrink-0 text-primary-text"
             aria-hidden="true"
           />
           <span className="truncate">{product.location}</span>

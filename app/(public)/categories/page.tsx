@@ -43,7 +43,7 @@ export default function CategoriesPage() {
             mt-0.5
             size-5
             shrink-0
-            text-primary
+            text-primary-text
           "
         />
 

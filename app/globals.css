@@ -58,7 +58,7 @@ img {
 */
 
 :focus-visible {
-  outline: 2px solid var(--role-primary);
+  outline: 2px solid var(--role-primary-text);
   outline-offset: 2px;
 }
 

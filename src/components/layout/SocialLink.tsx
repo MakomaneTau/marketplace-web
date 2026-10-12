@@ -24,7 +24,7 @@ export function SocialLink({ label, href, children }: SocialLinkProps) {
         text-muted
         transition
         hover:border-primary
-        hover:text-primary
+        hover:text-primary-text
       "
     >
       {children}

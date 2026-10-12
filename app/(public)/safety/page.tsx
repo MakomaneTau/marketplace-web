@@ -90,7 +90,7 @@ export default function SafetyPage() {
               key={tip.title}
               className="rounded-card border border-border bg-surface p-5"
             >
-              <span className="flex size-11 items-center justify-center rounded-card bg-primary-soft text-primary">
+              <span className="flex size-11 items-center justify-center rounded-card bg-primary-soft text-primary-text">
                 <Icon className="size-5" />
               </span>
               <h2 className="mt-4 text-base font-semibold text-foreground">
@@ -104,7 +104,7 @@ export default function SafetyPage() {
         })}
       </section>
 
-      <section className="mt-8 rounded-card bg-primary p-6 text-primary-foreground sm:p-8">
+      <section className="mt-8 rounded-card bg-primary-action p-6 text-primary-foreground sm:p-8">
         <h2 className="text-xl font-bold">Report suspicious activity</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80">
           Save relevant details, stop communicating when necessary, and report
@@ -113,7 +113,7 @@ export default function SafetyPage() {
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
             href="/report"
-            className="rounded-control bg-white px-5 py-2.5 text-sm font-semibold text-primary hover:bg-white/90"
+            className="rounded-control bg-white px-5 py-2.5 text-sm font-semibold text-primary-text hover:bg-white/90"
           >
             Submit a report
           </Link>

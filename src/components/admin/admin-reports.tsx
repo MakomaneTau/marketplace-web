@@ -116,7 +116,7 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                <p className="text-xs font-semibold uppercase tracking-wide text-primary-text">
                   {report.category.replaceAll("_", " ")} · {report.status}
                 </p>
                 <h3 className="mt-1 font-bold">
@@ -134,7 +134,7 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
                     setDecision("resolved");
                     setNote("");
                   }}
-                  className="min-h-10 rounded-control bg-primary px-4 text-sm font-semibold text-primary-foreground"
+                  className="min-h-10 rounded-control bg-primary-action px-4 text-sm font-semibold text-primary-foreground"
                 >
                   Review
                 </button>
@@ -154,7 +154,7 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
                   href={`/products/${report.productId}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-semibold text-primary underline"
+                  className="font-semibold text-primary-text underline"
                 >
                   View listing
                 </Link>
@@ -264,7 +264,7 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
+                className="rounded-control bg-primary-action px-4 py-2.5 text-sm font-semibold text-primary-foreground"
               >
                 {busy ? "Saving..." : "Save decision"}
               </button>

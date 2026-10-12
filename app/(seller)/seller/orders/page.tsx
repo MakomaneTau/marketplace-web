@@ -123,7 +123,7 @@ export default function SellerOrdersPage() {
                       {new Date(order.created_at).toLocaleString()}
                     </p>
                   </div>
-                  <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold capitalize text-primary">
+                  <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold capitalize text-primary-text">
                     {order.status.replaceAll("_", " ")}
                   </span>
                 </div>
@@ -156,7 +156,7 @@ export default function SellerOrdersPage() {
                       <button
                         type="button"
                         onClick={() => void transition(order, next)}
-                        className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                        className="rounded-xl bg-primary-action px-4 py-2 text-sm font-semibold text-primary-foreground"
                       >
                         Mark {next.replaceAll("_", " ")}
                       </button>

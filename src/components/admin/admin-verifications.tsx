@@ -143,7 +143,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
           type="button"
           aria-pressed={status === "pending"}
           onClick={() => changeStatus("pending")}
-          className={`border-b-2 px-3 py-3 text-sm font-semibold ${status === "pending" ? "border-primary text-primary" : "border-transparent text-muted hover:text-foreground"}`}
+          className={`border-b-2 px-3 py-3 text-sm font-semibold ${status === "pending" ? "border-primary text-primary-text" : "border-transparent text-muted hover:text-foreground"}`}
         >
           Pending review
         </button>
@@ -151,7 +151,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
           type="button"
           aria-pressed={status !== "pending"}
           onClick={() => changeStatus("resolved")}
-          className={`border-b-2 px-3 py-3 text-sm font-semibold ${status !== "pending" ? "border-primary text-primary" : "border-transparent text-muted hover:text-foreground"}`}
+          className={`border-b-2 px-3 py-3 text-sm font-semibold ${status !== "pending" ? "border-primary text-primary-text" : "border-transparent text-muted hover:text-foreground"}`}
         >
           Resolved history
         </button>
@@ -179,7 +179,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-semibold">{verification.sellerName}</h3>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${verification.status === "verified" ? "bg-emerald-50 text-emerald-700" : verification.status === "rejected" ? "bg-red-50 text-red-700" : "bg-primary-soft text-primary"}`}
+                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${verification.status === "verified" ? "bg-emerald-50 text-emerald-700" : verification.status === "rejected" ? "bg-red-50 text-red-700" : "bg-primary-soft text-primary-text"}`}
                 >
                   {verification.status === "verified"
                     ? "Approved"
@@ -207,7 +207,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
             <button
               type="button"
               onClick={() => void open(verification)}
-              className="min-h-10 rounded-control border border-border px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="min-h-10 rounded-control border border-border px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
             >
               {verification.status === "pending" ? "Review" : "View details"}
             </button>
@@ -302,7 +302,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
                     href={images.selfieUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-primary underline"
+                    className="font-semibold text-primary-text underline"
                   >
                     View selfie
                   </a>
@@ -310,14 +310,14 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
                     href={images.identityUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-primary underline"
+                    className="font-semibold text-primary-text underline"
                   >
                     View identity document
                   </a>
                   <button
                     type="button"
                     onClick={() => void loadImages(selected)}
-                    className="font-semibold text-primary underline"
+                    className="font-semibold text-primary-text underline"
                   >
                     Refresh links
                   </button>
@@ -326,7 +326,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
                 <button
                   type="button"
                   onClick={() => void loadImages(selected)}
-                  className="font-semibold text-primary underline"
+                  className="font-semibold text-primary-text underline"
                 >
                   Load private previews
                 </button>
@@ -394,7 +394,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
                 <button
                   type="submit"
                   disabled={busy || !images}
-                  className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+                  className="rounded-control bg-primary-action px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
                 >
                   {busy ? "Saving..." : "Save decision"}
                 </button>

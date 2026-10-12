@@ -58,7 +58,7 @@ export function InformationPage({
             ))}
 
             {section.items && (
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-muted marker:text-primary">
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-muted marker:text-primary-text">
                 {section.items.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
@@ -79,7 +79,7 @@ export function InformationPage({
               href={action.href}
               className={
                 index === 0
-                  ? "rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+                  ? "rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
                   : "rounded-control border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-surface-muted"
               }
             >

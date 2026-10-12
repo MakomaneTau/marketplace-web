@@ -120,7 +120,7 @@ export function SignupForm() {
         className="space-y-5 text-center"
       >
         <MailCheck
-          className="mx-auto size-12 text-primary"
+          className="mx-auto size-12 text-primary-text"
           aria-hidden="true"
         />
         <h2 className="text-2xl font-bold">Check your email</h2>
@@ -136,7 +136,7 @@ export function SignupForm() {
         </p>
         <Link
           href="/login"
-          className="inline-flex h-11 items-center rounded-control bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+          className="inline-flex h-11 items-center rounded-control bg-primary-action px-6 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
         >
           Continue to sign in
         </Link>
@@ -254,9 +254,9 @@ export function SignupForm() {
                   text-sm
                   text-foreground
                   outline-none
-                  focus:border-primary
+                  focus:border-primary-text
                   focus:ring-2
-                  focus:ring-primary/20
+                  focus:ring-primary-text/20
                   disabled:cursor-not-allowed
                   disabled:bg-surface-muted
                 "
@@ -283,7 +283,7 @@ export function SignupForm() {
                 <button
                   type="button"
                   onClick={() => void retryUniversities()}
-                  className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-primary-text hover:underline"
                 >
                   <RotateCcw className="size-3.5" aria-hidden="true" />
                   Retry
@@ -338,14 +338,14 @@ export function SignupForm() {
           I agree to the{" "}
           <Link
             href="/terms"
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-primary-text hover:underline"
           >
             Terms of Service
           </Link>{" "}
           and{" "}
           <Link
             href="/privacy"
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-primary-text hover:underline"
           >
             Privacy Policy
           </Link>
@@ -433,7 +433,7 @@ function RoleButton({
         <Icon
           className={cn(
             "mt-0.5 size-5 shrink-0",
-            selected ? "text-primary" : "text-muted",
+            selected ? "text-primary-text" : "text-muted",
           )}
           aria-hidden="true"
         />
@@ -441,7 +441,7 @@ function RoleButton({
           <span
             className={cn(
               "block text-sm font-semibold",
-              selected ? "text-primary" : "text-foreground",
+              selected ? "text-primary-text" : "text-foreground",
             )}
           >
             {title}

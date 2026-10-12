@@ -81,7 +81,7 @@ export function FavouritesExplorer() {
         {signInRequired && (
           <Link
             href="/login"
-            className="mt-5 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+            className="mt-5 rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             Sign in
           </Link>
@@ -104,7 +104,7 @@ export function FavouritesExplorer() {
         </p>
         <Link
           href="/search"
-          className="mt-5 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+          className="mt-5 rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
         >
           Browse products
         </Link>

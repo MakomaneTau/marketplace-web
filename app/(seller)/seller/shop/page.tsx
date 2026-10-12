@@ -191,7 +191,7 @@ export default function SellerShopPage() {
               type="file"
               accept="image/*"
               onChange={(event) => upload("logo", event.target.files?.[0])}
-              className="mt-2 block w-full cursor-pointer rounded-xl border border-border-strong bg-surface-muted p-1.5 text-sm font-normal text-muted file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2.5 file:text-sm font-semibold file:text-primary-foreground hover:file:bg-primary-hover"
+              className="mt-2 block w-full cursor-pointer rounded-xl border border-border-strong bg-surface-muted p-1.5 text-sm font-normal text-muted file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-primary-action file:px-4 file:py-2.5 file:text-sm font-semibold file:text-primary-foreground hover:file:bg-primary-hover"
             />
           </label>
           <label className="text-sm font-semibold">
@@ -200,7 +200,7 @@ export default function SellerShopPage() {
               type="file"
               accept="image/*"
               onChange={(event) => upload("banner", event.target.files?.[0])}
-              className="mt-2 block w-full cursor-pointer rounded-xl border border-border-strong bg-surface-muted p-1.5 text-sm font-normal text-muted file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2.5 file:text-sm font-semibold file:text-primary-foreground hover:file:bg-primary-hover"
+              className="mt-2 block w-full cursor-pointer rounded-xl border border-border-strong bg-surface-muted p-1.5 text-sm font-normal text-muted file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-primary-action file:px-4 file:py-2.5 file:text-sm font-semibold file:text-primary-foreground hover:file:bg-primary-hover"
             />
           </label>
         </div>
@@ -218,7 +218,7 @@ export default function SellerShopPage() {
             {error}
           </p>
         )}
-        <button className="rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground">
+        <button className="rounded-xl bg-primary-action px-5 py-3 font-semibold text-primary-foreground">
           Save shop changes
         </button>
       </form>

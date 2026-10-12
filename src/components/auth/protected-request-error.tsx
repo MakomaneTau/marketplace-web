@@ -22,7 +22,7 @@ export function ProtectedRequestError({ message }: { message: string }) {
       className="grid min-h-[55vh] place-items-center px-4 py-12"
     >
       <div className="w-full max-w-lg rounded-card border border-border bg-surface p-6 text-center sm:p-8">
-        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary">
+        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary-text">
           <ShieldAlert className="h-7 w-7" aria-hidden="true" />
         </span>
         <h2
@@ -37,7 +37,7 @@ export function ProtectedRequestError({ message }: { message: string }) {
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/login"
-            className="inline-flex items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+            className="inline-flex items-center justify-center gap-2 rounded-control bg-primary-action px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <LogIn className="h-4 w-4" aria-hidden="true" /> Sign in
           </Link>

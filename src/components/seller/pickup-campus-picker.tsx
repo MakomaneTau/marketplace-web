@@ -61,7 +61,7 @@ export function PickupCampusPicker({
     <section className="space-y-4 rounded-xl bg-surface-muted p-4">
       <div>
         <h2 className="flex items-center gap-2 font-semibold">
-          <MapPin className="size-4 text-primary" />
+          <MapPin className="size-4 text-primary-text" />
           Pickup campuses
         </h2>
         <p className="mt-1 text-sm text-muted">
@@ -152,7 +152,7 @@ export function PickupCampusPicker({
           {value.map((campus) => (
             <span
               key={campus.id}
-              className="inline-flex items-center gap-2 rounded-xl border border-primary bg-white py-2 pl-3 pr-1 text-sm text-primary"
+              className="inline-flex items-center gap-2 rounded-xl border border-primary bg-white py-2 pl-3 pr-1 text-sm text-primary-text"
             >
               <span>
                 {campus.name}

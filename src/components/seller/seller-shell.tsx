@@ -47,7 +47,7 @@ export function SellerShell({ children }: SellerShellProps) {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             href="/signup"
-            className="rounded-control bg-primary px-5 py-3 font-semibold text-primary-foreground"
+            className="rounded-control bg-primary-action px-5 py-3 font-semibold text-primary-foreground"
           >
             Register as a seller
           </Link>

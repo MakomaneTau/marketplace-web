@@ -30,7 +30,7 @@ export default function RouteError({
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <button
             onClick={reset}
-            className="rounded-control bg-primary px-5 py-3 font-semibold text-primary-foreground"
+            className="rounded-control bg-primary-action px-5 py-3 font-semibold text-primary-foreground"
           >
             Try again
           </button>

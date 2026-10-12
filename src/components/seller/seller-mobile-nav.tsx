@@ -39,7 +39,7 @@ export function SellerMobileNav() {
             href={item.href}
             className={cn(
               "flex flex-col items-center gap-1 rounded-lg px-1 py-1 text-[11px] font-semibold",
-              active ? "text-primary" : "text-muted",
+              active ? "text-primary-text" : "text-muted",
             )}
           >
             <span className="relative">

@@ -43,12 +43,12 @@ export function HeroSection() {
               name="q"
               type="search"
               placeholder="Textbooks, laptops, furniture..."
-              className="h-12 w-full rounded-control border border-border-strong bg-white pl-10 pr-4 text-sm text-foreground outline-none placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="h-12 w-full rounded-control border border-border-strong bg-white pl-10 pr-4 text-sm text-foreground outline-none placeholder:text-muted focus:border-primary-text focus:ring-2 focus:ring-primary-text/20"
             />
           </label>
           <button
             type="submit"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary-action px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
           >
             Search marketplace{" "}
             <ArrowRight className="size-4" aria-hidden="true" />
@@ -81,7 +81,7 @@ export function HeroSection() {
           className="object-cover"
         />
         <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-control bg-white/95 px-3 py-2 text-xs font-semibold text-foreground shadow-sm backdrop-blur">
-          <MapPin className="size-4 text-primary" aria-hidden="true" />
+          <MapPin className="size-4 text-primary-text" aria-hidden="true" />
           Browse listings near your campus
         </div>
       </div>

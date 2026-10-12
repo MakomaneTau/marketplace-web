@@ -132,7 +132,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Open buyer homepage in a new tab"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline"
         >
           <ShoppingBag className="h-4 w-4" aria-hidden="true" />
           Buyer homepage <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -148,7 +148,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
       <div ref={actionsRef} className="flex items-center gap-2 sm:gap-3">
         <Link
           href="/seller/products/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover sm:px-4"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary-action px-3 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover sm:px-4"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Add product</span>
@@ -157,7 +157,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         <div className="relative">
           <button
             type="button"
-            className="relative rounded-lg border border-border p-2 text-muted transition hover:bg-surface-muted aria-expanded:border-blue-200 aria-expanded:bg-primary-soft aria-expanded:text-primary"
+            className="relative rounded-lg border border-border p-2 text-muted transition hover:bg-surface-muted aria-expanded:border-blue-200 aria-expanded:bg-primary-soft aria-expanded:text-primary-text"
             aria-label="Notifications"
             aria-controls="seller-notifications-menu"
             aria-expanded={openMenu === "notifications"}
@@ -181,7 +181,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
                 {hasUnreadNotifications && (
                   <button
                     type="button"
-                    className="text-xs font-semibold text-primary hover:text-primary-hover"
+                    className="text-xs font-semibold text-primary-text hover:text-primary-hover"
                     onClick={async () => {
                       await apiRequest("/notifications/read-all", {
                         method: "PATCH",

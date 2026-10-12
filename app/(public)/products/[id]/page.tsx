@@ -124,7 +124,7 @@ export default async function ProductDetailsPage({
       >
         <Link
           href="/"
-          className="shrink-0 font-semibold text-primary hover:underline"
+          className="shrink-0 font-semibold text-primary-text hover:underline"
         >
           Home
         </Link>
@@ -170,7 +170,7 @@ export default async function ProductDetailsPage({
 
           <div className="flex items-start gap-2 border-b border-border py-4">
             <MapPin
-              className="mt-0.5 size-5 shrink-0 text-primary"
+              className="mt-0.5 size-5 shrink-0 text-primary-text"
               aria-hidden="true"
             />
             <div>
@@ -272,7 +272,7 @@ export default async function ProductDetailsPage({
             </h2>
             <Link
               href={`/search?shop=${encodeURIComponent(product.seller.shopSlug)}`}
-              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary-text hover:underline"
             >
               View shop listings{" "}
               <ChevronRight className="size-4" aria-hidden="true" />

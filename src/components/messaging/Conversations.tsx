@@ -104,7 +104,7 @@ function Avatar({
   }
   return (
     <span
-      className={`grid ${dimensions} shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary`}
+      className={`grid ${dimensions} shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary-text`}
     >
       {initials(person.display_name)}
     </span>
@@ -348,7 +348,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                 : `${items.length} conversations`}
             </span>
           </div>
-          <label className="flex h-11 items-center gap-2 rounded-control border border-border bg-background px-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+          <label className="flex h-11 items-center gap-2 rounded-control border border-border bg-background px-3 focus-within:border-primary-text focus-within:ring-2 focus-within:ring-primary-text/20">
             <Search className="size-4 shrink-0 text-muted" aria-hidden="true" />
             <input
               aria-label="Search conversations"
@@ -402,7 +402,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                     <span className="shrink-0 rounded-full bg-background px-2 py-0.5 font-semibold text-foreground ring-1 ring-border">
                       {conversationTopic(item)}
                     </span>
-                    <span className="min-w-0 flex-1 truncate font-medium text-primary">
+                    <span className="min-w-0 flex-1 truncate font-medium text-primary-text">
                       {item.product?.title || "Product no longer available"}
                     </span>
                   </span>
@@ -414,7 +414,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                     {item.unread_count > 0 && (
                       <span
                         aria-label={`${item.unread_count} unread messages`}
-                        className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground"
+                        className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-primary-action px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground"
                       >
                         {item.unread_count > 99 ? "99+" : item.unread_count}
                       </span>
@@ -464,7 +464,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
               <div className="min-w-0">
                 <h2 className="truncate font-bold">{person.display_name}</h2>
                 <p className="mt-0.5 flex min-w-0 items-center gap-2 text-xs text-muted">
-                  <span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 font-semibold text-primary">
+                  <span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 font-semibold text-primary-text">
                     {conversationTopic(current)}
                   </span>
                   <span className="min-w-0 truncate">
@@ -509,7 +509,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                   </span>
                 </span>
                 <ExternalLink
-                  className="size-4 shrink-0 text-primary"
+                  className="size-4 shrink-0 text-primary-text"
                   aria-hidden="true"
                 />
               </Link>
@@ -546,7 +546,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                       className={`flex ${own ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] rounded-card px-4 py-2.5 ${own ? "bg-primary text-primary-foreground" : "border border-border bg-surface text-foreground"}`}
+                        className={`max-w-[85%] rounded-card px-4 py-2.5 ${own ? "bg-primary-action text-primary-foreground" : "border border-border bg-surface text-foreground"}`}
                       >
                         <p className="whitespace-pre-wrap break-words text-sm leading-6 [overflow-wrap:anywhere]">
                           {message.body}
@@ -646,7 +646,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                 maxLength={2000}
                 rows={2}
                 placeholder="Write a message"
-                className="block min-h-12 w-full resize-none rounded-control border border-border-strong bg-background px-3 py-2.5 text-sm outline-none placeholder:text-subtle focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                className="block min-h-12 w-full resize-none rounded-control border border-border-strong bg-background px-3 py-2.5 text-sm outline-none placeholder:text-subtle focus:border-primary-text focus:ring-2 focus:ring-primary-text/20 disabled:opacity-60"
               />
             </label>
             <button
@@ -654,7 +654,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
               disabled={!current || !draft.trim() || sending}
               aria-label={sending ? "Sending message" : "Send message"}
               title={sending ? "Sending message" : "Send message"}
-              className="grid size-12 shrink-0 place-items-center rounded-control bg-primary text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
+              className="grid size-12 shrink-0 place-items-center rounded-control bg-primary-action text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Send className="size-5" aria-hidden="true" />
             </button>
