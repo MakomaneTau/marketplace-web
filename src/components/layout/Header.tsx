@@ -208,8 +208,8 @@ export function Header() {
                 justify-center 
                 gap-2 
                 rounded-control 
-                bg-primary 
-                text-white
+                bg-primary
+                text-primary-foreground
                 px-4 
                 text-sm 
                 font-semibold 

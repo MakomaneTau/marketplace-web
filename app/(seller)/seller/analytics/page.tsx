@@ -112,12 +112,12 @@ export default function SellerAnalyticsPage() {
                   >
                     <div
                       title={`R${item.revenue}`}
-                      className="w-full rounded-t bg-violet-600"
+                      className="w-full rounded-t bg-primary"
                       style={{
                         height: `${Math.max(4, (item.revenue / max) * 100)}%`,
                       }}
                     />
-                    <span className="text-[10px] text-slate-500">
+                    <span className="text-[10px] text-muted">
                       {item.date.slice(5)}
                     </span>
                   </div>
@@ -134,9 +134,7 @@ export default function SellerAnalyticsPage() {
                   >
                     <div>
                       <p className="font-semibold">{product.name}</p>
-                      <p className="text-xs text-slate-500">
-                        {product.units} sold
-                      </p>
+                      <p className="text-xs text-muted">{product.units} sold</p>
                     </div>
                     <strong>R{product.revenue.toFixed(2)}</strong>
                   </div>
@@ -147,7 +145,7 @@ export default function SellerAnalyticsPage() {
         </>
       )}
       {!needsShopSetup && !data && !error && (
-        <p className="text-slate-500">Loading analytics...</p>
+        <p className="text-muted">Loading analytics...</p>
       )}
       {!needsShopSetup && error && <ProtectedRequestError message={error} />}
     </div>

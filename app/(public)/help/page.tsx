@@ -47,7 +47,7 @@ export default function HelpPage() {
         description="Find answers about accounts, listings, buying, selling and marketplace safety."
       />
 
-      <section className="mt-8 rounded-card bg-primary p-5 text-white sm:p-8">
+      <section className="mt-8 rounded-card bg-primary p-5 text-primary-foreground sm:p-8">
         <label className="relative block max-w-2xl">
           <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted" />
           <input

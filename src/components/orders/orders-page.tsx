@@ -190,7 +190,7 @@ function OrdersContent() {
           <button
             type="button"
             onClick={() => void loadOrders()}
-            className="mt-5 inline-flex items-center gap-2 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="mt-5 inline-flex items-center gap-2 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <RotateCcw className="size-4" aria-hidden="true" />
             Try again
@@ -317,7 +317,7 @@ function OrdersContent() {
           {!orders.length && (
             <Link
               href="/search"
-              className="mt-5 inline-flex rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover"
+              className="mt-5 inline-flex rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
             >
               Browse listings
             </Link>

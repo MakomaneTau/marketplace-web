@@ -355,7 +355,7 @@ export default function ProfilePage() {
           <div className="flex flex-wrap items-start justify-between gap-5 border-b border-border p-5 sm:p-6">
             <div className="flex min-w-0 items-center gap-4">
               <div
-                className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-white"
+                className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
                 aria-hidden="true"
               >
                 {initials(profile)}

@@ -6,10 +6,10 @@ type StatusBadgeProps = {
 
 const styles: Record<string, string> = {
   Active: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  Draft: "bg-slate-100 text-slate-700 ring-slate-500/20",
+  Draft: "bg-surface-muted text-foreground ring-slate-500/20",
   Sold: "bg-blue-50 text-blue-700 ring-blue-600/20",
   Paused: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  New: "bg-violet-50 text-violet-700 ring-violet-600/20",
+  New: "bg-primary-soft text-primary ring-primary/20",
   Preparing: "bg-amber-50 text-amber-700 ring-amber-600/20",
   Ready: "bg-cyan-50 text-cyan-700 ring-cyan-600/20",
   Completed: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
@@ -21,7 +21,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset",
-        styles[status] ?? "bg-slate-100 text-slate-700 ring-slate-500/20",
+        styles[status] ?? "bg-surface-muted text-foreground ring-slate-500/20",
       )}
     >
       {status}

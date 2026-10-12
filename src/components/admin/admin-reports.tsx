@@ -134,7 +134,7 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
                     setDecision("resolved");
                     setNote("");
                   }}
-                  className="min-h-10 rounded-control bg-primary px-4 text-sm font-semibold text-white"
+                  className="min-h-10 rounded-control bg-primary px-4 text-sm font-semibold text-primary-foreground"
                 >
                   Review
                 </button>
@@ -264,7 +264,7 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-white"
+                className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
               >
                 {busy ? "Saving..." : "Save decision"}
               </button>

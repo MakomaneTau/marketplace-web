@@ -146,7 +146,7 @@ export function ReportForm({ productId }: { productId?: string }) {
         <button
           type="submit"
           disabled={busy}
-          className="min-h-11 rounded-control bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+          className="min-h-11 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
         >
           {busy ? "Submitting..." : "Submit report"}
         </button>

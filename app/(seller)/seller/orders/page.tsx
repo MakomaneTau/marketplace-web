@@ -118,17 +118,17 @@ export default function SellerOrdersPage() {
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <h2 className="font-bold">Order {order.id.slice(0, 8)}</h2>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-muted">
                       {order.buyer.display_name} ·{" "}
                       {new Date(order.created_at).toLocaleString()}
                     </p>
                   </div>
-                  <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold capitalize text-violet-800">
+                  <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold capitalize text-primary">
                     {order.status.replaceAll("_", " ")}
                   </span>
                 </div>
 
-                <ul className="mt-4 text-sm text-slate-700">
+                <ul className="mt-4 text-sm text-foreground">
                   {order.items.map((item) => (
                     <li key={item.id}>
                       {item.quantity} × {item.product_name}
@@ -156,7 +156,7 @@ export default function SellerOrdersPage() {
                       <button
                         type="button"
                         onClick={() => void transition(order, next)}
-                        className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-semibold text-white"
+                        className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
                       >
                         Mark {next.replaceAll("_", " ")}
                       </button>
@@ -177,7 +177,7 @@ export default function SellerOrdersPage() {
           })}
 
         {!needsShopSetup && !orders.length && !error && (
-          <p className="text-slate-500">No seller orders yet.</p>
+          <p className="text-muted">No seller orders yet.</p>
         )}
         {!needsShopSetup && error && <ProtectedRequestError message={error} />}
       </div>

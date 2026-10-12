@@ -178,7 +178,7 @@ function CartContent() {
             <button
               type="button"
               onClick={() => void retryLoad()}
-              className="rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white"
+              className="rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
             >
               Try again
             </button>
@@ -490,7 +490,7 @@ function CartContent() {
                           }
                           className={`h-10 rounded-control border px-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                             isSelected
-                              ? "border-primary bg-primary text-white"
+                              ? "border-primary bg-primary text-primary-foreground"
                               : "border-border-strong bg-white text-foreground hover:border-primary"
                           }`}
                         >
@@ -577,7 +577,7 @@ function CartContent() {
           </div>
           <button
             disabled={busy || !hasFulfilment || pickupUnavailable}
-            className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LockKeyhole className="size-4" aria-hidden="true" />
             {busy ? "Placing order..." : "Place order"}

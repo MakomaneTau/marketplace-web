@@ -104,7 +104,7 @@ export default function SafetyPage() {
         })}
       </section>
 
-      <section className="mt-8 rounded-card bg-primary p-6 text-white sm:p-8">
+      <section className="mt-8 rounded-card bg-primary p-6 text-primary-foreground sm:p-8">
         <h2 className="text-xl font-bold">Report suspicious activity</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80">
           Save relevant details, stop communicating when necessary, and report

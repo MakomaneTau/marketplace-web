@@ -91,7 +91,7 @@ export default function SellerDashboardPage() {
         action={
           <Link
             href="/seller/products/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-hover"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add product
@@ -134,9 +134,9 @@ export default function SellerDashboardPage() {
       </section>
 
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.75fr)]">
-        <section className="overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 sm:px-5">
-            <h2 className="font-bold text-slate-950">Recent orders</h2>
+        <section className="overflow-hidden rounded-lg border border-border bg-white">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
+            <h2 className="font-bold text-foreground">Recent orders</h2>
             <Link
               href="/seller/orders"
               className="flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
@@ -148,7 +148,7 @@ export default function SellerDashboardPage() {
           {data.orders.recent.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[36rem] text-left text-sm">
-                <thead className="bg-slate-50 text-xs font-semibold text-slate-500">
+                <thead className="bg-surface-muted text-xs font-semibold text-muted">
                   <tr>
                     <th className="px-5 py-3">Order</th>
                     <th className="px-5 py-3">Date</th>
@@ -161,17 +161,20 @@ export default function SellerDashboardPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {data.orders.recent.map((order) => (
-                    <tr key={order.id} className="transition hover:bg-slate-50">
-                      <td className="px-5 py-3.5 font-semibold text-slate-950">
+                    <tr
+                      key={order.id}
+                      className="transition hover:bg-surface-muted"
+                    >
+                      <td className="px-5 py-3.5 font-semibold text-foreground">
                         #{order.id.slice(0, 8).toUpperCase()}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600">
+                      <td className="px-5 py-3.5 text-muted">
                         {formatDate(order.created_at)}
                       </td>
                       <td className="px-5 py-3.5">
                         <StatusBadge status={formatStatus(order.status)} />
                       </td>
-                      <td className="px-5 py-3.5 text-right font-bold text-slate-950">
+                      <td className="px-5 py-3.5 text-right font-bold text-foreground">
                         {formatZAR(Number(order.total_amount))}
                       </td>
                       <td className="px-5 py-3.5 text-right">
@@ -190,27 +193,29 @@ export default function SellerDashboardPage() {
           ) : (
             <div className="px-5 py-10 text-center">
               <ShoppingBag
-                className="mx-auto h-8 w-8 text-slate-400"
+                className="mx-auto h-8 w-8 text-subtle"
                 aria-hidden="true"
               />
-              <p className="mt-3 font-semibold text-slate-950">No orders yet</p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-3 font-semibold text-foreground">
+                No orders yet
+              </p>
+              <p className="mt-1 text-sm text-muted">
                 New orders will appear here as buyers check out.
               </p>
             </div>
           )}
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white">
-          <div className="border-b border-slate-200 px-5 py-4">
+        <section className="rounded-lg border border-border bg-white">
+          <div className="border-b border-border px-5 py-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-bold text-slate-950">Store setup</h2>
-              <span className="text-xs font-semibold text-slate-500">
+              <h2 className="font-bold text-foreground">Store setup</h2>
+              <span className="text-xs font-semibold text-muted">
                 {completedSetup} of {setupSteps.length} complete
               </span>
             </div>
             <div
-              className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100"
+              className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-muted"
               aria-hidden="true"
             >
               <div
@@ -228,7 +233,7 @@ export default function SellerDashboardPage() {
                 <Link
                   key={step.key}
                   href={step.href}
-                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
+                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-foreground transition hover:bg-surface-muted hover:text-foreground"
                 >
                   {complete ? (
                     <CircleCheck
@@ -237,13 +242,13 @@ export default function SellerDashboardPage() {
                     />
                   ) : (
                     <Circle
-                      className="h-5 w-5 shrink-0 text-slate-400"
+                      className="h-5 w-5 shrink-0 text-subtle"
                       aria-hidden="true"
                     />
                   )}
                   <span className="flex-1">{step.label}</span>
                   <ArrowRight
-                    className="h-4 w-4 text-slate-400"
+                    className="h-4 w-4 text-subtle"
                     aria-hidden="true"
                   />
                 </Link>
@@ -295,13 +300,13 @@ function ActionPanel({
   icon: LucideIcon;
 }) {
   return (
-    <section className="flex items-center gap-4 rounded-lg border border-slate-200 bg-white p-5">
+    <section className="flex items-center gap-4 rounded-lg border border-border bg-white p-5">
       <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
         <Icon className="h-5 w-5" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
-        <h2 className="font-bold text-slate-950">{title}</h2>
-        <p className="mt-1 text-sm text-slate-500">{description}</p>
+        <h2 className="font-bold text-foreground">{title}</h2>
+        <p className="mt-1 text-sm text-muted">{description}</p>
       </div>
       <Link
         href={href}

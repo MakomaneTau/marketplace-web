@@ -116,7 +116,7 @@ export function AdminUsers({ onChanged }: { onChanged: () => void }) {
           />
           <button
             type="submit"
-            className="h-11 rounded-control bg-primary px-4 text-sm font-semibold text-white"
+            className="h-11 rounded-control bg-primary px-4 text-sm font-semibold text-primary-foreground"
           >
             Search
           </button>
@@ -295,7 +295,7 @@ export function AdminUsers({ onChanged }: { onChanged: () => void }) {
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
               >
                 {busy ? "Saving..." : "Confirm"}
               </button>

@@ -323,7 +323,7 @@ export function MobileNav() {
                   justify-center
                   rounded-full
                   bg-primary
-                  text-white
+                  text-primary-foreground
                 "
                     >
                       <UserRound className="size-5" />

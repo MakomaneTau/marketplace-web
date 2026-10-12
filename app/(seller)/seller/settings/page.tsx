@@ -137,10 +137,10 @@ export default function SellerSettingsPage() {
               className="rounded-xl border px-4 py-3"
             />
           </div>
-          <button className="mt-5 rounded-xl bg-violet-700 px-4 py-2.5 font-semibold text-white">
+          <button className="mt-5 rounded-xl bg-primary px-4 py-2.5 font-semibold text-primary-foreground">
             Save account
           </button>
-          <p className="mt-3 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-muted">
             Verification: {profile.verificationStatus}
           </p>
         </form>
@@ -157,7 +157,7 @@ export default function SellerSettingsPage() {
                   type="checkbox"
                   checked={settings[key]}
                   onChange={() => toggle(key)}
-                  className="h-5 w-5 accent-violet-700"
+                  className="h-5 w-5 accent-primary"
                 />
               </label>
             ))}

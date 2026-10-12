@@ -120,7 +120,7 @@ export default function SellerProductsPage() {
       />
     ) : (
       <span
-        className={`grid ${size} place-items-center rounded-xl bg-slate-100 text-slate-400`}
+        className={`grid ${size} place-items-center rounded-xl bg-surface-muted text-subtle`}
       >
         <Package className="h-6 w-6" />
       </span>
@@ -135,7 +135,7 @@ export default function SellerProductsPage() {
           updateStatus(product, event.target.value as ListingStatus)
         }
         aria-label={`Change status for ${product.title}`}
-        className="rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700 disabled:opacity-50"
+        className="rounded-lg border border-border bg-white px-2 py-2 text-xs text-foreground disabled:opacity-50"
       >
         {Object.entries(statusLabels).map(([value, label]) => (
           <option key={value} value={value}>
@@ -145,7 +145,7 @@ export default function SellerProductsPage() {
       </select>
       <Link
         href={`/seller/products/${product.id}/edit`}
-        className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
+        className="rounded-lg border border-border p-2 text-muted hover:bg-surface-muted"
         aria-label={`Edit ${product.title}`}
       >
         <Pencil className="h-4 w-4" />
@@ -154,7 +154,7 @@ export default function SellerProductsPage() {
         type="button"
         disabled={updatingId === product.id}
         onClick={() => deleteProduct(product)}
-        className="rounded-lg border border-slate-200 p-2 text-red-600 hover:bg-red-50 disabled:opacity-50"
+        className="rounded-lg border border-border p-2 text-red-600 hover:bg-red-50 disabled:opacity-50"
         aria-label={`Delete ${product.title}`}
       >
         <Trash2 className="h-4 w-4" />
@@ -171,21 +171,21 @@ export default function SellerProductsPage() {
         action={
           <Link
             href="/seller/products/new"
-            className="inline-flex items-center gap-2 rounded-xl bg-violet-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <Plus className="h-4 w-4" /> Add product
           </Link>
         }
       />
-      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-white p-4 shadow-sm sm:flex-row sm:items-center">
         <label className="relative flex-1">
           <span className="sr-only">Search products</span>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search products"
-            className="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+            className="w-full rounded-xl border border-border-strong py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
           />
         </label>
         <select
@@ -194,7 +194,7 @@ export default function SellerProductsPage() {
             setStatus(event.target.value as ListingStatus | "")
           }
           aria-label="Filter by status"
-          className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-violet-500"
+          className="rounded-xl border border-border-strong bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary"
         >
           <option value="">All statuses</option>
           {Object.entries(statusLabels).map(([value, label]) => (
@@ -207,7 +207,7 @@ export default function SellerProductsPage() {
           value={sort}
           onChange={(event) => setSort(event.target.value as ProductSort)}
           aria-label="Sort products"
-          className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-violet-500"
+          className="rounded-xl border border-border-strong bg-white px-3.5 py-2.5 text-sm outline-none focus:border-primary"
         >
           <option value="newest">Newest</option>
           <option value="most_viewed">Most viewed</option>
@@ -216,20 +216,20 @@ export default function SellerProductsPage() {
         </select>
       </div>
       {error && <ProtectedRequestError message={error} />}
-      {loading && <p className="text-sm text-slate-500">Loading products...</p>}
+      {loading && <p className="text-sm text-muted">Loading products...</p>}
       {!loading && !error && products.length === 0 && (
         <div className="rounded-2xl border border-dashed bg-white p-10 text-center">
-          <Package className="mx-auto h-8 w-8 text-slate-400" />
+          <Package className="mx-auto h-8 w-8 text-subtle" />
           <p className="mt-3 font-semibold">No products found</p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted">
             Try different filters or add a new listing.
           </p>
         </div>
       )}
       {!loading && products.length > 0 && (
-        <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
+        <div className="hidden overflow-hidden rounded-2xl border border-border bg-white shadow-sm md:block">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <thead className="border-b border-border bg-surface-muted text-xs uppercase tracking-wide text-muted">
               <tr>
                 <th className="px-5 py-4 font-semibold">Product</th>
                 <th className="px-5 py-4 font-semibold">Price</th>
@@ -241,15 +241,15 @@ export default function SellerProductsPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-slate-50/70">
+                <tr key={product.id} className="hover:bg-surface-muted/70">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       {productMedia(product, "h-12 w-12")}
                       <div>
-                        <p className="font-semibold text-slate-950">
+                        <p className="font-semibold text-foreground">
                           {product.title}
                         </p>
-                        <p className="mt-0.5 text-xs text-slate-500">
+                        <p className="mt-0.5 text-xs text-muted">
                           {product.category.name}
                         </p>
                       </div>
@@ -258,12 +258,10 @@ export default function SellerProductsPage() {
                   <td className="px-5 py-4 font-semibold">
                     R{Number(product.price).toFixed(2)}
                   </td>
-                  <td className="px-5 py-4 text-slate-600">
+                  <td className="px-5 py-4 text-muted">
                     {product.stock_quantity}
                   </td>
-                  <td className="px-5 py-4 text-slate-600">
-                    {product.view_count}
-                  </td>
+                  <td className="px-5 py-4 text-muted">{product.view_count}</td>
                   <td className="px-5 py-4">
                     <StatusBadge status={statusLabels[product.status]} />
                   </td>
@@ -279,7 +277,7 @@ export default function SellerProductsPage() {
           {products.map((product) => (
             <article
               key={product.id}
-              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="rounded-2xl border border-border bg-white p-4 shadow-sm"
             >
               <div className="flex gap-3">
                 {productMedia(product, "h-16 w-16 shrink-0")}
@@ -287,7 +285,7 @@ export default function SellerProductsPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h2 className="font-semibold">{product.title}</h2>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-muted">
                         {product.category.name}
                       </p>
                     </div>
@@ -297,7 +295,7 @@ export default function SellerProductsPage() {
                     <span className="font-bold">
                       R{Number(product.price).toFixed(2)}
                     </span>
-                    <span className="text-slate-500">
+                    <span className="text-muted">
                       Stock {product.stock_quantity} · {product.view_count}{" "}
                       views
                     </span>

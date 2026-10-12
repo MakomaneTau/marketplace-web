@@ -128,7 +128,7 @@ export function SellerVerificationForm() {
 
         <Link
           href="/seller"
-          className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary px-5 font-semibold text-white"
+          className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-control bg-primary px-5 font-semibold text-primary-foreground"
         >
           Back to seller centre
         </Link>

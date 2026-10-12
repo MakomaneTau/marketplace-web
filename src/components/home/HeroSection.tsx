@@ -48,7 +48,7 @@ export function HeroSection() {
           </label>
           <button
             type="submit"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
           >
             Search marketplace{" "}
             <ArrowRight className="size-4" aria-hidden="true" />

@@ -117,12 +117,12 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-white/95 px-4 backdrop-blur sm:px-6">
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onOpenMenu}
-          className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 lg:hidden"
+          className="rounded-lg border border-border p-2 text-muted hover:bg-surface-muted lg:hidden"
           aria-label="Open seller menu"
         >
           <Menu className="h-5 w-5" />
@@ -138,8 +138,8 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
           Buyer homepage <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
         </Link>
         <div className="hidden sm:block">
-          <p className="text-xs font-medium text-slate-500">Selling as</p>
-          <p className="text-sm font-bold text-slate-950">
+          <p className="text-xs font-medium text-muted">Selling as</p>
+          <p className="text-sm font-bold text-foreground">
             {identity.shopName}
           </p>
         </div>
@@ -148,7 +148,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
       <div ref={actionsRef} className="flex items-center gap-2 sm:gap-3">
         <Link
           href="/seller/products/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover sm:px-4"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover sm:px-4"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Add product</span>
@@ -157,7 +157,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         <div className="relative">
           <button
             type="button"
-            className="relative rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 aria-expanded:border-blue-200 aria-expanded:bg-primary-soft aria-expanded:text-primary"
+            className="relative rounded-lg border border-border p-2 text-muted transition hover:bg-surface-muted aria-expanded:border-blue-200 aria-expanded:bg-primary-soft aria-expanded:text-primary"
             aria-label="Notifications"
             aria-controls="seller-notifications-menu"
             aria-expanded={openMenu === "notifications"}
@@ -172,10 +172,10 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
           {openMenu === "notifications" && (
             <div
               id="seller-notifications-menu"
-              className="absolute right-0 top-[calc(100%+0.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl"
+              className="absolute right-0 top-[calc(100%+0.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-border bg-white shadow-xl"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-                <p className="text-sm font-bold text-slate-950">
+              <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                <p className="text-sm font-bold text-foreground">
                   Notifications
                 </p>
                 {hasUnreadNotifications && (
@@ -198,16 +198,16 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
               <div className="divide-y divide-slate-100">
                 {notifications.map((notification) => (
                   <div key={notification.id} className="px-4 py-3">
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-foreground">
                       {notification.title}
                     </p>
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-muted">
                       {notification.body}
                     </p>
                   </div>
                 ))}
                 {notifications.length === 0 && (
-                  <p className="px-4 py-5 text-sm text-slate-500">
+                  <p className="px-4 py-5 text-sm text-muted">
                     No unread notifications.
                   </p>
                 )}
@@ -219,7 +219,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         <div className="relative hidden sm:block">
           <button
             type="button"
-            className="flex items-center gap-2 rounded-lg border border-slate-200 p-1.5 pr-2 transition hover:bg-slate-50 aria-expanded:border-blue-200 aria-expanded:bg-primary-soft"
+            className="flex items-center gap-2 rounded-lg border border-border p-1.5 pr-2 transition hover:bg-surface-muted aria-expanded:border-blue-200 aria-expanded:bg-primary-soft"
             aria-label="Open seller account menu"
             aria-controls="seller-account-menu"
             aria-expanded={openMenu === "account"}
@@ -238,7 +238,7 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
               </span>
             )}
             <ChevronDown
-              className={`h-4 w-4 text-slate-500 transition-transform ${
+              className={`h-4 w-4 text-muted transition-transform ${
                 openMenu === "account" ? "rotate-180" : ""
               }`}
             />
@@ -247,32 +247,32 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
           {openMenu === "account" && (
             <div
               id="seller-account-menu"
-              className="absolute right-0 top-[calc(100%+0.5rem)] w-56 overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-xl"
+              className="absolute right-0 top-[calc(100%+0.5rem)] w-56 overflow-hidden rounded-lg border border-border bg-white p-2 shadow-xl"
             >
-              <div className="border-b border-slate-100 px-3 py-2">
-                <p className="text-sm font-bold text-slate-950">
+              <div className="border-b border-border px-3 py-2">
+                <p className="text-sm font-bold text-foreground">
                   {identity.shopName}
                 </p>
-                <p className="text-xs text-slate-500">{identity.displayName}</p>
+                <p className="text-xs text-muted">{identity.displayName}</p>
               </div>
               <nav className="mt-1" aria-label="Seller account">
                 <Link
                   href="/seller/shop"
-                  className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-muted hover:text-foreground"
                   onClick={() => setOpenMenu(null)}
                 >
                   View shop profile
                 </Link>
                 <Link
                   href="/seller/settings"
-                  className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-muted hover:text-foreground"
                   onClick={() => setOpenMenu(null)}
                 >
                   Account settings
                 </Link>
                 <button
                   type="button"
-                  className="block rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-slate-50 hover:text-slate-950"
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-surface-muted hover:text-foreground"
                   onClick={async () => {
                     await logout();
                     router.push("/login");

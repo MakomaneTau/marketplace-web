@@ -100,7 +100,7 @@ export function OnboardingExperience(props: ExperienceProps) {
                     className={cn(
                       "mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border",
                       done
-                        ? "border-primary bg-primary text-white"
+                        ? "border-primary bg-primary text-primary-foreground"
                         : "border-border-strong text-muted",
                     )}
                   >
@@ -172,7 +172,7 @@ export function OnboardingExperience(props: ExperienceProps) {
             <button
               type="button"
               onClick={props.onOpen}
-              className="inline-flex min-h-11 items-center gap-2 rounded-control bg-primary px-4 text-sm font-semibold text-white shadow-lg hover:bg-primary-hover"
+              className="inline-flex min-h-11 items-center gap-2 rounded-control bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary-hover"
               disabled={props.loading || !props.state}
             >
               {props.loading && !props.state ? (

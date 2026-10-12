@@ -58,13 +58,13 @@ export function PickupCampusPicker({
     };
   }, [slug, retry]);
   return (
-    <section className="space-y-4 rounded-xl bg-slate-50 p-4">
+    <section className="space-y-4 rounded-xl bg-surface-muted p-4">
       <div>
         <h2 className="flex items-center gap-2 font-semibold">
-          <MapPin className="size-4 text-violet-700" />
+          <MapPin className="size-4 text-primary" />
           Pickup campuses
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted">
           Select up to 10 campuses, including campuses at different
           universities.
         </p>
@@ -77,7 +77,7 @@ export function PickupCampusPicker({
             setError(null);
             setSlug(event.target.value);
           }}
-          className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3"
+          className="mt-2 w-full rounded-xl border border-border-strong bg-white px-4 py-3"
         >
           <option value="">Select university</option>
           {universities.map((university) => (
@@ -90,7 +90,7 @@ export function PickupCampusPicker({
       {slug &&
         !error &&
         (options?.slug !== slug ? (
-          <p role="status" className="text-sm text-slate-500">
+          <p role="status" className="text-sm text-muted">
             Loading campuses...
           </p>
         ) : (
@@ -103,7 +103,7 @@ export function PickupCampusPicker({
               return (
                 <label
                   key={campus.id}
-                  className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm ${selected ? "border-violet-300 bg-violet-50" : "border-slate-200 bg-white"}`}
+                  className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm ${selected ? "border-primary bg-primary-soft" : "border-border bg-white"}`}
                 >
                   <input
                     type="checkbox"
@@ -116,14 +116,14 @@ export function PickupCampusPicker({
                           : [...value, campus],
                       )
                     }
-                    className="size-4 accent-violet-700"
+                    className="size-4 accent-primary"
                   />
                   {campus.name}
                 </label>
               );
             })}
             {!options.campuses.length && (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted">
                 No campuses are available for this university.
               </p>
             )}
@@ -152,11 +152,11 @@ export function PickupCampusPicker({
           {value.map((campus) => (
             <span
               key={campus.id}
-              className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-white py-2 pl-3 pr-1 text-sm text-violet-900"
+              className="inline-flex items-center gap-2 rounded-xl border border-primary bg-white py-2 pl-3 pr-1 text-sm text-primary"
             >
               <span>
                 {campus.name}
-                <span className="block text-xs text-slate-500">
+                <span className="block text-xs text-muted">
                   {campus.university.name}
                 </span>
               </span>
@@ -166,7 +166,7 @@ export function PickupCampusPicker({
                 onClick={() =>
                   onChange(value.filter((item) => item.id !== campus.id))
                 }
-                className="rounded-lg p-2 hover:bg-violet-50"
+                className="rounded-lg p-2 hover:bg-primary-soft"
               >
                 <X className="size-4" />
               </button>
@@ -174,9 +174,7 @@ export function PickupCampusPicker({
           ))}
         </div>
         {!value.length && (
-          <p className="text-sm text-slate-500">
-            No pickup campuses selected yet.
-          </p>
+          <p className="text-sm text-muted">No pickup campuses selected yet.</p>
         )}
       </div>
     </section>

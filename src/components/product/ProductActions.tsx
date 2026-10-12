@@ -99,7 +99,7 @@ export function ProductActions({
           type="button"
           onClick={message}
           disabled={Boolean(busyAction) || !ready}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-control bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           <MessageCircle className="size-5" aria-hidden="true" />
           {busyAction === "message"
@@ -160,7 +160,7 @@ export function ProductActions({
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/login"
-                className="rounded-control bg-primary px-4 py-2 font-semibold text-white"
+                className="rounded-control bg-primary px-4 py-2 font-semibold text-primary-foreground"
               >
                 Sign in
               </Link>

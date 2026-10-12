@@ -37,7 +37,7 @@ export function ProtectedRequestError({ message }: { message: string }) {
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/login"
-            className="inline-flex items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="inline-flex items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <LogIn className="h-4 w-4" aria-hidden="true" /> Sign in
           </Link>

@@ -59,7 +59,7 @@ export function ReviewForm({
         placeholder="Share at least 10 characters"
         className="rounded-control border px-3 py-2"
       />
-      <button className="rounded-control bg-primary px-4 py-2 text-sm font-semibold text-white">
+      <button className="rounded-control bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
         Review
       </button>
       {error && (

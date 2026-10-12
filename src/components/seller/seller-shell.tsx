@@ -47,7 +47,7 @@ export function SellerShell({ children }: SellerShellProps) {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             href="/signup"
-            className="rounded-control bg-primary px-5 py-3 font-semibold text-white"
+            className="rounded-control bg-primary px-5 py-3 font-semibold text-primary-foreground"
           >
             Register as a seller
           </Link>
@@ -65,7 +65,7 @@ export function SellerShell({ children }: SellerShellProps) {
   return (
     <OnboardingProvider role="seller">
       <UnreadMessagesProvider>
-        <div className="seller-theme min-h-[100dvh] bg-background text-slate-950">
+        <div className="seller-theme min-h-[100dvh] bg-background text-foreground">
           <div className="fixed inset-y-0 left-0 z-40">
             <SellerSidebar />
           </div>
@@ -74,7 +74,7 @@ export function SellerShell({ children }: SellerShellProps) {
             <div className="fixed inset-0 z-50 lg:hidden">
               <button
                 type="button"
-                className="absolute inset-0 bg-slate-950/50"
+                className="absolute inset-0 bg-foreground/50"
                 aria-label="Close seller menu"
                 onClick={() => setMenuOpen(false)}
               />

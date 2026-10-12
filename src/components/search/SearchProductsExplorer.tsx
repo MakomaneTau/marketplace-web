@@ -216,7 +216,7 @@ export function SearchProductsExplorer({
           <button
             type="button"
             onClick={() => setRetryKey((value) => value + 1)}
-            className="mt-4 rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="mt-4 rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             Try again
           </button>

@@ -79,7 +79,7 @@ export function InformationPage({
               href={action.href}
               className={
                 index === 0
-                  ? "rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover"
+                  ? "rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
                   : "rounded-control border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-surface-muted"
               }
             >

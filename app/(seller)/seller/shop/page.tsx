@@ -124,9 +124,7 @@ export default function SellerShopPage() {
 
   if (!loaded)
     return (
-      <p className="py-12 text-center text-sm text-slate-500">
-        Loading shop...
-      </p>
+      <p className="py-12 text-center text-sm text-muted">Loading shop...</p>
     );
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
@@ -193,7 +191,7 @@ export default function SellerShopPage() {
               type="file"
               accept="image/*"
               onChange={(event) => upload("logo", event.target.files?.[0])}
-              className="mt-2 block w-full cursor-pointer rounded-xl border border-slate-300 bg-slate-50 p-1.5 text-sm font-normal text-slate-600 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-violet-700 file:px-4 file:py-2.5 file:text-sm font-semibold file:text-white hover:file:bg-violet-800"
+              className="mt-2 block w-full cursor-pointer rounded-xl border border-border-strong bg-surface-muted p-1.5 text-sm font-normal text-muted file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2.5 file:text-sm font-semibold file:text-primary-foreground hover:file:bg-primary-hover"
             />
           </label>
           <label className="text-sm font-semibold">
@@ -202,7 +200,7 @@ export default function SellerShopPage() {
               type="file"
               accept="image/*"
               onChange={(event) => upload("banner", event.target.files?.[0])}
-              className="mt-2 block w-full cursor-pointer rounded-xl border border-slate-300 bg-slate-50 p-1.5 text-sm font-normal text-slate-600 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-violet-700 file:px-4 file:py-2.5 file:text-sm font-semibold file:text-white hover:file:bg-violet-800"
+              className="mt-2 block w-full cursor-pointer rounded-xl border border-border-strong bg-surface-muted p-1.5 text-sm font-normal text-muted file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2.5 file:text-sm font-semibold file:text-primary-foreground hover:file:bg-primary-hover"
             />
           </label>
         </div>
@@ -220,7 +218,7 @@ export default function SellerShopPage() {
             {error}
           </p>
         )}
-        <button className="rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white">
+        <button className="rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground">
           Save shop changes
         </button>
       </form>

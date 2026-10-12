@@ -394,7 +394,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
                 <button
                   type="submit"
                   disabled={busy || !images}
-                  className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                  className="rounded-control bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
                 >
                   {busy ? "Saving..." : "Save decision"}
                 </button>

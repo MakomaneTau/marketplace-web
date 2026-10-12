@@ -25,9 +25,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
   } = useProductForm({ mode, productId });
   if (!ready)
     return (
-      <p className="py-12 text-center text-sm text-slate-500">
-        Loading listing...
-      </p>
+      <p className="py-12 text-center text-sm text-muted">Loading listing...</p>
     );
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
@@ -44,14 +42,14 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
       onSubmit={submit}
     >
       <div className="space-y-6">
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex items-center gap-3">
-            <span className="rounded-xl bg-violet-50 p-2 text-violet-700">
+            <span className="rounded-xl bg-primary-soft p-2 text-primary">
               <ImagePlus className="h-5 w-5" />
             </span>
             <div>
-              <h2 className="font-bold text-slate-950">Product photos</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="font-bold text-foreground">Product photos</h2>
+              <p className="text-xs text-muted">
                 Add up to five clear images. The first image becomes the cover.
               </p>
             </div>
@@ -61,7 +59,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             {previews.map((url, index) => (
               <div
                 key={url}
-                className="relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+                className="relative aspect-square overflow-hidden rounded-xl border border-border bg-surface-muted"
               >
                 {/* Native img is used so local object URLs can be previewed without Next Image configuration. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -73,13 +71,13 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 <button
                   type="button"
                   onClick={() => removeImage(url)}
-                  className="absolute right-1.5 top-1.5 rounded-full bg-slate-950/75 p-1 text-white"
+                  className="absolute right-1.5 top-1.5 rounded-full bg-foreground/75 p-1 text-white"
                   aria-label={`Remove image ${index + 1}`}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
                 {index === 0 && (
-                  <span className="absolute bottom-1.5 left-1.5 rounded-md bg-white/90 px-2 py-1 text-[10px] font-bold text-slate-900">
+                  <span className="absolute bottom-1.5 left-1.5 rounded-md bg-white/90 px-2 py-1 text-[10px] font-bold text-foreground">
                     Cover
                   </span>
                 )}
@@ -87,9 +85,9 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             ))}
 
             {previews.length < 5 && (
-              <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-center transition hover:border-violet-400 hover:bg-violet-50">
-                <ImagePlus className="h-6 w-6 text-violet-700" />
-                <span className="mt-2 text-xs font-semibold text-slate-700">
+              <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted text-center transition hover:border-primary hover:bg-primary-soft">
+                <ImagePlus className="h-6 w-6 text-primary" />
+                <span className="mt-2 text-xs font-semibold text-foreground">
                   Add photos
                 </span>
                 <input
@@ -104,11 +102,11 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <h2 className="font-bold text-slate-950">Product details</h2>
+        <section className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-6">
+          <h2 className="font-bold text-foreground">Product details</h2>
           <div className="mt-5 grid gap-6 sm:grid-cols-2">
             <label className="sm:col-span-2">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Product title
               </span>
               <input
@@ -118,12 +116,12 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 required
                 minLength={5}
                 maxLength={80}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-subtle focus:border-primary focus:ring-4 focus:ring-primary/20"
               />
             </label>
 
             <label>
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Category
               </span>
               <select
@@ -131,7 +129,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 defaultValue={existing?.category_id || ""}
                 required
                 disabled={categoriesLoading || categories.length === 0}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted"
               >
                 <option value="" disabled>
                   {categoriesLoading
@@ -160,14 +158,14 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             </label>
 
             <label>
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Condition
               </span>
               <select
                 name="condition"
                 defaultValue={existing?.condition || ""}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
               >
                 <option value="" disabled>
                   Select condition
@@ -180,9 +178,9 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             </label>
 
             <label className="sm:col-span-2">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Description{" "}
-                <span className="font-normal text-slate-400">(optional)</span>
+                <span className="font-normal text-subtle">(optional)</span>
               </span>
               <textarea
                 name="description"
@@ -191,21 +189,21 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 placeholder="Describe the condition, what is included, and any defects the buyer should know about."
                 minLength={20}
                 maxLength={2000}
-                className="w-full resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                className="w-full resize-y rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none transition placeholder:text-subtle focus:border-primary focus:ring-4 focus:ring-primary/20"
               />
             </label>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <h2 className="font-bold text-slate-950">Price and stock</h2>
+        <section className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-6">
+          <h2 className="font-bold text-foreground">Price and stock</h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <label>
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Price
               </span>
-              <div className="flex overflow-hidden rounded-xl border border-slate-300 focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-100">
-                <span className="grid place-items-center border-r border-slate-300 bg-slate-50 px-3 text-sm font-semibold text-slate-600">
+              <div className="flex overflow-hidden rounded-xl border border-border-strong focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20">
+                <span className="grid place-items-center border-r border-border-strong bg-surface-muted px-3 text-sm font-semibold text-muted">
                   R
                 </span>
                 <input
@@ -222,7 +220,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             </label>
 
             <label>
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Quantity available
               </span>
               <input
@@ -231,67 +229,67 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                 min="1"
                 defaultValue={existing?.stock_quantity || 1}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
               />
             </label>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-center gap-3">
-            <span className="rounded-xl bg-violet-50 p-2 text-violet-700">
+            <span className="rounded-xl bg-primary-soft p-2 text-primary">
               <MapPin className="h-5 w-5" />
             </span>
             <div>
-              <h2 className="font-bold text-slate-950">
+              <h2 className="font-bold text-foreground">
                 Collection and delivery
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted">
                 Choose how buyers can receive this item.
               </p>
             </div>
           </div>
           <div className="mt-5 space-y-3">
             <label className="block">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">
+              <span className="mb-2 block text-sm font-semibold text-foreground">
                 Pickup location{" "}
-                <span className="font-normal text-slate-400">(optional)</span>
+                <span className="font-normal text-subtle">(optional)</span>
               </span>
               <input
                 name="pickup_location"
                 defaultValue={existing?.pickup_location || ""}
                 placeholder="e.g. Main library entrance"
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                className="w-full rounded-xl border border-border-strong bg-white px-3.5 py-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/20"
               />
             </label>
-            <label className="flex gap-3 rounded-xl border border-slate-200 p-4">
+            <label className="flex gap-3 rounded-xl border border-border p-4">
               <input
                 name="campus_pickup"
                 type="checkbox"
                 defaultChecked={existing?.allows_campus_pickup ?? true}
-                className="mt-0.5 h-4 w-4 accent-violet-700"
+                className="mt-0.5 h-4 w-4 accent-primary"
               />
               <span>
-                <span className="block text-sm font-semibold text-slate-900">
+                <span className="block text-sm font-semibold text-foreground">
                   Campus collection
                 </span>
-                <span className="block text-xs text-slate-500">
+                <span className="block text-xs text-muted">
                   Meet the buyer at an agreed safe campus pickup point.
                 </span>
               </span>
             </label>
-            <label className="flex gap-3 rounded-xl border border-slate-200 p-4">
+            <label className="flex gap-3 rounded-xl border border-border p-4">
               <input
                 name="delivery"
                 type="checkbox"
                 defaultChecked={existing?.allows_delivery ?? true}
-                className="mt-0.5 h-4 w-4 accent-violet-700"
+                className="mt-0.5 h-4 w-4 accent-primary"
               />
               <span>
-                <span className="block text-sm font-semibold text-slate-900">
+                <span className="block text-sm font-semibold text-foreground">
                   Local delivery
                 </span>
-                <span className="block text-xs text-slate-500">
+                <span className="block text-xs text-muted">
                   Arrange delivery directly with the buyer.
                 </span>
               </span>
@@ -301,12 +299,12 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
       </div>
 
       <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="rounded-2xl border border-border bg-white p-5 shadow-sm">
           <div className="flex items-center gap-2">
-            <PackageCheck className="h-5 w-5 text-violet-700" />
-            <h2 className="font-bold text-slate-950">Listing checklist</h2>
+            <PackageCheck className="h-5 w-5 text-primary" />
+            <h2 className="font-bold text-foreground">Listing checklist</h2>
           </div>
-          <ul className="mt-4 space-y-3 text-sm text-slate-600">
+          <ul className="mt-4 space-y-3 text-sm text-muted">
             <li className="flex gap-2">
               <span className="text-emerald-600">●</span> Use a specific,
               searchable title.
@@ -326,14 +324,14 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
+        <section className="rounded-2xl border border-primary bg-primary-soft p-5">
           <div className="flex gap-3">
-            <Info className="mt-0.5 h-5 w-5 shrink-0 text-violet-700" />
+            <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
             <div>
-              <h2 className="text-sm font-bold text-violet-950">
+              <h2 className="text-sm font-bold text-primary">
                 Safety reminder
               </h2>
-              <p className="mt-1 text-xs leading-5 text-violet-800">
+              <p className="mt-1 text-xs leading-5 text-primary">
                 Keep communication in the marketplace and use well-lit public
                 collection points.
               </p>
@@ -342,9 +340,9 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
         </section>
 
         {productId && (
-          <p className="rounded-xl bg-slate-100 px-4 py-3 text-xs text-slate-500">
+          <p className="rounded-xl bg-surface-muted px-4 py-3 text-xs text-muted">
             Editing listing ID:{" "}
-            <span className="font-mono font-semibold text-slate-700">
+            <span className="font-mono font-semibold text-foreground">
               {productId}
             </span>
           </p>
@@ -364,7 +362,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
             type="submit"
             disabled={submitting}
             onClick={publishListing}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-800"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover"
           >
             <PackageCheck className="h-4 w-4" />
             {mode === "edit" ? "Update listing" : "Publish listing"}
@@ -375,7 +373,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
               saveDraft(event.currentTarget.form);
             }}
             disabled={submitting}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border-strong bg-white px-4 py-3 text-sm font-semibold text-foreground hover:bg-surface-muted"
           >
             <Save className="h-4 w-4" />
             Save draft

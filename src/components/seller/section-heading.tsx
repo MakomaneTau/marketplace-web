@@ -19,11 +19,11 @@ export function SectionHeading({
         {eyebrow && (
           <p className="mb-1 text-sm font-semibold text-primary">{eyebrow}</p>
         )}
-        <h1 className="text-2xl font-black text-slate-950 sm:text-3xl">
+        <h1 className="text-2xl font-black text-foreground sm:text-3xl">
           {title}
         </h1>
         {description && (
-          <p className="mt-1 max-w-2xl text-sm text-slate-600">{description}</p>
+          <p className="mt-1 max-w-2xl text-sm text-muted">{description}</p>
         )}
       </div>
       {action && <div className="shrink-0">{action}</div>}

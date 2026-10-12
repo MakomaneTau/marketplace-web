@@ -414,7 +414,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                     {item.unread_count > 0 && (
                       <span
                         aria-label={`${item.unread_count} unread messages`}
-                        className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-white"
+                        className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground"
                       >
                         {item.unread_count > 99 ? "99+" : item.unread_count}
                       </span>
@@ -546,13 +546,13 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                       className={`flex ${own ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] rounded-card px-4 py-2.5 ${own ? "bg-primary text-white" : "border border-border bg-surface text-foreground"}`}
+                        className={`max-w-[85%] rounded-card px-4 py-2.5 ${own ? "bg-primary text-primary-foreground" : "border border-border bg-surface text-foreground"}`}
                       >
                         <p className="whitespace-pre-wrap break-words text-sm leading-6 [overflow-wrap:anywhere]">
                           {message.body}
                         </p>
                         <p
-                          className={`mt-1 flex items-center justify-end gap-1 text-[10px] ${own ? "text-blue-100" : "text-muted"}`}
+                          className={`mt-1 flex items-center justify-end gap-1 text-[10px] ${own ? "text-primary-foreground/80" : "text-muted"}`}
                         >
                           <time dateTime={message.created_at}>
                             {messageTime(message.created_at)}
@@ -654,7 +654,7 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
               disabled={!current || !draft.trim() || sending}
               aria-label={sending ? "Sending message" : "Send message"}
               title={sending ? "Sending message" : "Send message"}
-              className="grid size-12 shrink-0 place-items-center rounded-control bg-primary text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
+              className="grid size-12 shrink-0 place-items-center rounded-control bg-primary text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Send className="size-5" aria-hidden="true" />
             </button>

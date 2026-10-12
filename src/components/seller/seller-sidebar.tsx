@@ -75,24 +75,24 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-full flex-col border-r border-slate-200 bg-white",
+        "flex h-full flex-col border-r border-border bg-white",
         mobile ? "w-[86vw] max-w-80" : "hidden w-60 lg:flex",
       )}
     >
-      <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5">
+      <div className="flex h-16 items-center justify-between border-b border-border px-5">
         <Link
           href="/seller"
           className="flex items-center gap-2.5"
           onClick={onClose}
         >
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-sm font-black text-white">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-sm font-black text-primary-foreground">
             M
           </span>
           <span>
-            <span className="block text-sm font-black tracking-tight text-slate-950">
+            <span className="block text-sm font-black tracking-tight text-foreground">
               MarketPal
             </span>
-            <span className="block text-[11px] font-medium text-slate-500">
+            <span className="block text-[11px] font-medium text-muted">
               Seller centre
             </span>
           </span>
@@ -101,7 +101,7 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="rounded-lg p-2 text-muted hover:bg-surface-muted hover:text-foreground"
             aria-label="Close seller menu"
           >
             <X className="h-5 w-5" />
@@ -126,7 +126,7 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition",
                 active
                   ? "bg-primary-soft text-primary"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
+                  : "text-muted hover:bg-surface-muted hover:text-foreground",
               )}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
@@ -138,9 +138,9 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
       </nav>
 
       {shopHealth && shopHealth.percentage < 100 && (
-        <div className="border-t border-slate-200 p-4">
-          <div className="rounded-lg bg-slate-950 p-4 text-white">
-            <p className="text-xs font-semibold text-blue-200">Store health</p>
+        <div className="border-t border-border p-4">
+          <div className="rounded-lg bg-foreground p-4 text-white">
+            <p className="text-xs font-semibold text-primary">Store health</p>
             <p className="mt-1 text-sm font-bold">
               {shopHealth.hasShop
                 ? `Your shop is ${shopHealth.percentage}% complete`

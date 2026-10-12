@@ -136,7 +136,7 @@ export function SignupForm() {
         </p>
         <Link
           href="/login"
-          className="inline-flex h-11 items-center rounded-control bg-primary px-6 text-sm font-semibold text-white hover:bg-primary-hover"
+          className="inline-flex h-11 items-center rounded-control bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
         >
           Continue to sign in
         </Link>
