@@ -7,7 +7,7 @@ admin moderation connect to the separate `marketplace-api` repository.
 
 ## Local setup
 
-Prerequisites: Node.js 22.13 or newer and npm. Run from this repository:
+Prerequisites: Node.js 22.x (22.13 or newer) and npm. Run from this repository:
 
 ```powershell
 npm.cmd ci

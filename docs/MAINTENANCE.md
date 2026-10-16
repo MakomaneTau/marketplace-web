@@ -15,15 +15,35 @@
 - Applied compatible production dependency patches and updated Supabase image
   allowlists to match the local API's port 55321.
 
-## Remaining work
+## Deployment dependency maintenance
 
-The audit still reports five high-severity development-tool findings through
-`eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces`.
-The advisory is [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
-The installed chain has no compatible patched release. npm's proposed forced
-fix downgrades `eslint-config-next` to 14.2.35 while the app uses Next 16. Track an
-upstream patch and retest lint/build when upgrading. Production dependencies
-are checked separately with `npm.cmd run audit:production`.
+Node is bounded to `^22.13.0` so Vercel stays on Node 22 instead of automatically
+selecting a future major version. CI also uses Node 22.
+
+The five former development-tool advisories came from
+`eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces`
+([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)).
+There is no upstream braces patch yet. A version-scoped npm override replaces
+only Next ESLint plugin 16.4.0's glob dependency with `tooling/next-root-glob`.
+The adapter uses `tinyglobby@0.2.17` and disables automatic directory expansion
+to preserve the plugin's `globSync` directory matching. Regression tests exercise
+the real plugin's default root, literal directories, wildcard/brace patterns,
+and arrays of roots. No Next rules are disabled or downgraded.
+
+When updating `eslint-config-next`, inspect its glob dependency and root-discovery
+API. Remove this adapter and override when the upstream dependency chain is clean;
+otherwise review compatibility before extending the override to a new plugin version.
+CI runs the full `npm run audit` so an upgrade cannot silently restore this chain.
+Production dependencies can also be checked with `npm.cmd run audit:production`.
+
+`allowScripts` explicitly approves only `unrs-resolver@1.12.2`. Its postinstall
+prepares the resolver's matching native binding, using the installed optional
+platform package or a registry fallback. Re-review and update the pinned approval
+when the resolver changes; never blanket-approve all future dependency scripts.
+On npm versions that support approval management, use `npm install-scripts ls`
+to inspect pending approvals.
+
+## Remaining work
 
 Some interactive screens remain large. Extract cohesive subcomponents as their
 behavior changes; avoid combining visual redesigns with structural refactors.

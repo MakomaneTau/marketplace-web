@@ -1,6 +1,6 @@
 # Maintaining Marketplace Web
 
-Use Node.js 22.13 or newer. Install with `npm.cmd ci`, run `npm.cmd run check`,
+Use Node.js 22.x (22.13 or newer). Install with `npm.cmd ci`, run `npm.cmd run check`,
 and run `npm.cmd run build` before a pull request. Both repositories have
 independent lockfiles and CI workflows.
 
