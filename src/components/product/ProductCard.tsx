@@ -10,6 +10,7 @@ import { formatZAR } from "@/lib/format";
 import type { Product } from "@/types/product";
 import { ApiClientError, apiErrorMessage, apiRequest } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { isBuyer, roleHome } from "@/lib/role-access";
 
 interface ProductCardProps {
   product: Product;
@@ -30,11 +31,16 @@ export function ProductCard({ product, onFavouriteChange }: ProductCardProps) {
   const { auth, ready } = useAuth();
 
   async function toggleFavourite() {
+    if (!ready) return;
     if (ready && !auth) {
       router.push("/login");
       return;
     }
     if (busy) return;
+    if (!isBuyer(auth?.profile)) {
+      router.replace(roleHome(auth?.profile));
+      return;
+    }
     const nextValue = !isFavourite;
     setIsFavourite(nextValue);
     setBusy(true);

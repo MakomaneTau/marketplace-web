@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
+import { isBuyer, roleHome } from "@/lib/role-access";
 import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
 
 interface ProductActionsProps {
@@ -30,6 +31,10 @@ export function ProductActions({
     if (!ready) return false;
     if (!auth) {
       router.push("/login");
+      return false;
+    }
+    if (!isBuyer(auth.profile)) {
+      router.replace(roleHome(auth.profile));
       return false;
     }
     return true;

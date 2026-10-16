@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  ArrowUpRight,
-  Bell,
-  ChevronDown,
-  Menu,
-  Plus,
-  LogOut,
-  ShoppingBag,
-} from "lucide-react";
+import { Bell, ChevronDown, Menu, Plus, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -127,16 +119,6 @@ export function SellerHeader({ onOpenMenu }: SellerHeaderProps) {
         >
           <Menu className="h-5 w-5" />
         </button>
-        <Link
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open buyer homepage in a new tab"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline"
-        >
-          <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-          Buyer homepage <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
         <div className="hidden sm:block">
           <p className="text-xs font-medium text-muted">Selling as</p>
           <p className="text-sm font-bold text-foreground">

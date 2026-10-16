@@ -22,6 +22,64 @@ const json = (body, status = 200) =>
     headers: { "content-type": "application/json" },
   });
 
+test("public landing allows visitors and buyers but redirects seller and admin sessions", async () => {
+  const anonymous = loadTypeScript("proxy.ts", {
+    fetch: async () => {
+      throw new Error("No lookup expected");
+    },
+  });
+  assert.equal(
+    (await anonymous.proxy(new NextRequest("http://localhost:3000/"))).status,
+    200,
+  );
+  assert.match(
+    (
+      await anonymous.proxy(new NextRequest("http://localhost:3000/cart"))
+    ).headers.get("location"),
+    /\/login\?/,
+  );
+  for (const [profile, target] of [
+    [{ role: "buyer" }, null],
+    [{ role: "seller" }, "/seller"],
+    [{ role: "buyer", isAdmin: true }, "/admin"],
+  ]) {
+    const { proxy } = loadTypeScript("proxy.ts", {
+      fetch: async () => json({ data: { profile } }),
+    });
+    for (const path of ["/", "/cart", "/orders", "/favourites", "/messages"]) {
+      const response = await proxy(
+        new NextRequest(`http://localhost:3000${path}`, {
+          headers: { cookie: "marketplace-access=access" },
+        }),
+      );
+      assert.equal(
+        response.headers.get("location"),
+        target ? `http://localhost:3000${target}` : null,
+      );
+      assert.match(response.headers.get("cache-control"), /no-store/);
+    }
+  }
+});
+
+test("role redirect preserves refreshed session cookies", async () => {
+  const { proxy } = loadTypeScript("proxy.ts", {
+    fetch: async (url) =>
+      url.endsWith("/auth/refresh")
+        ? json({ data: { session } })
+        : json({ data: { profile: { role: "seller" } } }),
+  });
+  const response = await proxy(
+    new NextRequest("http://localhost:3000/", {
+      headers: { cookie: "marketplace-refresh=refresh" },
+    }),
+  );
+  assert.equal(
+    response.headers.get("location"),
+    "http://localhost:3000/seller",
+  );
+  assert.equal(response.cookies.get("marketplace-access").value, "access");
+});
+
 test("gateway forwards query, authorization, and cache policy", async () => {
   let upstream;
   const route = loadTypeScript(entry, {

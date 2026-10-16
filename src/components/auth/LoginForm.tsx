@@ -8,6 +8,7 @@ import { Clock3, LockKeyhole, LogIn, Mail } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { apiErrorMessage, login } from "@/lib/api";
+import { loginDestination } from "@/lib/role-access";
 
 export function LoginForm({
   sessionExpired = false,
@@ -40,20 +41,7 @@ export function LoginForm({
       const requestedPath = new URLSearchParams(window.location.search).get(
         "next",
       );
-      const safeRequestedPath =
-        requestedPath?.startsWith("/") &&
-        !requestedPath.startsWith("//") &&
-        !/[\\\x00-\x1f\x7f]/.test(requestedPath)
-          ? requestedPath
-          : null;
-      router.replace(
-        safeRequestedPath ||
-          (result.profile?.isAdmin
-            ? "/admin"
-            : result.profile?.role === "seller"
-              ? "/seller"
-              : "/"),
-      );
+      router.replace(loginDestination(result.profile, requestedPath));
       router.refresh();
     } catch (error) {
       setError(apiErrorMessage(error));

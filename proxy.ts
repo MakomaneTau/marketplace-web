@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+import { isPublicBuyerPage, roleRedirect } from "@/lib/role-access";
 import { refreshSession, upstreamRequest } from "@/lib/server/marketplace";
 import {
   ACCESS_COOKIE,
@@ -47,6 +48,7 @@ function accessErrorRedirect(
 }
 
 export async function proxy(request: NextRequest) {
+  const publicPage = isPublicBuyerPage(request.nextUrl.pathname);
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
   let accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
   let refreshedSession: ApiSession | null = null;
@@ -59,7 +61,15 @@ export async function proxy(request: NextRequest) {
       return accessErrorRedirect(request, "auth_unavailable");
     }
   }
-  if (!accessToken) return loginRedirect(request, Boolean(refreshToken));
+  if (!accessToken) {
+    if (publicPage) {
+      const response = NextResponse.next();
+      response.headers.set("Cache-Control", "private, no-store");
+      if (refreshToken) clearSessionCookies(response);
+      return response;
+    }
+    return loginRedirect(request, Boolean(refreshToken));
+  }
 
   let authResponse: Response;
   try {
@@ -100,7 +110,13 @@ export async function proxy(request: NextRequest) {
     return accessErrorRedirect(request, "admin_required");
   }
 
-  const response = NextResponse.next();
+  const destination = roleRedirect(
+    payload?.data?.profile,
+    request.nextUrl.pathname,
+  );
+  const response = destination
+    ? NextResponse.redirect(new URL(destination, request.url))
+    : NextResponse.next();
   response.headers.set(
     "Cache-Control",
     "private, no-store, max-age=0, must-revalidate",
@@ -114,6 +130,11 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
+    "/search/:path*",
+    "/categories/:path*",
+    "/products/:path*",
+    "/cart/:path*",
     "/seller/:path*",
     "/admin/:path*",
     "/favourites/:path*",

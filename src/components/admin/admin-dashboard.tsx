@@ -82,12 +82,6 @@ export function AdminDashboard() {
               requests.
             </p>
           </div>
-          <Link
-            href="/"
-            className="rounded-control border border-border bg-surface px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted"
-          >
-            Marketplace home
-          </Link>
         </header>
 
         {error && (

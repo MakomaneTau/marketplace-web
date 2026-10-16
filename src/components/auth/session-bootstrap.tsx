@@ -2,8 +2,10 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { ShoppingBag } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { AuthContext } from "@/hooks/use-auth";
+import { roleRedirect } from "@/lib/role-access";
 import {
   clearLegacyBrowserSession,
   getCurrentAuth,
@@ -20,6 +22,14 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
     ready: false,
   });
   const [initialized, setInitialized] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const destination = state.ready
+    ? roleRedirect(state.auth?.profile, pathname)
+    : null;
+  useEffect(() => {
+    if (destination) router.replace(destination);
+  }, [destination, router]);
 
   useEffect(() => {
     let active = true;
@@ -66,12 +76,12 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={state}>
-      {initialized && (
+      {initialized && !destination && (
         <div inert={!state.ready} aria-hidden={!state.ready || undefined}>
           {children}
         </div>
       )}
-      {!state.ready && (
+      {(!state.ready || destination) && (
         <div className="fixed inset-0 z-[100] grid min-h-dvh place-items-center bg-background px-6 text-center">
           <div className="max-w-md" role="status" aria-live="polite">
             <ShoppingBag
