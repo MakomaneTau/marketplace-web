@@ -32,6 +32,8 @@ const statusLabels: Record<
 
 export default function SellerProductsPage() {
   const [products, setProducts] = useState<SellerProduct[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<ListingStatus | "">("");
   const [sort, setSort] = useState<ProductSort>("newest");
@@ -111,6 +113,37 @@ export default function SellerProductsPage() {
     }
   }
 
+  async function bulk(status: "active" | "paused") {
+    setUpdatingId("bulk");
+    try {
+      await apiRequest("/seller/products/bulk-status", {
+        auth: true,
+        method: "POST",
+        body: JSON.stringify({ ids: selected, status }),
+      });
+      setSelected([]);
+      await loadProducts();
+    } catch (e) {
+      setError(apiErrorMessage(e));
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+  async function duplicate(product: SellerProduct) {
+    setUpdatingId(product.id);
+    try {
+      await apiRequest(`/seller/products/${product.id}/duplicate`, {
+        auth: true,
+        method: "POST",
+      });
+      setNotice("Draft copy created. Add fresh photos before publishing.");
+      await loadProducts();
+    } catch (e) {
+      setError(apiErrorMessage(e));
+    } finally {
+      setUpdatingId(null);
+    }
+  }
   const productMedia = (product: SellerProduct, size: string) =>
     product.image_urls?.[0] ? (
       // eslint-disable-next-line @next/next/no-img-element
@@ -128,7 +161,32 @@ export default function SellerProductsPage() {
     );
 
   const productActions = (product: SellerProduct) => (
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <input
+        type="checkbox"
+        aria-label={`Select ${product.title}`}
+        checked={selected.includes(product.id)}
+        onChange={(event) =>
+          setSelected((current) =>
+            event.target.checked
+              ? [...current, product.id]
+              : current.filter((id) => id !== product.id),
+          )
+        }
+      />
+      <Link
+        className="text-xs underline"
+        href={`/seller/products/${product.id}/preview`}
+      >
+        Preview
+      </Link>
+      <button
+        disabled={Boolean(updatingId)}
+        onClick={() => void duplicate(product)}
+        className="text-xs underline"
+      >
+        Duplicate
+      </button>
       <select
         value={product.status}
         disabled={updatingId === product.id}
@@ -165,6 +223,29 @@ export default function SellerProductsPage() {
 
   return (
     <div className="space-y-6">
+      {notice && <p role="status">{notice}</p>}
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-4 rounded-control border border-border p-4">
+          <span>{selected.length} selected</span>
+          <button
+            disabled={Boolean(updatingId)}
+            onClick={() => void bulk("active")}
+            className="underline"
+          >
+            Publish selected
+          </button>
+          <button
+            disabled={Boolean(updatingId)}
+            onClick={() => void bulk("paused")}
+            className="underline"
+          >
+            Pause selected
+          </button>
+          <button onClick={() => setSelected([])} className="underline">
+            Clear selection
+          </button>
+        </div>
+      )}
       <SectionHeading
         eyebrow="Inventory"
         title="Products"

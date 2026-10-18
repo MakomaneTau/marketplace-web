@@ -26,7 +26,12 @@ import { formatZAR } from "@/lib/format";
 
 type Dashboard = {
   shop: { name: string };
-  products: { total: number; active: number; views: number };
+  products: {
+    total: number;
+    active: number;
+    views: number;
+    low_stock: { id: string; title: string; stock_quantity: number }[];
+  };
   orders: {
     total: number;
     open: number;
@@ -86,6 +91,24 @@ export default function SellerDashboardPage() {
 
   return (
     <div className="space-y-6">
+      {data.products.low_stock?.length > 0 && (
+        <section className="rounded-card border border-border p-4">
+          <h2 className="font-bold">Running low</h2>
+          {data.products.low_stock.map((product) => (
+            <p key={product.id} className="mt-2">
+              <Link
+                className="underline"
+                href={`/seller/products/${product.id}/edit`}
+              >
+                {product.title}
+              </Link>{" "}
+              <span className="text-muted">
+                — {product.stock_quantity} left
+              </span>
+            </p>
+          ))}
+        </section>
+      )}
       <SectionHeading
         title={data.shop.name}
         description="A clear view of what needs your attention today."
