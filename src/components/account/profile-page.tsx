@@ -28,6 +28,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { OnboardingHelpButton } from "@/components/onboarding/onboarding-help-button";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import {
   apiErrorMessage,
   apiPublic,
@@ -524,6 +525,16 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
+                  {(locationsLoading || campusesLoading) && (
+                    <LoadingSplash
+                      compact
+                      label={
+                        locationsLoading
+                          ? "Loading universities…"
+                          : "Loading campuses…"
+                      }
+                    />
+                  )}
                   {locationError && (
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
                       <p role="alert" className="text-danger">

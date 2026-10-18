@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { useUnreadMessages } from "@/components/messaging/unread-messages";
 import { SectionHeading } from "@/components/seller/section-heading";
@@ -325,7 +326,8 @@ function DashboardSkeleton() {
       aria-label="Loading seller dashboard"
       aria-busy="true"
     >
-      <div className="animate-pulse">
+      <LoadingSplash compact label="Loading seller dashboard…" />
+      <div className="animate-pulse motion-reduce:animate-none">
         <div className="h-8 w-64 rounded bg-slate-200" />
         <div className="mt-2 h-4 w-80 max-w-full rounded bg-slate-200" />
       </div>
@@ -333,13 +335,13 @@ function DashboardSkeleton() {
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
-            className="h-28 animate-pulse rounded-lg bg-slate-200"
+            className="h-28 animate-pulse motion-reduce:animate-none rounded-lg bg-slate-200"
           />
         ))}
       </div>
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.75fr)]">
-        <div className="h-80 animate-pulse rounded-lg bg-slate-200" />
-        <div className="h-80 animate-pulse rounded-lg bg-slate-200" />
+        <div className="h-80 animate-pulse motion-reduce:animate-none rounded-lg bg-slate-200" />
+        <div className="h-80 animate-pulse motion-reduce:animate-none rounded-lg bg-slate-200" />
       </div>
     </div>
   );

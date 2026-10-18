@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { formatMoney as money } from "@/lib/format";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { Container } from "@/components/layout/Container";
@@ -34,11 +35,12 @@ import {
 function CheckoutSkeleton() {
   return (
     <Container className="py-8 sm:py-12">
-      <div className="h-4 w-36 animate-pulse rounded bg-surface-muted" />
-      <div className="mt-8 h-9 w-72 animate-pulse rounded bg-surface-muted" />
+      <LoadingSplash compact label="Preparing checkout…" />
+      <div className="h-4 w-36 animate-pulse motion-reduce:animate-none rounded bg-surface-muted" />
+      <div className="mt-8 h-9 w-72 animate-pulse motion-reduce:animate-none rounded bg-surface-muted" />
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="h-[34rem] animate-pulse rounded-card border border-border bg-surface" />
-        <div className="h-80 animate-pulse rounded-card border border-border bg-surface" />
+        <div className="h-[34rem] animate-pulse motion-reduce:animate-none rounded-card border border-border bg-surface" />
+        <div className="h-80 animate-pulse motion-reduce:animate-none rounded-card border border-border bg-surface" />
       </div>
     </Container>
   );

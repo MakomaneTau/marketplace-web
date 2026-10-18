@@ -2,6 +2,7 @@
 
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
 import type { AdminUser, PageResult } from "./types";
@@ -14,12 +15,15 @@ export function AdminUsers({ onChanged }: { onChanged: () => void }) {
   const [result, setResult] = useState<PageResult<AdminUser, "users"> | null>(
     null,
   );
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<AdminUser | null>(null);
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     const query = new URLSearchParams({ page: String(page), limit: "20" });
     if (role) query.set("role", role);
     if (search) query.set("search", search);
@@ -33,6 +37,8 @@ export function AdminUsers({ onChanged }: { onChanged: () => void }) {
       setError(null);
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
+    } finally {
+      setLoading(false);
     }
   }, [page, role, search]);
 
@@ -147,72 +153,73 @@ export function AdminUsers({ onChanged }: { onChanged: () => void }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {result?.users.map((user) => (
-              <tr key={user.id}>
-                <td className="px-4 py-3">
-                  <span className="block font-semibold">
-                    {user.displayName}
-                  </span>
-                  <span className="block font-mono text-xs text-muted">
-                    {user.id}
-                  </span>
-                </td>
-                <td className="px-4 py-3 capitalize">
-                  {user.role}
-                  {user.isAdmin && (
-                    <span className="ml-2 rounded-full bg-surface-muted px-2 py-1 text-xs font-semibold normal-case">
-                      Admin
+            {!loading &&
+              result?.users.map((user) => (
+                <tr key={user.id}>
+                  <td className="px-4 py-3">
+                    <span className="block font-semibold">
+                      {user.displayName}
                     </span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={
-                      user.restriction
-                        ? "font-semibold text-danger"
-                        : "font-semibold text-success"
-                    }
-                  >
-                    {user.restriction ? "Suspended" : "Active"}
-                  </span>
-                  {user.restriction && (
-                    <span className="block max-w-xs text-xs text-muted">
-                      {user.restriction.reason}
+                    <span className="block font-mono text-xs text-muted">
+                      {user.id}
                     </span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-muted">
-                  {new Date(user.createdAt).toLocaleDateString("en-ZA")}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  {user.isAdmin ? (
-                    <span className="text-xs text-muted">Protected</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelected(user);
-                        setReason("");
-                      }}
-                      className="min-h-10 rounded-control border border-border px-3 font-semibold hover:bg-surface-muted"
+                  </td>
+                  <td className="px-4 py-3 capitalize">
+                    {user.role}
+                    {user.isAdmin && (
+                      <span className="ml-2 rounded-full bg-surface-muted px-2 py-1 text-xs font-semibold normal-case">
+                        Admin
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={
+                        user.restriction
+                          ? "font-semibold text-danger"
+                          : "font-semibold text-success"
+                      }
                     >
-                      {user.restriction ? "Restore" : "Suspend"}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {result?.users.length === 0 && (
+                      {user.restriction ? "Suspended" : "Active"}
+                    </span>
+                    {user.restriction && (
+                      <span className="block max-w-xs text-xs text-muted">
+                        {user.restriction.reason}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-muted">
+                    {new Date(user.createdAt).toLocaleDateString("en-ZA")}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    {user.isAdmin ? (
+                      <span className="text-xs text-muted">Protected</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelected(user);
+                          setReason("");
+                        }}
+                        className="min-h-10 rounded-control border border-border px-3 font-semibold hover:bg-surface-muted"
+                      >
+                        {user.restriction ? "Restore" : "Suspend"}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            {!loading && result?.users.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-10 text-center text-muted">
                   No users match these filters.
                 </td>
               </tr>
             )}
-            {!result && !error && (
+            {loading && (
               <tr>
                 <td colSpan={5} className="px-4 py-10 text-center text-muted">
-                  Loading users...
+                  <LoadingSplash compact label="Loading users…" />
                 </td>
               </tr>
             )}
@@ -220,7 +227,7 @@ export function AdminUsers({ onChanged }: { onChanged: () => void }) {
         </table>
       </div>
 
-      {result && (
+      {!loading && result && (
         <div className="mt-4 flex items-center justify-between gap-3 text-sm text-muted">
           <span>{result.total} users</span>
           <div className="flex gap-2">

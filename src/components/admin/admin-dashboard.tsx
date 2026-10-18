@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, CheckCircle2, ShieldCheck, Users } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { useAuth } from "@/hooks/use-auth";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
@@ -41,12 +42,7 @@ export function AdminDashboard() {
     return () => window.clearTimeout(timeout);
   }, [ready, auth, refreshOverview]);
 
-  if (!ready)
-    return (
-      <p role="status" className="p-8 text-center text-muted">
-        Checking admin access...
-      </p>
-    );
+  if (!ready) return <LoadingSplash label="Checking admin access…" />;
   if (!auth?.profile?.isAdmin)
     return (
       <section className="mx-auto max-w-xl px-4 py-16 text-center">
@@ -83,6 +79,10 @@ export function AdminDashboard() {
             </p>
           </div>
         </header>
+
+        {!overview && !error && (
+          <LoadingSplash compact label="Loading admin overview…" />
+        )}
 
         {error && (
           <div

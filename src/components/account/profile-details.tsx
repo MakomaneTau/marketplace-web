@@ -1,6 +1,7 @@
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { Container } from "@/components/layout/Container";
 
 export function ProfileDetail({
@@ -85,6 +86,7 @@ export function ProfileSkeleton() {
       aria-busy="true"
       aria-label="Loading profile"
     >
+      <LoadingSplash compact label="Loading profile…" />
       <div className="h-4 w-36 animate-pulse rounded bg-border motion-reduce:animate-none" />
       <div className="mt-5 h-9 w-48 animate-pulse rounded bg-border motion-reduce:animate-none" />
       <div className="mt-3 h-5 max-w-xl animate-pulse rounded bg-border motion-reduce:animate-none" />

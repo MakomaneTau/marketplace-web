@@ -15,6 +15,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { apiErrorMessage, apiPublic, signup } from "@/lib/api";
@@ -275,6 +276,9 @@ export function SignupForm() {
                 </option>
               ))}
             </select>
+            {universitiesLoading && (
+              <LoadingSplash compact label="Loading universities…" />
+            )}
             {universityError && (
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <p role="alert" className="text-danger">

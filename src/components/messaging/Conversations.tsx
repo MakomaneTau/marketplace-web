@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { notifyMessagesChanged } from "@/components/messaging/unread-messages";
 import { useAuth } from "@/hooks/use-auth";
@@ -115,18 +116,19 @@ function MessagingSkeleton() {
   return (
     <div className="grid min-h-[40rem] overflow-hidden rounded-card border border-border bg-surface lg:grid-cols-[21rem_minmax(0,1fr)]">
       <div className="border-r border-border p-4">
-        <div className="h-10 animate-pulse rounded-control bg-surface-muted" />
+        <LoadingSplash compact label="Loading messages…" />
+        <div className="h-10 animate-pulse motion-reduce:animate-none rounded-control bg-surface-muted" />
         <div className="mt-5 space-y-4">
           {[0, 1, 2].map((item) => (
             <div
               key={item}
-              className="h-20 animate-pulse rounded-control bg-surface-muted"
+              className="h-20 animate-pulse motion-reduce:animate-none rounded-control bg-surface-muted"
             />
           ))}
         </div>
       </div>
       <div className="hidden p-6 lg:block">
-        <div className="h-full animate-pulse rounded-control bg-surface-muted" />
+        <div className="h-full animate-pulse motion-reduce:animate-none rounded-control bg-surface-muted" />
       </div>
     </div>
   );
@@ -611,12 +613,16 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
                 className="mx-auto size-10 text-subtle"
                 aria-hidden="true"
               />
-              <h2 className="mt-4 font-semibold">
-                {activeId ? "Loading conversation..." : "Choose a conversation"}
-              </h2>
-              <p className="mt-2 text-sm text-muted">
-                Select an enquiry to view its messages and listing.
-              </p>
+              {activeId ? (
+                <LoadingSplash compact label="Loading conversation…" />
+              ) : (
+                <h2 className="mt-4 font-semibold">Choose a conversation</h2>
+              )}
+              {!activeId && (
+                <p className="mt-2 text-sm text-muted">
+                  Select an enquiry to view its messages and listing.
+                </p>
+              )}
             </div>
           </div>
         )}

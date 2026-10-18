@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { UnreadMessagesProvider } from "@/components/messaging/unread-messages";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { useAuth } from "@/hooks/use-auth";
@@ -31,9 +32,9 @@ export function SellerShell({ children }: SellerShellProps) {
 
   if (!ready) {
     return (
-      <p role="status" className="p-8 text-center text-muted">
-        Checking seller access...
-      </p>
+      <div className="seller-theme bg-background text-foreground">
+        <LoadingSplash label="Checking seller access..." />
+      </div>
     );
   }
   if (!auth) return <ProtectedRequestError message={SESSION_ERROR_MESSAGE} />;

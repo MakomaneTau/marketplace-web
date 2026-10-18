@@ -4,6 +4,7 @@ import Link from "next/link";
 import { HeartOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ApiClientError, apiErrorMessage, apiRequest } from "@/lib/api";
@@ -57,11 +58,7 @@ export function FavouritesExplorer() {
   }
 
   if (loading) {
-    return (
-      <p className="py-12 text-center text-sm text-muted">
-        Loading saved products...
-      </p>
-    );
+    return <LoadingSplash label="Loading saved products..." />;
   }
 
   if (error) {

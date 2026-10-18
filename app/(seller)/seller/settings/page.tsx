@@ -2,6 +2,7 @@
 
 import { type FormEvent, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { OnboardingHelpButton } from "@/components/onboarding/onboarding-help-button";
 import { SectionHeading } from "@/components/seller/section-heading";
@@ -94,6 +95,9 @@ export default function SellerSettingsPage() {
 
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
+
+  if ((!profile || !settings) && !error)
+    return <LoadingSplash label="Loading seller settings…" />;
 
   return (
     <div className="space-y-6">

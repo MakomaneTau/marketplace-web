@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AlertCircle, ShieldCheck } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/api";
 
@@ -126,9 +127,7 @@ export function SellerVerificationNotice() {
             </div>
           )}
           {!loaded && (
-            <p role="status" className="mt-2 text-xs text-muted">
-              Checking submission status...
-            </p>
+            <LoadingSplash compact label="Checking submission status..." />
           )}
         </div>
       </div>

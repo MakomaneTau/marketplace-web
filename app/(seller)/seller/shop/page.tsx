@@ -2,6 +2,7 @@
 
 import { type FormEvent, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import {
   PickupCampusPicker,
@@ -122,10 +123,7 @@ export default function SellerShopPage() {
     }
   }
 
-  if (!loaded)
-    return (
-      <p className="py-12 text-center text-sm text-muted">Loading shop...</p>
-    );
+  if (!loaded) return <LoadingSplash label="Loading shop..." />;
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
 

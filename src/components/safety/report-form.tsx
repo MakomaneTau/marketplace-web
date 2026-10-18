@@ -3,6 +3,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { useAuth } from "@/hooks/use-auth";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
@@ -58,12 +59,7 @@ export function ReportForm({ productId }: { productId?: string }) {
     }
   }
 
-  if (!ready)
-    return (
-      <p role="status" className="text-sm text-muted">
-        Checking your session...
-      </p>
-    );
+  if (!ready) return <LoadingSplash compact label="Checking your session..." />;
   if (!auth)
     return (
       <p className="text-sm text-muted">

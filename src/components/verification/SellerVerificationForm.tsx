@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { Button } from "@/components/ui/Button";
 import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
@@ -78,12 +79,7 @@ export function SellerVerificationForm() {
     }
   }
 
-  if (loading)
-    return (
-      <p role="status" className="text-sm text-muted">
-        Checking verification status...
-      </p>
-    );
+  if (loading) return <LoadingSplash label="Checking verification status..." />;
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
 

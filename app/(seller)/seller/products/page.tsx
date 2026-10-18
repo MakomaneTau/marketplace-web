@@ -4,6 +4,7 @@ import { Package, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { SectionHeading } from "@/components/seller/section-heading";
 import { StatusBadge } from "@/components/seller/status-badge";
@@ -216,7 +217,7 @@ export default function SellerProductsPage() {
         </select>
       </div>
       {error && <ProtectedRequestError message={error} />}
-      {loading && <p className="text-sm text-muted">Loading products...</p>}
+      {loading && <LoadingSplash compact label="Loading products..." />}
       {!loading && !error && products.length === 0 && (
         <div className="rounded-2xl border border-dashed bg-white p-10 text-center">
           <Package className="mx-auto h-8 w-8 text-subtle" />

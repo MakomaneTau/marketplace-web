@@ -1,6 +1,7 @@
 "use client";
 import { ImagePlus, Info, MapPin, PackageCheck, Save, X } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { SESSION_ERROR_MESSAGE } from "@/lib/api";
 
@@ -23,10 +24,7 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
     removeImage,
     submit,
   } = useProductForm({ mode, productId });
-  if (!ready)
-    return (
-      <p className="py-12 text-center text-sm text-muted">Loading listing...</p>
-    );
+  if (!ready) return <LoadingSplash label="Loading listing..." />;
   if (error === SESSION_ERROR_MESSAGE)
     return <ProtectedRequestError message={error} />;
   if (mode === "edit" && !existing)
@@ -142,6 +140,9 @@ export function ProductForm({ mode = "create", productId }: ProductFormProps) {
                   </option>
                 ))}
               </select>
+              {categoriesLoading && (
+                <LoadingSplash compact label="Loading categories…" />
+              )}
               {categoriesError && (
                 <p className="mt-2 text-xs font-medium text-red-600">
                   Categories could not be loaded. Refresh the page before

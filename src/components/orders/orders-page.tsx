@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { formatMoney as money } from "@/lib/format";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { Container } from "@/components/layout/Container";
@@ -65,10 +66,11 @@ function formatDate(value: string) {
 function OrdersSkeleton() {
   return (
     <div className="mt-6 grid gap-4">
+      <LoadingSplash compact label="Loading orders…" />
       {[0, 1].map((item) => (
         <div
           key={item}
-          className="h-52 animate-pulse rounded-card border border-border bg-surface"
+          className="h-52 animate-pulse motion-reduce:animate-none rounded-card border border-border bg-surface"
         />
       ))}
     </div>

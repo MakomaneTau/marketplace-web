@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -104,9 +105,7 @@ export default function ResetPasswordPage() {
       kind="recovery"
     >
       {recovery.status === "checking" && (
-        <p role="status" className="text-sm text-muted">
-          Checking your password reset link...
-        </p>
+        <LoadingSplash compact label="Checking your password reset link..." />
       )}
 
       {recovery.status === "invalid" && (

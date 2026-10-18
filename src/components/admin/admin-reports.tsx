@@ -3,6 +3,7 @@
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
 import type { PageResult, SafetyReport } from "./types";
@@ -20,9 +21,12 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
   );
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     const query = new URLSearchParams({ page: String(page), limit: "20" });
     if (status) query.set("status", status);
     try {
@@ -35,6 +39,8 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
       setError(null);
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
+    } finally {
+      setLoading(false);
     }
   }, [page, status]);
 
@@ -109,76 +115,74 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
         </p>
       )}
       <div className="mt-5 space-y-3">
-        {result?.reports.map((report) => (
-          <article
-            key={report.id}
-            className="rounded-card border border-border bg-surface p-5"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-primary-text">
-                  {report.category.replaceAll("_", " ")} · {report.status}
-                </p>
-                <h3 className="mt-1 font-bold">
-                  Report by {report.reporterName}
-                </h3>
-                <p className="mt-1 text-xs text-muted">
-                  {new Date(report.createdAt).toLocaleString("en-ZA")}
-                </p>
+        {!loading &&
+          result?.reports.map((report) => (
+            <article
+              key={report.id}
+              className="rounded-card border border-border bg-surface p-5"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary-text">
+                    {report.category.replaceAll("_", " ")} · {report.status}
+                  </p>
+                  <h3 className="mt-1 font-bold">
+                    Report by {report.reporterName}
+                  </h3>
+                  <p className="mt-1 text-xs text-muted">
+                    {new Date(report.createdAt).toLocaleString("en-ZA")}
+                  </p>
+                </div>
+                {report.status === "open" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelected(report);
+                      setDecision("resolved");
+                      setNote("");
+                    }}
+                    className="min-h-10 rounded-control bg-primary-action px-4 text-sm font-semibold text-primary-foreground"
+                  >
+                    Review
+                  </button>
+                )}
               </div>
-              {report.status === "open" && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelected(report);
-                    setDecision("resolved");
-                    setNote("");
-                  }}
-                  className="min-h-10 rounded-control bg-primary-action px-4 text-sm font-semibold text-primary-foreground"
-                >
-                  Review
-                </button>
-              )}
-            </div>
-            <p className="mt-4 whitespace-pre-wrap text-sm leading-6">
-              {report.details}
-            </p>
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
-              {report.subjectUserId && (
-                <span>
-                  Reported account: {report.subjectName || report.subjectUserId}
-                </span>
-              )}
-              {report.productId && (
-                <Link
-                  href={`/products/${report.productId}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold text-primary-text underline"
-                >
-                  View listing
-                </Link>
-              )}
-            </div>
-            {report.resolutionNote && (
-              <p className="mt-4 border-t border-border pt-3 text-sm text-muted">
-                Decision note: {report.resolutionNote}
+              <p className="mt-4 whitespace-pre-wrap text-sm leading-6">
+                {report.details}
               </p>
-            )}
-          </article>
-        ))}
-        {result?.reports.length === 0 && (
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
+                {report.subjectUserId && (
+                  <span>
+                    Reported account:{" "}
+                    {report.subjectName || report.subjectUserId}
+                  </span>
+                )}
+                {report.productId && (
+                  <Link
+                    href={`/products/${report.productId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-primary-text underline"
+                  >
+                    View listing
+                  </Link>
+                )}
+              </div>
+              {report.resolutionNote && (
+                <p className="mt-4 border-t border-border pt-3 text-sm text-muted">
+                  Decision note: {report.resolutionNote}
+                </p>
+              )}
+            </article>
+          ))}
+        {!loading && result?.reports.length === 0 && (
           <p className="rounded-card border border-border bg-surface p-8 text-center text-muted">
             No reports in this view.
           </p>
         )}
-        {!result && !error && (
-          <p role="status" className="text-sm text-muted">
-            Loading reports...
-          </p>
-        )}
+        {loading && <LoadingSplash compact label="Loading reports..." />}
       </div>
-      {result && (
+      {!loading && result && (
         <div className="mt-4 flex items-center justify-between text-sm text-muted">
           <span>{result.total} reports</span>
           <div className="flex gap-2">

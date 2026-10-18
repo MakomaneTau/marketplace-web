@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { MapPin, X } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { apiErrorMessage, apiPublic } from "@/lib/api";
 
 type University = { id: string; name: string; slug: string };
@@ -90,9 +91,7 @@ export function PickupCampusPicker({
       {slug &&
         !error &&
         (options?.slug !== slug ? (
-          <p role="status" className="text-sm text-muted">
-            Loading campuses...
-          </p>
+          <LoadingSplash compact label="Loading campuses..." />
         ) : (
           <fieldset className="grid gap-2 sm:grid-cols-2">
             <legend className="mb-2 text-sm font-medium">

@@ -2,6 +2,7 @@
 
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
 import type { PageResult, SellerVerification } from "./types";
@@ -24,12 +25,16 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
   > | null>(null);
   const [selected, setSelected] = useState<SellerVerification | null>(null);
   const [images, setImages] = useState<ImageLinks | null>(null);
+  const [imagesLoading, setImagesLoading] = useState(false);
   const [decision, setDecision] = useState<"verified" | "rejected">("verified");
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     const query = new URLSearchParams({
       page: String(page),
       limit: "20",
@@ -45,6 +50,8 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
       setError(null);
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
+    } finally {
+      setLoading(false);
     }
   }, [page, status]);
 
@@ -60,6 +67,7 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
   }
 
   async function loadImages(verification: SellerVerification) {
+    setImagesLoading(true);
     setImages(null);
     setError(null);
     try {
@@ -71,6 +79,8 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
       );
     } catch (requestError) {
       setError(apiErrorMessage(requestError));
+    } finally {
+      setImagesLoading(false);
     }
   }
 
@@ -170,64 +180,63 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
         </p>
       )}
       <div className="mt-5 divide-y divide-border overflow-hidden rounded-card border border-border bg-surface">
-        {result?.verifications.map((verification) => (
-          <article
-            key={verification.id}
-            className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5"
-          >
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-semibold">{verification.sellerName}</h3>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${verification.status === "verified" ? "bg-emerald-50 text-emerald-700" : verification.status === "rejected" ? "bg-red-50 text-red-700" : "bg-primary-soft text-primary-text"}`}
-                >
-                  {verification.status === "verified"
-                    ? "Approved"
-                    : verification.status === "rejected"
-                      ? "Rejected"
-                      : "Pending"}
-                </span>
-              </div>
-              <p className="mt-1 font-mono text-xs text-muted">
-                Seller ID: {verification.sellerId}
-              </p>
-              <p className="mt-2 text-sm text-muted">
-                Submitted {dateTime(verification.createdAt)}
-                {verification.reviewedAt && (
-                  <> · Decided {dateTime(verification.reviewedAt)}</>
-                )}
-              </p>
-              {verification.rejectionReason && (
-                <p className="mt-2 max-w-2xl text-sm text-foreground">
-                  <span className="font-semibold">Reason:</span>{" "}
-                  {verification.rejectionReason}
-                </p>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => void open(verification)}
-              className="min-h-10 rounded-control border border-border px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+        {!loading &&
+          result?.verifications.map((verification) => (
+            <article
+              key={verification.id}
+              className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5"
             >
-              {verification.status === "pending" ? "Review" : "View details"}
-            </button>
-          </article>
-        ))}
-        {result?.verifications.length === 0 && (
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-semibold">{verification.sellerName}</h3>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${verification.status === "verified" ? "bg-emerald-50 text-emerald-700" : verification.status === "rejected" ? "bg-red-50 text-red-700" : "bg-primary-soft text-primary-text"}`}
+                  >
+                    {verification.status === "verified"
+                      ? "Approved"
+                      : verification.status === "rejected"
+                        ? "Rejected"
+                        : "Pending"}
+                  </span>
+                </div>
+                <p className="mt-1 font-mono text-xs text-muted">
+                  Seller ID: {verification.sellerId}
+                </p>
+                <p className="mt-2 text-sm text-muted">
+                  Submitted {dateTime(verification.createdAt)}
+                  {verification.reviewedAt && (
+                    <> · Decided {dateTime(verification.reviewedAt)}</>
+                  )}
+                </p>
+                {verification.rejectionReason && (
+                  <p className="mt-2 max-w-2xl text-sm text-foreground">
+                    <span className="font-semibold">Reason:</span>{" "}
+                    {verification.rejectionReason}
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => void open(verification)}
+                className="min-h-10 rounded-control border border-border px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+              >
+                {verification.status === "pending" ? "Review" : "View details"}
+              </button>
+            </article>
+          ))}
+        {!loading && result?.verifications.length === 0 && (
           <p className="p-8 text-center text-muted">
             {status === "pending"
               ? "No requests awaiting review. Check resolved history for past decisions."
               : "No resolved verification requests in this view."}
           </p>
         )}
-        {!result && !error && (
-          <p role="status" className="p-8 text-center text-muted">
-            Loading verification requests...
-          </p>
+        {loading && (
+          <LoadingSplash compact label="Loading verification requests..." />
         )}
       </div>
 
-      {result && (
+      {!loading && result && (
         <div className="mt-4 flex items-center justify-between text-sm text-muted">
           <span>
             {result.total} {status === "pending" ? "pending" : "resolved"}{" "}
@@ -296,7 +305,9 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
               do not download or share them.
             </p>
             <div className="mt-3 flex flex-wrap gap-3 text-sm">
-              {images ? (
+              {imagesLoading ? (
+                <LoadingSplash compact label="Loading private previews…" />
+              ) : images ? (
                 <>
                   <a
                     href={images.selfieUrl}

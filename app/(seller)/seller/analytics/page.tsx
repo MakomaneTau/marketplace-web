@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { CircleDollarSign, Eye, ShoppingCart, TrendingUp } from "lucide-react";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { SectionHeading } from "@/components/seller/section-heading";
 import { ShopSetupRequired } from "@/components/seller/shop-setup-required";
@@ -145,7 +146,7 @@ export default function SellerAnalyticsPage() {
         </>
       )}
       {!needsShopSetup && !data && !error && (
-        <p className="text-muted">Loading analytics...</p>
+        <LoadingSplash label="Loading analytics..." />
       )}
       {!needsShopSetup && error && <ProtectedRequestError message={error} />}
     </div>
