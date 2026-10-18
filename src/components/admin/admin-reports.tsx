@@ -6,6 +6,7 @@ import Link from "next/link";
 import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
+import { QueueTools } from "./QueueTools";
 import type { PageResult, SafetyReport } from "./types";
 
 export function AdminReports({ onChanged }: { onChanged: () => void }) {
@@ -173,6 +174,12 @@ export function AdminReports({ onChanged }: { onChanged: () => void }) {
                   Decision note: {report.resolutionNote}
                 </p>
               )}
+              <QueueTools
+                kind="report"
+                id={report.id}
+                createdAt={report.createdAt}
+                open={report.status === "open"}
+              />
             </article>
           ))}
         {!loading && result?.reports.length === 0 && (

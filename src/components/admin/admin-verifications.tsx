@@ -5,6 +5,7 @@ import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { apiErrorMessage, apiRequest } from "@/lib/api";
 
+import { QueueTools } from "./QueueTools";
 import type { PageResult, SellerVerification } from "./types";
 
 type ImageLinks = { selfieUrl: string; identityUrl: string; expiresIn: number };
@@ -222,6 +223,12 @@ export function AdminVerifications({ onChanged }: { onChanged: () => void }) {
               >
                 {verification.status === "pending" ? "Review" : "View details"}
               </button>
+              <QueueTools
+                kind="verification"
+                id={verification.id}
+                createdAt={verification.createdAt}
+                open={verification.status === "pending"}
+              />
             </article>
           ))}
         {!loading && result?.verifications.length === 0 && (
