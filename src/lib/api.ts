@@ -76,7 +76,18 @@ function invalidateSession() {
   cachedAuth = undefined;
 }
 
-async function parse<T>(response: Response): Promise<T> {
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+interface ApiEnvelope<T> {
+  data: T;
+  meta?: PaginationMeta;
+}
+
+async function parse<T>(response: Response): Promise<ApiEnvelope<T>> {
   const body =
     response.status === 204 ? null : await response.json().catch(() => null);
   if (!response.ok) {
@@ -88,13 +99,13 @@ async function parse<T>(response: Response): Promise<T> {
       error?.details,
     );
   }
-  return body?.data as T;
+  return body ?? { data: undefined };
 }
 
-export async function apiRequest<T>(
+async function apiResponse<T>(
   path: string,
   init: RequestInit & { auth?: boolean } = {},
-): Promise<T> {
+): Promise<ApiEnvelope<T>> {
   const { auth: needsAuth = false, ...request } = init;
   const headers = new Headers(request.headers);
 
@@ -124,6 +135,27 @@ export async function apiRequest<T>(
     setCachedAuth(null, true);
   }
   return parse<T>(response);
+}
+
+export async function apiRequest<T>(
+  path: string,
+  init: RequestInit & { auth?: boolean } = {},
+): Promise<T> {
+  return (await apiResponse<T>(path, init)).data;
+}
+
+export async function apiPage<T>(
+  path: string,
+  init: RequestInit & { auth?: boolean } = {},
+) {
+  const result = await apiResponse<T[]>(path, init);
+  if (!result.meta)
+    throw new ApiClientError(
+      502,
+      "PAGINATION_MISSING",
+      "Results could not be loaded. Please try again.",
+    );
+  return { data: result.data, meta: result.meta };
 }
 
 export const apiPublic = <T>(path: string, init?: RequestInit) =>

@@ -11,6 +11,7 @@ test("restored buyer pages redirect sellers and admins while keeping public and 
   for (const path of [
     "/",
     "/cart",
+    "/shops/campus-books",
     "/orders",
     "/favourites",
     "/messages",

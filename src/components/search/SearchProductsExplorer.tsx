@@ -1,292 +1,351 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { RotateCcw, Search, SearchX, SlidersHorizontal } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { usePathname } from "next/navigation";
 
+import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { categories as localCategories } from "@/data/categories";
-import { apiErrorMessage, apiPublic } from "@/lib/api";
+import {
+  apiErrorMessage,
+  apiPage,
+  apiPublic,
+  type PaginationMeta,
+} from "@/lib/api";
 import { mapProduct, type ApiCategory, type ApiProduct } from "@/lib/catalog";
-import type { ProductCondition } from "@/types/product";
 
-export type SortOption = "newest" | "price-low" | "price-high";
-export type ConditionFilter = "all" | ProductCondition;
-
-interface SearchProductsExplorerProps {
-  initialQuery?: string;
-  initialCategory?: string;
-  initialShop?: string;
-  initialCondition?: ConditionFilter;
-  initialSort?: SortOption;
-}
-
-const fallbackCategories: ApiCategory[] = localCategories.map((category) => ({
-  id: category.slug,
-  name: category.name,
-  slug: category.slug,
-  description: category.description,
-  is_featured: Boolean(category.featured),
-  product_count: category.productCount,
-}));
+import { CampusSelect } from "./CampusSelect";
+import {
+  parseSearch,
+  priceError,
+  searchParams,
+  type SearchFilters,
+} from "./search-model";
 
 export function SearchProductsExplorer({
-  initialQuery = "",
-  initialCategory = "all",
-  initialShop = "",
-  initialCondition = "all",
-  initialSort = "newest",
-}: SearchProductsExplorerProps) {
-  const [query, setQuery] = useState(initialQuery);
-  const [category, setCategory] = useState(initialCategory);
-  const [condition, setCondition] = useState<ConditionFilter>(initialCondition);
-  const [sort, setSort] = useState<SortOption>(initialSort);
-  const [results, setResults] = useState<ReturnType<typeof mapProduct>[]>([]);
-  const [categories, setCategories] =
-    useState<ApiCategory[]>(fallbackCategories);
+  initialFilters,
+  fixedShop,
+}: {
+  initialFilters: SearchFilters;
+  fixedShop?: string;
+}) {
+  const pathname = usePathname();
+  const [filters, setFilters] = useState(initialFilters);
+  const [draft, setDraft] = useState(initialFilters);
+  const [products, setProducts] = useState<ReturnType<typeof mapProduct>[]>([]);
+  const [meta, setMeta] = useState<PaginationMeta | null>(null);
+  const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const [categoryError, setCategoryError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [retryKey, setRetryKey] = useState(0);
-
-  useEffect(() => {
-    apiPublic<ApiCategory[]>("/categories")
-      .then(setCategories)
-      .catch(() => setCategories(fallbackCategories));
-  }, []);
-
+  const [formError, setFormError] = useState<string | null>(null);
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    const timer = window.setTimeout(() => {
-      const params = new URLSearchParams();
-      if (query.trim()) params.set("q", query.trim());
-      if (category !== "all") params.set("category", category);
-      if (initialShop) params.set("shop", initialShop);
-      if (condition !== "all")
-        params.set("condition", condition.toLowerCase().replace(" ", "_"));
-      if (sort !== "newest") params.set("sort", sort);
-
-      window.history.replaceState(
-        null,
-        "",
-        params.size > 0 ? `/search?${params}` : "/search",
-      );
-
-      const apiParams = new URLSearchParams(params);
-      apiParams.set(
-        "sort",
-        sort === "price-low"
-          ? "price_asc"
-          : sort === "price-high"
-            ? "price_desc"
-            : "newest",
-      );
-
-      setLoading(true);
-      setError(null);
-      apiPublic<ApiProduct[]>(`/products?${apiParams}`, {
-        signal: controller.signal,
+    apiPublic<ApiCategory[]>("/categories", { signal: controller.signal })
+      .then((data) => {
+        setCategories(data);
+        setCategoryError(false);
       })
-        .then((items) => setResults(items.map(mapProduct)))
-        .catch((requestError) => {
-          if (
-            requestError instanceof DOMException &&
-            requestError.name === "AbortError"
-          )
-            return;
-          setResults([]);
-          setError(apiErrorMessage(requestError));
-        })
-        .finally(() => {
-          if (!controller.signal.aborted) setLoading(false);
-        });
-    }, 250);
-
-    return () => {
-      window.clearTimeout(timer);
-      controller.abort();
+      .catch(() => {
+        if (!controller.signal.aborted) setCategoryError(true);
+      });
+    const restore = () => {
+      const value = parseSearch(new URLSearchParams(window.location.search));
+      if (fixedShop) value.shop = fixedShop;
+      setLoading(true);
+      setFilters(value);
+      setDraft(value);
+      setFormError(null);
     };
-  }, [category, condition, initialShop, query, retryKey, sort]);
-
-  const filtersActive =
-    Boolean(query.trim()) ||
-    category !== "all" ||
-    condition !== "all" ||
-    sort !== "newest";
-
-  function clearFilters() {
-    setQuery("");
-    setCategory("all");
-    setCondition("all");
-    setSort("newest");
+    window.addEventListener("popstate", restore);
+    return () => {
+      controller.abort();
+      window.removeEventListener("popstate", restore);
+    };
+  }, [fixedShop, retry]);
+  useEffect(() => {
+    const controller = new AbortController();
+    const params = searchParams(filters);
+    if (fixedShop) params.set("shop", fixedShop);
+    params.set("limit", "24");
+    apiPage<ApiProduct>("/products?" + params, { signal: controller.signal })
+      .then((result) => {
+        if (controller.signal.aborted) return;
+        setProducts(result.data.map(mapProduct));
+        setMeta(result.meta);
+        setError(null);
+      })
+      .catch((failure) => {
+        if (!controller.signal.aborted) setError(apiErrorMessage(failure));
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, [filters, fixedShop, retry]);
+  function navigate(value: SearchFilters) {
+    setLoading(true);
+    setError(null);
+    setFormError(null);
+    setFilters(value);
+    setDraft(value);
+    const params = searchParams(value);
+    if (fixedShop) params.delete("shop");
+    window.history.pushState(
+      null,
+      "",
+      pathname + (params.size ? "?" + params : ""),
+    );
   }
-
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    const invalid = priceError(draft);
+    if (invalid) {
+      setFormError(invalid);
+      return;
+    }
+    navigate({ ...draft, q: draft.q.trim(), page: 1 });
+  }
+  const update = (key: keyof SearchFilters, value: string) =>
+    setDraft((current) => ({ ...current, [key]: value }));
+  const clear = () =>
+    navigate({ ...parseSearch(new URLSearchParams()), shop: fixedShop || "" });
   return (
     <div>
-      <div className="border-y border-border bg-surface py-4 sm:px-4">
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-foreground">
-              Search
-            </span>
-            <span className="relative block">
-              <Search
-                className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Textbooks, laptops, furniture..."
-                className="h-11 w-full rounded-control border border-border bg-background pl-9 pr-3 text-sm outline-none focus:border-primary-text focus:ring-2 focus:ring-primary-text/20"
-              />
-            </span>
-          </label>
-
-          <FilterSelect
-            label="Category"
-            value={category}
-            onChange={setCategory}
+      {categoryError && (
+        <p role="alert" className="mb-3 text-sm text-danger">
+          Category filters could not be loaded.{" "}
+          <button
+            className="underline"
+            onClick={() => setRetry((value) => value + 1)}
           >
-            <option value="all">All categories</option>
+            Retry
+          </button>
+        </p>
+      )}
+      <form
+        onSubmit={submit}
+        className="border-y border-border bg-surface py-5 sm:px-5"
+      >
+        <label className="mb-4 flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={draft.collection === "this-week"}
+            onChange={(event) =>
+              update("collection", event.target.checked ? "this-week" : "")
+            }
+          />
+          Listed this week
+        </label>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="text-sm font-semibold">
+            Search
+            <input
+              type="search"
+              value={draft.q}
+              maxLength={100}
+              onChange={(event) => update("q", event.target.value)}
+              placeholder={
+                fixedShop
+                  ? "Search this shop"
+                  : "Textbooks, laptops, furniture…"
+              }
+              className="mt-1.5 h-11 w-full rounded-control border border-border bg-background px-3 font-normal"
+            />
+          </label>
+          <Select
+            label="Category"
+            value={draft.category}
+            onChange={(value) => update("category", value)}
+          >
+            <option value="">All categories</option>
+            {draft.category &&
+              !categories.some((item) => item.slug === draft.category) && (
+                <option value={draft.category}>
+                  {draft.category.replaceAll("-", " ")}
+                </option>
+              )}
             {categories.map((item) => (
               <option key={item.slug} value={item.slug}>
                 {item.name}
               </option>
             ))}
-          </FilterSelect>
-
-          <FilterSelect
+          </Select>
+          <Select
             label="Condition"
-            value={condition}
-            onChange={(value) => setCondition(value as ConditionFilter)}
+            value={draft.condition}
+            onChange={(value) => update("condition", value)}
           >
-            <option value="all">Any condition</option>
-            <option value="New">New</option>
-            <option value="Like new">Like new</option>
-            <option value="Good">Good</option>
-            <option value="Fair">Fair</option>
-          </FilterSelect>
-
-          <FilterSelect
+            <option value="">Any condition</option>
+            <option value="new">New</option>
+            <option value="like_new">Like new</option>
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+          </Select>
+          <Select
             label="Sort"
-            value={sort}
-            onChange={(value) => setSort(value as SortOption)}
+            value={draft.sort}
+            onChange={(value) => update("sort", value)}
           >
             <option value="newest">Newest first</option>
-            <option value="price-low">Price: low to high</option>
-            <option value="price-high">Price: high to low</option>
-          </FilterSelect>
+            <option value="price_asc">Price: low to high</option>
+            <option value="price_desc">Price: high to low</option>
+            <option value="most_viewed">Most viewed</option>
+          </Select>
+          <CampusSelect
+            value={draft.campus}
+            onChange={(value) => update("campus", value)}
+          />
+          <Select
+            label="Collection or delivery"
+            value={draft.fulfilment}
+            onChange={(value) => update("fulfilment", value)}
+          >
+            <option value="">Either</option>
+            <option value="campus_pickup">Campus pickup</option>
+            <option value="delivery">Delivery available</option>
+          </Select>
+          {(["min_price", "max_price"] as const).map((field) => (
+            <label key={field} className="text-sm font-semibold">
+              {field === "min_price"
+                ? "Minimum price (R)"
+                : "Maximum price (R)"}
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={draft[field]}
+                onChange={(event) => update(field, event.target.value)}
+                className="mt-1.5 h-11 w-full rounded-control border border-border bg-background px-3 font-normal"
+                placeholder={field === "min_price" ? "0" : "No limit"}
+              />
+            </label>
+          ))}
         </div>
-      </div>
-
-      <div className="mt-5 flex items-center justify-between gap-4">
-        <p
-          className="flex items-center gap-2 text-sm text-muted"
-          aria-live="polite"
-        >
-          <SlidersHorizontal className="size-4" aria-hidden="true" />
-          {loading
-            ? "Updating results..."
-            : `${results.length} ${results.length === 1 ? "result" : "results"}`}
-        </p>
-        {filtersActive && (
+        {formError && (
+          <p role="alert" className="mt-3 text-sm text-danger">
+            {formError}
+          </p>
+        )}
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <button className="rounded-control bg-primary-action px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+            Find listings
+          </button>
           <button
             type="button"
-            onClick={clearFilters}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline"
+            onClick={clear}
+            className="text-sm font-semibold text-primary-text underline"
           >
-            <RotateCcw className="size-4" aria-hidden="true" />
             Clear filters
           </button>
-        )}
-      </div>
-
+          {draft.campus && (
+            <p className="text-xs text-muted">
+              Showing shops offering pickup at this campus.
+            </p>
+          )}
+        </div>
+      </form>
+      <p aria-live="polite" className="my-5 text-sm text-muted">
+        {loading
+          ? "Loading listings…"
+          : error
+            ? "Results unavailable"
+            : (meta?.total || 0) + " matching listings"}
+      </p>
       {loading ? (
-        <SearchSkeleton />
-      ) : error ? (
         <div
-          className="mt-5 flex min-h-64 flex-col items-center justify-center border-y border-border bg-surface px-6 text-center"
-          role="alert"
+          className="grid grid-cols-2 gap-4 md:grid-cols-4"
+          aria-busy="true"
+          aria-label="Loading listings"
         >
-          <SearchX className="size-9 text-danger" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-bold text-foreground">
-            Listings could not be loaded
-          </h2>
-          <p className="mt-1 max-w-md text-sm text-muted">{error}</p>
+          <div className="col-span-full">
+            <LoadingSplash compact label="Loading listings…" />
+          </div>
+          {Array.from({ length: 8 }, (_, index) => (
+            <div
+              key={index}
+              className="aspect-square animate-pulse motion-reduce:animate-none rounded-card bg-surface-muted"
+            />
+          ))}
+        </div>
+      ) : error ? (
+        <div role="alert" className="border-y border-border py-10 text-center">
+          <h2 className="font-bold">Listings could not be loaded</h2>
+          <p className="mt-2 text-sm text-muted">{error}</p>
           <button
-            type="button"
-            onClick={() => setRetryKey((value) => value + 1)}
-            className="mt-4 rounded-control bg-primary-action px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+            className="mt-4 font-semibold text-primary-text underline"
+            onClick={() => {
+              setLoading(true);
+              setRetry((value) => value + 1);
+            }}
           >
             Try again
           </button>
         </div>
-      ) : results.length > 0 ? (
-        <div className="mt-5">
-          <ProductGrid products={results} />
-        </div>
+      ) : products.length ? (
+        <ProductGrid products={products} />
       ) : (
-        <div className="mt-5 flex min-h-64 flex-col items-center justify-center border-y border-border bg-surface px-6 text-center">
-          <SearchX className="size-9 text-muted" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-bold text-foreground">
-            No products found
-          </h2>
-          <p className="mt-1 max-w-md text-sm text-muted">
-            Try a broader search term or remove one of the filters.
+        <div className="border-y border-border py-12 text-center">
+          <h2 className="text-lg font-bold">No matching listings</h2>
+          <p className="mt-2 text-sm text-muted">
+            Try a wider price range, another campus, or fewer filters.
           </p>
           <button
-            type="button"
-            onClick={clearFilters}
-            className="mt-4 rounded-control border border-border-strong bg-white px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-surface-muted"
+            onClick={clear}
+            className="mt-4 font-semibold text-primary-text underline"
           >
             Reset search
           </button>
         </div>
       )}
+      {!loading &&
+        !error &&
+        meta &&
+        (meta.totalPages > 1 || filters.page > 1) && (
+          <nav
+            aria-label="Listing pages"
+            className="mt-6 flex items-center justify-between gap-4"
+          >
+            <button
+              disabled={filters.page <= 1}
+              onClick={() => navigate({ ...filters, page: filters.page - 1 })}
+              className="rounded-control border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-muted">
+              Page {filters.page} of {Math.max(1, meta.totalPages)}
+            </span>
+            <button
+              disabled={filters.page >= meta.totalPages}
+              onClick={() => navigate({ ...filters, page: filters.page + 1 })}
+              className="rounded-control border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40"
+            >
+              Next
+            </button>
+          </nav>
+        )}
     </div>
   );
 }
-
-function SearchSkeleton() {
-  return (
-    <div
-      className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4"
-      aria-hidden="true"
-    >
-      {Array.from({ length: 8 }).map((_, index) => (
-        <div
-          key={index}
-          className="animate-pulse border border-border bg-surface"
-        >
-          <div className="aspect-square bg-surface-muted" />
-          <div className="space-y-2 p-3">
-            <div className="h-4 w-4/5 rounded bg-surface-muted" />
-            <div className="h-5 w-2/5 rounded bg-surface-muted" />
-            <div className="h-3 w-3/5 rounded bg-surface-muted" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-interface FilterSelectProps {
+function Select({
+  label,
+  value,
+  onChange,
+  children,
+}: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   children: React.ReactNode;
-}
-
-function FilterSelect({ label, value, onChange, children }: FilterSelectProps) {
+}) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-semibold text-foreground">
-        {label}
-      </span>
+    <label className="text-sm font-semibold">
+      {label}
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-control border border-border bg-background px-3 text-sm outline-none focus:border-primary-text focus:ring-2 focus:ring-primary-text/20"
+        className="mt-1.5 h-11 w-full rounded-control border border-border bg-background px-3 font-normal"
       >
         {children}
       </select>

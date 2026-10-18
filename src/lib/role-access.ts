@@ -25,6 +25,7 @@ export function isBuyerPage(path: string) {
       "/favourites",
       "/orders",
       "/messages",
+      "/shops",
     ].some((root) => within(path, root)) ||
     (within(path, "/products") &&
       path !== "/products/new" &&

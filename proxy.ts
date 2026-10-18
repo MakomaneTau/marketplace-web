@@ -149,6 +149,7 @@ export async function proxy(request: NextRequest) {
     [
       "search",
       "categories",
+      "shops",
       "products",
       "cart",
       "seller",

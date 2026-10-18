@@ -271,7 +271,7 @@ export default async function ProductDetailsPage({
               More from {product.seller.name}
             </h2>
             <Link
-              href={`/search?shop=${encodeURIComponent(product.seller.shopSlug)}`}
+              href={`/shops/${encodeURIComponent(product.seller.shopSlug)}`}
               className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary-text hover:underline"
             >
               View shop listings{" "}

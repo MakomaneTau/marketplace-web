@@ -1,61 +1,35 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
-import {
-  SearchProductsExplorer,
-  type ConditionFilter,
-  type SortOption,
-} from "@/components/search/SearchProductsExplorer";
+import { SearchProductsExplorer } from "@/components/search/SearchProductsExplorer";
+import { parseSearch } from "@/components/search/search-model";
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search and filter student marketplace products.",
+  description:
+    "Find student marketplace listings by campus, price and collection options.",
 };
-
-interface SearchPageProps {
+export default async function SearchPage({
+  searchParams,
+}: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-function first(value: string | string[] | undefined) {
-  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
-}
-
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const resolvedSearchParams = await searchParams;
-  const initialQuery = first(resolvedSearchParams.q);
-  const initialCategory = first(resolvedSearchParams.category) || "all";
-  const initialShop = first(resolvedSearchParams.shop);
-  const conditionValue = first(resolvedSearchParams.condition);
-  const initialCondition: ConditionFilter = [
-    "New",
-    "Like new",
-    "Good",
-    "Fair",
-  ].includes(conditionValue)
-    ? (conditionValue as ConditionFilter)
-    : "all";
-  const sortValue = first(resolvedSearchParams.sort);
-  const initialSort: SortOption = ["price-low", "price-high"].includes(
-    sortValue,
-  )
-    ? (sortValue as SortOption)
-    : "newest";
-
+}) {
+  const values = await searchParams;
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(values))
+    if (value !== undefined)
+      params.set(key, Array.isArray(value) ? value[0] : value);
   return (
     <Container className="py-6 md:py-8 lg:py-10">
       <PageHeader
-        title="Search marketplace"
-        description="Find products by name, category, condition and price order."
+        title="Find your next good find"
+        description="Search by campus, budget and how you'd like to collect."
       />
-
       <section className="mt-8">
         <SearchProductsExplorer
-          initialQuery={initialQuery}
-          initialCategory={initialCategory}
-          initialShop={initialShop}
-          initialCondition={initialCondition}
-          initialSort={initialSort}
+          key={params.toString()}
+          initialFilters={parseSearch(params)}
         />
       </section>
     </Container>

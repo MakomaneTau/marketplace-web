@@ -137,7 +137,7 @@ export function Header() {
           ) : (
             <>
               <Link
-                href="/search?nearby=true"
+                href="/#campus"
                 className="hidden h-11 shrink-0 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-surface-muted xl:flex"
               >
                 <MapPin
