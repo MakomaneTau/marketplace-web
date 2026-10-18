@@ -25,3 +25,33 @@ test("shared search URLs preserve campus, fulfilment, budgets and pages, includi
   assert.ok(priceError({ ...filters, max_price: "NaN" }));
   assert.equal(parseSearch(new URLSearchParams("page=-2")).page, 1);
 });
+test("basket survives reload, isolates accounts and rejects malformed persisted entries", () => {
+  const storage = new Map();
+  const overrides = {
+    localStorage: {
+      getItem: (key) => storage.get(key),
+      setItem: (key, value) => storage.set(key, value),
+    },
+    window: { dispatchEvent() {} },
+  };
+  let basket = loadTypeScript(
+    "src/components/checkout/basket-store.ts",
+    overrides,
+  );
+  const id = "90000000-0000-4000-8000-000000000005";
+  basket.addToBasket("buyer-a", id);
+  basket.addToBasket("buyer-a", id);
+  basket = loadTypeScript("src/components/checkout/basket-store.ts", overrides);
+  assert.equal(basket.readBasket("buyer-a")[0].quantity, 2);
+  assert.equal(basket.readBasket("buyer-b").length, 0);
+  storage.set(
+    "marketplace-basket:buyer-a",
+    JSON.stringify([
+      { productId: id, quantity: -1 },
+      { productId: "bad", quantity: 2 },
+    ]),
+  );
+  assert.equal(basket.readBasket("buyer-a").length, 0);
+  storage.set("marketplace-basket:buyer-a", "not JSON");
+  assert.equal(basket.readBasket("buyer-a").length, 0);
+});

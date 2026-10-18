@@ -163,6 +163,9 @@ export function Header() {
                 >
                   Wanted
                 </Link>
+                <HeaderIconLink href="/cart" label="Basket">
+                  <ShoppingBag className="size-5" />
+                </HeaderIconLink>
                 <HeaderIconLink href="/favourites" label="Favourites">
                   <Heart className="size-5" />
                 </HeaderIconLink>

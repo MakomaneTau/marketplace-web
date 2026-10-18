@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { addToBasket } from "@/components/checkout/basket-store";
 import { useAuth } from "@/hooks/use-auth";
 import { isBuyer, roleHome } from "@/lib/role-access";
 import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
@@ -123,6 +124,32 @@ export function ProductActions({
           Buy now
         </button>
       </div>
+      <button
+        type="button"
+        disabled={!ready}
+        onClick={() => {
+          if (!guard() || !auth) return;
+          try {
+            addToBasket(auth.user.id, productId);
+            setFeedback("Added to your basket.");
+          } catch (failure) {
+            setError(
+              failure instanceof Error
+                ? failure.message
+                : "Basket could not be saved.",
+            );
+          }
+        }}
+        className="mt-3 w-full rounded-control border border-border px-4 py-3 text-sm font-semibold text-primary-text"
+      >
+        Add to basket
+      </button>
+      <Link
+        href="/cart"
+        className="mt-2 inline-block text-sm text-primary-text underline"
+      >
+        View basket
+      </Link>
       <div className="mt-2 flex justify-end gap-2">
         <button
           type="button"

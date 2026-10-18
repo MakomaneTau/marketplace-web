@@ -33,6 +33,7 @@ interface MenuItem {
 }
 
 const mainMenuItems: MenuItem[] = [
+  { label: "Basket", href: "/cart", icon: ShoppingBag },
   { label: "Alerts", href: "/alerts", icon: MessageCircle },
   { label: "Wanted on campus", href: "/wanted", icon: Search },
   {

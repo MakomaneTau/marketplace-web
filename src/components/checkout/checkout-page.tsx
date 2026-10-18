@@ -22,6 +22,7 @@ import { ProtectedRequestError } from "@/components/auth/protected-request-error
 import { Container } from "@/components/layout/Container";
 import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
 
+import { BasketPage } from "./BasketPage";
 import {
   type Fulfilment,
   type Campus,
@@ -60,10 +61,6 @@ function CartContent() {
   const [selectedPickupTime, setSelectedPickupTime] = useState("");
   const [busy, setBusy] = useState(false);
   const [failedImage, setFailedImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!productId) router.replace("/orders");
-  }, [productId, router]);
 
   useEffect(() => {
     if (!productId) return;
@@ -159,7 +156,7 @@ function CartContent() {
     }
   }
 
-  if (!productId) return <CheckoutSkeleton />;
+  if (!productId) return <BasketPage />;
   if (loading) return <CheckoutSkeleton />;
   if (error === SESSION_ERROR_MESSAGE) {
     return (
