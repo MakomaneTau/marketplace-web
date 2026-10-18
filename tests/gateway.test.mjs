@@ -22,6 +22,32 @@ const json = (body, status = 200) =>
     headers: { "content-type": "application/json" },
   });
 
+test("MFA upgrades HttpOnly cookies without exposing tokens in browser JSON", async () => {
+  const route = loadTypeScript(entry, {
+    fetch: async () => json({ data: { session } }),
+  });
+  const response = await route.POST(
+    new NextRequest("http://localhost:3000/api/marketplace/auth/mfa/verify", {
+      method: "POST",
+      headers: {
+        origin: "http://localhost:3000",
+        cookie: "marketplace-access=password-only; marketplace-persistent=true",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ factorId: "factor", code: "123456" }),
+    }),
+    context("auth/mfa/verify"),
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.cookies.get("marketplace-access").value, "access");
+  assert.equal(response.cookies.get("marketplace-refresh").value, "refresh");
+  assert.match(response.headers.get("set-cookie"), /HttpOnly/i);
+  assert.doesNotMatch(
+    await response.text(),
+    /accessToken|refreshToken|"access"|"refresh"/,
+  );
+});
+
 test("public landing allows visitors and buyers but redirects seller and admin sessions", async () => {
   const anonymous = loadTypeScript("proxy.ts", {
     fetch: async () => {

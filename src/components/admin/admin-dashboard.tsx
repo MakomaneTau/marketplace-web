@@ -2,16 +2,24 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, ShieldCheck, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  LogOut,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 
 import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { useAuth } from "@/hooks/use-auth";
-import { apiErrorMessage, apiRequest } from "@/lib/api";
+import { apiErrorMessage, apiRequest, logout } from "@/lib/api";
 
 import { AdminUsers } from "./admin-users";
 import { AdminReports } from "./admin-reports";
 import { AdminVerifications } from "./admin-verifications";
 import type { AdminOverview, AdminTab } from "./types";
+import { AdminMfa } from "./admin-mfa";
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: "users", label: "Users" },
@@ -21,6 +29,20 @@ const tabs: { id: AdminTab; label: string }[] = [
 
 export function AdminDashboard() {
   const { auth, ready } = useAuth();
+  if (!ready) return <LoadingSplash label="Checking admin access…" />;
+  if (!auth?.profile?.isAdmin) return <AdminDashboardContent />;
+  return (
+    <AdminMfa>
+      <AdminDashboardContent />
+    </AdminMfa>
+  );
+}
+
+function AdminDashboardContent() {
+  const router = useRouter();
+  const { auth, ready } = useAuth();
+  const [signingOut, setSigningOut] = useState(false);
+  const [logoutError, setLogoutError] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminTab>("users");
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +64,21 @@ export function AdminDashboard() {
     return () => window.clearTimeout(timeout);
   }, [ready, auth, refreshOverview]);
 
+  async function handleLogout() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setLogoutError(null);
+    try {
+      await logout();
+      router.replace("/login");
+      router.refresh();
+    } catch (requestError) {
+      setLogoutError(apiErrorMessage(requestError));
+      setSigningOut(false);
+    }
+  }
+
+  if (signingOut) return <LoadingSplash label="Logging out…" />;
   if (!ready) return <LoadingSplash label="Checking admin access…" />;
   if (!auth?.profile?.isAdmin)
     return (
@@ -59,6 +96,17 @@ export function AdminDashboard() {
           className="mt-5 inline-block font-semibold text-primary-text underline"
         >
           Return to Marketplace
+        </Link>
+        {logoutError && (
+          <p role="alert" className="mt-4 text-danger">
+            {logoutError}
+          </p>
+        )}
+        <Link
+          href="/login"
+          className="mt-4 block font-semibold text-primary-text underline"
+        >
+          Sign in
         </Link>
       </section>
     );
@@ -78,7 +126,22 @@ export function AdminDashboard() {
               requests.
             </p>
           </div>
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            disabled={signingOut}
+            className="inline-flex min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text disabled:opacity-50"
+          >
+            <LogOut className="size-4" aria-hidden="true" />
+            Log out
+          </button>
         </header>
+
+        {logoutError && (
+          <p role="alert" className="mt-4 text-danger">
+            {logoutError}
+          </p>
+        )}
 
         {!overview && !error && (
           <LoadingSplash compact label="Loading admin overview…" />

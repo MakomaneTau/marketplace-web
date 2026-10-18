@@ -76,7 +76,9 @@ async function toNextResponse(upstream: Response, path: string) {
 
   let responseBody: BodyInit | null = bytes.byteLength ? bytes : null;
   if (
-    (path === "auth/login" || path === "auth/signup") &&
+    (path === "auth/login" ||
+      path === "auth/signup" ||
+      path === "auth/mfa/verify") &&
     upstream.ok &&
     bytes.byteLength
   ) {
@@ -147,7 +149,9 @@ async function handle(request: NextRequest, context: RouteContext) {
   }
 
   const authPayload =
-    (path === "auth/login" || path === "auth/signup") &&
+    (path === "auth/login" ||
+      path === "auth/signup" ||
+      path === "auth/mfa/verify") &&
     upstream.ok
       ? ((await upstream
           .clone()
