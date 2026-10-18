@@ -16,6 +16,7 @@ import Link from "next/link";
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { LoadingSplash } from "@/components/ui/LoadingSplash";
+import { OfferPanel } from "@/components/community/OfferPanel";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { notifyMessagesChanged } from "@/components/messaging/unread-messages";
 import { useAuth } from "@/hooks/use-auth";
@@ -517,6 +518,13 @@ export function Conversations({ initialId }: { initialId?: string | null }) {
               </Link>
             )}
 
+            {current.product && current.conversation_type !== "delivery" && (
+              <OfferPanel
+                key={current.id}
+                conversationId={current.id}
+                buyer={current.buyer.id === userId}
+              />
+            )}
             <div
               ref={scrollArea}
               role="log"

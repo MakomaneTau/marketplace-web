@@ -17,6 +17,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 
 import { LoadingSplash } from "@/components/ui/LoadingSplash";
+import type { Offer } from "@/components/community/OfferPanel";
 import { formatMoney as money } from "@/lib/format";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { Container } from "@/components/layout/Container";
@@ -49,6 +50,9 @@ function CheckoutSkeleton() {
 
 function CartContent() {
   const productId = useSearchParams().get("product");
+  const offerId = useSearchParams().get("offer");
+  const [offer, setOffer] = useState<Offer | null>(null);
+  const [offerError, setOfferError] = useState("");
   const router = useRouter();
   const [product, setProduct] = useState<CheckoutProduct | null>(null);
   const [campuses, setCampuses] = useState<Campus[]>([]);
@@ -94,6 +98,30 @@ function CartContent() {
     return () => controller.abort();
   }, [productId]);
 
+  useEffect(() => {
+    if (!offerId) return;
+    const controller = new AbortController();
+    apiRequest<Offer>(`/offers/${offerId}`, {
+      auth: true,
+      signal: controller.signal,
+    })
+      .then((value) => {
+        if (
+          value.product_id !== productId ||
+          value.status !== "accepted" ||
+          new Date(value.expires_at) <= new Date()
+        )
+          throw new Error("This offer is unavailable or has expired.");
+        setOffer(value);
+        setQuantity(value.quantity);
+        setOfferError("");
+      })
+      .catch((e) => {
+        if (!controller.signal.aborted) setOfferError(apiErrorMessage(e));
+      });
+    return () => controller.abort();
+  }, [offerId, productId]);
+
   async function retryLoad() {
     if (!productId) return;
     setLoading(true);
@@ -127,10 +155,11 @@ function CartContent() {
 
   async function checkout(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!product || busy) return;
+    if (!product || busy || (offerId && (!offer || offerError))) return;
     const form = new FormData(event.currentTarget);
     const input = {
-      items: [{ productId: product.id, quantity }],
+      ...(offerId ? { offerId } : {}),
+      items: [{ productId: product.id, quantity: offer?.quantity ?? quantity }],
       fulfilmentType: fulfilment,
       ...(fulfilment === "delivery"
         ? { deliveryAddress: String(form.get("deliveryAddress") ?? "").trim() }
@@ -193,8 +222,8 @@ function CartContent() {
     );
   }
 
-  const unitPrice = Number(product.price);
-  const subtotal = unitPrice * quantity;
+  const unitPrice = Number(offer?.unit_price ?? product.price);
+  const subtotal = unitPrice * (offer?.quantity ?? quantity);
   const maximumQuantity = maximumOrderQuantity(product);
   const hasQuantityLimit = product.stock_quantity !== undefined;
   const quantityLimitText =
@@ -284,7 +313,7 @@ function CartContent() {
                       onClick={() =>
                         setQuantity((value) => Math.max(1, value - 1))
                       }
-                      disabled={quantity === 1}
+                      disabled={Boolean(offerId) || quantity === 1}
                       aria-label="Decrease quantity"
                       className="grid h-10 place-items-center bg-white hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"
                     >
@@ -294,7 +323,7 @@ function CartContent() {
                       aria-live="polite"
                       className="grid h-10 place-items-center border-x border-border text-sm font-semibold"
                     >
-                      {quantity}
+                      {offer?.quantity ?? quantity}
                     </output>
                     <button
                       type="button"
@@ -303,7 +332,9 @@ function CartContent() {
                           Math.min(maximumQuantity, value + 1),
                         )
                       }
-                      disabled={quantity === maximumQuantity}
+                      disabled={
+                        Boolean(offerId) || quantity === maximumQuantity
+                      }
                       aria-label={
                         quantity === maximumQuantity
                           ? `Increase quantity disabled. ${quantityLimitText}.`
@@ -574,8 +605,23 @@ function CartContent() {
               </span>
             </p>
           </div>
+          {offerId && !offer && !offerError ? (
+            <LoadingSplash compact label="Loading accepted offer…" />
+          ) : (
+            offerId && (
+              <p role="status" className="mt-4 text-sm">
+                {offerError ||
+                  "Accepted offer price applied. Quantity is fixed by your offer."}
+              </p>
+            )
+          )}
           <button
-            disabled={busy || !hasFulfilment || pickupUnavailable}
+            disabled={
+              busy ||
+              !hasFulfilment ||
+              pickupUnavailable ||
+              Boolean(offerId && (!offer || offerError))
+            }
             className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-control bg-primary-action px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LockKeyhole className="size-4" aria-hidden="true" />

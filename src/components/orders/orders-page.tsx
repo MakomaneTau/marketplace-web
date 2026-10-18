@@ -17,6 +17,7 @@ import { LoadingSplash } from "@/components/ui/LoadingSplash";
 import { formatMoney as money } from "@/lib/format";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { Container } from "@/components/layout/Container";
+import { PickupPlan } from "@/components/community/PickupPlan";
 import { ReviewForm } from "@/components/orders/ReviewForm";
 import { apiErrorMessage, apiRequest, SESSION_ERROR_MESSAGE } from "@/lib/api";
 
@@ -293,6 +294,14 @@ function OrdersContent() {
                 </div>
               </footer>
 
+              {order.fulfilment_type === "campus_pickup" && (
+                <PickupPlan
+                  orderId={order.id}
+                  status={order.status}
+                  buyer
+                  onChanged={() => void loadOrders()}
+                />
+              )}
               {order.status === "completed" && order.items[0] && (
                 <ReviewForm
                   orderId={order.id}

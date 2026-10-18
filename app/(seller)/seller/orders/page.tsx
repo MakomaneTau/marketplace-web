@@ -4,6 +4,7 @@ import { MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import { PickupPlan } from "@/components/community/PickupPlan";
 import { ProtectedRequestError } from "@/components/auth/protected-request-error";
 import { SectionHeading } from "@/components/seller/section-heading";
 import { ShopSetupRequired } from "@/components/seller/shop-setup-required";
@@ -14,6 +15,7 @@ type OrderStatus = "new" | "preparing" | "ready" | "completed" | "cancelled";
 type Order = {
   id: string;
   status: OrderStatus;
+  fulfilment_type: string;
   total_amount: number | string;
   created_at: string;
   buyer: { display_name: string };
@@ -136,6 +138,13 @@ export default function SellerOrdersPage() {
                   ))}
                 </ul>
 
+                {order.fulfilment_type === "campus_pickup" && (
+                  <PickupPlan
+                    orderId={order.id}
+                    status={order.status}
+                    onChanged={load}
+                  />
+                )}
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                   <strong>{money(order.total_amount)}</strong>
                   <div className="flex flex-wrap gap-2">
