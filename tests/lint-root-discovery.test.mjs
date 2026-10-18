@@ -42,4 +42,9 @@ test("Next lint discovers directory roots without including files or nested sour
   assert.deepEqual(roots(join(directory, "apps", "*")), expected);
   assert.deepEqual(roots(join(directory, "apps", "{buyer,seller}")), expected);
   assert.deepEqual(roots([buyer, seller]), expected);
+  assert.deepEqual(
+    roots(relative(process.cwd(), join(directory, "apps", "*"))),
+    expected.map((value) => normalize(relative(process.cwd(), value))).sort(),
+  );
+  assert.deepEqual(roots(join(directory, "missing", "*")), []);
 });

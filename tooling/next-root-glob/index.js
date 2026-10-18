@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Next loads this adapter through CommonJS. */
 const { statSync } = require("node:fs");
-const { resolve } = require("node:path");
+const {
+  dirname,
+  isAbsolute,
+  normalize,
+  parse,
+  relative,
+  resolve,
+} = require("node:path");
 
 const { globSync: tinyGlobSync, isDynamicPattern } = require("tinyglobby");
 
@@ -9,26 +16,55 @@ const { globSync: tinyGlobSync, isDynamicPattern } = require("tinyglobby");
 // recursively, which is tinyglobby's default.
 exports.globSync = (patterns, options = {}) => {
   const inputs = Array.isArray(patterns) ? patterns : [patterns];
-  const literals = [];
-  const globs = [];
-  for (const pattern of inputs) {
+  const matches = [];
+  for (const input of inputs) {
+    const pattern =
+      process.platform === "win32" ? input.replaceAll("\\", "/") : input;
     if (options.onlyDirectories && !isDynamicPattern(pattern)) {
       try {
         if (
           statSync(resolve(options.cwd || process.cwd(), pattern)).isDirectory()
         )
-          literals.push(pattern);
+          matches.push(
+            options.absolute
+              ? resolve(options.cwd || process.cwd(), pattern)
+              : pattern,
+          );
       } catch (error) {
         if (!["ENOENT", "ENOTDIR"].includes(error.code)) throw error;
       }
     } else {
-      globs.push(
-        process.platform === "win32" ? pattern.replaceAll("\\", "/") : pattern,
+      const absolutePattern = isAbsolute(pattern);
+      const originalCwd = options.cwd || process.cwd();
+      const searchPattern = resolve(originalCwd, pattern).replaceAll("\\", "/");
+      // Anchor traversal before dynamic segments, including patterns outside cwd.
+      // A temp directory can be on a different Windows drive from the project.
+      let cwd = dirname(searchPattern);
+      while (isDynamicPattern(cwd)) cwd = dirname(cwd);
+      matches.push(
+        ...tinyGlobSync(searchPattern, {
+          expandDirectories: false,
+          ...options,
+          cwd,
+          absolute: true,
+        }).map((match) =>
+          (options.absolute ?? absolutePattern)
+            ? match
+            : relative(originalCwd, match),
+        ),
       );
     }
   }
-  const matched = globs.length
-    ? tinyGlobSync(globs, { expandDirectories: false, ...options })
-    : [];
-  return [...new Set([...literals, ...matched])];
+  // tinyglobby includes a trailing slash on directories. fast-glob does not.
+  return [
+    ...new Set(
+      matches.map((match) => {
+        const normalized = normalize(match);
+        const value = normalized.replaceAll("\\", "/");
+        return normalized === parse(normalized).root
+          ? value
+          : value.replace(/\/$/, "");
+      }),
+    ),
+  ];
 };
