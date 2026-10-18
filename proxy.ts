@@ -152,6 +152,8 @@ export async function proxy(request: NextRequest) {
       "shops",
       "products",
       "cart",
+      "alerts",
+      "wanted",
       "seller",
       "admin",
       "favourites",

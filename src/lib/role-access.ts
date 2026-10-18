@@ -26,6 +26,8 @@ export function isBuyerPage(path: string) {
       "/orders",
       "/messages",
       "/shops",
+      "/alerts",
+      "/wanted",
     ].some((root) => within(path, root)) ||
     (within(path, "/products") &&
       path !== "/products/new" &&
@@ -36,9 +38,14 @@ export function isBuyerPage(path: string) {
 export function isPublicBuyerPage(path: string) {
   return (
     isBuyerPage(path) &&
-    !["/cart", "/favourites", "/orders", "/messages"].some((root) =>
-      within(path, root),
-    )
+    ![
+      "/cart",
+      "/favourites",
+      "/orders",
+      "/messages",
+      "/alerts",
+      "/wanted",
+    ].some((root) => within(path, root))
   );
 }
 

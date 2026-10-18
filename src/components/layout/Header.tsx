@@ -151,6 +151,18 @@ export function Header() {
                 aria-label="Buyer Navigation"
                 className="flex items-center gap-1"
               >
+                <Link
+                  href="/alerts"
+                  className="px-2 py-3 text-sm font-semibold"
+                >
+                  Alerts
+                </Link>
+                <Link
+                  href="/wanted"
+                  className="px-2 py-3 text-sm font-semibold"
+                >
+                  Wanted
+                </Link>
                 <HeaderIconLink href="/favourites" label="Favourites">
                   <Heart className="size-5" />
                 </HeaderIconLink>

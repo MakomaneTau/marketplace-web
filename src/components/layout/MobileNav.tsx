@@ -33,6 +33,8 @@ interface MenuItem {
 }
 
 const mainMenuItems: MenuItem[] = [
+  { label: "Alerts", href: "/alerts", icon: MessageCircle },
+  { label: "Wanted on campus", href: "/wanted", icon: Search },
   {
     label: "Home",
     href: "/",

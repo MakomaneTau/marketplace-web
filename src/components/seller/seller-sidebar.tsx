@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Overview", href: "/seller", icon: LayoutDashboard },
+  { label: "Wanted requests", href: "/seller/wanted", icon: ShoppingBag },
   { label: "Products", href: "/seller/products", icon: Package },
   { label: "Orders", href: "/seller/orders", icon: ShoppingBag },
   { label: "Messages", href: "/seller/messages", icon: MessageSquare },

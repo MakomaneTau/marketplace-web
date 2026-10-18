@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container";
 import { SearchProductsExplorer } from "@/components/search/SearchProductsExplorer";
 import { parseSearch } from "@/components/search/search-model";
+import { FollowShop } from "@/components/shops/FollowShop";
 import { ShopReviews } from "@/components/shops/ShopReviews";
 
 type Shop = {
@@ -110,6 +111,7 @@ export default async function ShopPage({
             </p>
           )}
         </div>
+        <FollowShop slug={slug} />
       </header>
       <h2 className="mb-5 text-xl font-bold">Shop listings</h2>
       <SearchProductsExplorer

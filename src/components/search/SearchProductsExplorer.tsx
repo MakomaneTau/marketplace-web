@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 
 import { LoadingSplash } from "@/components/ui/LoadingSplash";
+import { SavedSearchControl } from "@/components/community/SavedSearchControl";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import {
   apiErrorMessage,
@@ -245,6 +246,7 @@ export function SearchProductsExplorer({
           )}
         </div>
       </form>
+      <SavedSearchControl filters={filters} />
       <p aria-live="polite" className="my-5 text-sm text-muted">
         {loading
           ? "Loading listings…"
