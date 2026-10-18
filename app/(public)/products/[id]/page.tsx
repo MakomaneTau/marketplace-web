@@ -76,7 +76,7 @@ export async function generateMetadata({
   params,
 }: ProductDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = await loadProduct(id).catch(() => null);
+  const product = await loadProduct(id);
 
   if (!product) return { title: "Product not found" };
 
@@ -91,7 +91,7 @@ export default async function ProductDetailsPage({
   params,
 }: ProductDetailsPageProps) {
   const { id } = await params;
-  const product = await loadProduct(id).catch(() => null);
+  const product = await loadProduct(id);
 
   if (!product) notFound();
   if (id !== product.slug) permanentRedirect(`/products/${product.slug}`);

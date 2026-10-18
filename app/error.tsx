@@ -5,10 +5,10 @@ import { useEffect } from "react";
 
 export default function RouteError({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error("A marketplace route failed to render.", error);
@@ -29,7 +29,7 @@ export default function RouteError({
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <button
-            onClick={reset}
+            onClick={retry}
             className="rounded-control bg-primary-action px-5 py-3 font-semibold text-primary-foreground"
           >
             Try again
