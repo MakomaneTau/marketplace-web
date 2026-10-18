@@ -1,6 +1,9 @@
+import { randomBytes } from "node:crypto";
+
 import { type NextRequest, NextResponse } from "next/server";
 
 import { isPublicBuyerPage, roleRedirect } from "@/lib/role-access";
+import { contentSecurityPolicy } from "@/lib/server/security-policy";
 import { refreshSession, upstreamRequest } from "@/lib/server/marketplace";
 import {
   ACCESS_COOKIE,
@@ -47,7 +50,7 @@ function accessErrorRedirect(
   return NextResponse.redirect(url);
 }
 
-export async function proxy(request: NextRequest) {
+async function authorizePage(request: NextRequest, requestHeaders: Headers) {
   const publicPage = isPublicBuyerPage(request.nextUrl.pathname);
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
   let accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
@@ -63,7 +66,9 @@ export async function proxy(request: NextRequest) {
   }
   if (!accessToken) {
     if (publicPage) {
-      const response = NextResponse.next();
+      const response = NextResponse.next({
+        request: { headers: requestHeaders },
+      });
       response.headers.set("Cache-Control", "private, no-store");
       if (refreshToken) clearSessionCookies(response);
       return response;
@@ -116,7 +121,7 @@ export async function proxy(request: NextRequest) {
   );
   const response = destination
     ? NextResponse.redirect(new URL(destination, request.url))
-    : NextResponse.next();
+    : NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set(
     "Cache-Control",
     "private, no-store, max-age=0, must-revalidate",
@@ -128,18 +133,44 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+export async function proxy(request: NextRequest) {
+  const nonce = randomBytes(18).toString("base64");
+  const policy = contentSecurityPolicy(
+    nonce,
+    process.env.NODE_ENV === "production",
+  );
+  const requestHeaders = new Headers(request.headers);
+  // Always overwrite caller-supplied values before Next renders script tags.
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", policy);
+  const path = request.nextUrl.pathname;
+  const guarded =
+    path === "/" ||
+    [
+      "search",
+      "categories",
+      "products",
+      "cart",
+      "seller",
+      "admin",
+      "favourites",
+      "messages",
+      "orders",
+      "profile",
+    ].some(
+      (segment) => path === `/${segment}` || path.startsWith(`/${segment}/`),
+    );
+  const response = guarded
+    ? await authorizePage(request, requestHeaders)
+    : NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set("Content-Security-Policy", policy);
+  response.headers.set(
+    "Cache-Control",
+    "private, no-store, max-age=0, must-revalidate",
+  );
+  return response;
+}
+
 export const config = {
-  matcher: [
-    "/",
-    "/search/:path*",
-    "/categories/:path*",
-    "/products/:path*",
-    "/cart/:path*",
-    "/seller/:path*",
-    "/admin/:path*",
-    "/favourites/:path*",
-    "/messages/:path*",
-    "/orders/:path*",
-    "/profile/:path*",
-  ],
+  matcher: ["/((?!api/|api$|_next/|favicon.ico|robots.txt|sitemap.xml).*)"],
 };

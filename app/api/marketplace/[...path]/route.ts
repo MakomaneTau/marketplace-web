@@ -2,6 +2,12 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { refreshSession, upstreamRequest } from "@/lib/server/marketplace";
 import {
+  boundedRequestBody,
+  originIsAllowed,
+  RequestSecurityError,
+  validatedGatewayPath,
+} from "@/lib/server/request-security";
+import {
   ACCESS_COOKIE,
   PERSISTENT_COOKIE,
   REFRESH_COOKIE,
@@ -26,29 +32,6 @@ function isUnsafeMethod(method: string) {
   return !new Set(["GET", "HEAD", "OPTIONS"]).has(method);
 }
 
-function originIsAllowed(request: NextRequest) {
-  const origin = request.headers.get("origin");
-  if (!origin) return true;
-
-  const host = request.headers.get("host");
-  if (!host) return false;
-
-  try {
-    const originUrl = new URL(origin);
-    const forwardedProtocol = request.headers
-      .get("x-forwarded-proto")
-      ?.split(",", 1)[0]
-      ?.trim();
-    const requestProtocol =
-      forwardedProtocol || request.nextUrl.protocol.replace(":", "");
-    return (
-      originUrl.protocol === `${requestProtocol}:` && originUrl.host === host
-    );
-  } catch {
-    return false;
-  }
-}
-
 function upstreamHeaders(request: NextRequest, accessToken?: string) {
   const headers = new Headers();
   for (const name of ["accept", "content-type", "x-request-id"]) {
@@ -60,10 +43,6 @@ function upstreamHeaders(request: NextRequest, accessToken?: string) {
     headers.set("authorization", explicitAuthorization);
   else if (accessToken) headers.set("authorization", `Bearer ${accessToken}`);
   return headers;
-}
-
-async function requestBody(request: NextRequest) {
-  return isUnsafeMethod(request.method) ? request.arrayBuffer() : undefined;
 }
 
 async function callUpstream(
@@ -126,13 +105,13 @@ async function handle(request: NextRequest, context: RouteContext) {
           message: "The request origin is not allowed.",
         },
       },
-      { status: 403 },
+      { status: 403, headers: { "Cache-Control": "private, no-store" } },
     );
   }
 
   const { path: segments } = await context.params;
-  const path = segments.map(encodeURIComponent).join("/");
-  const body = await requestBody(request);
+  const path = validatedGatewayPath(segments);
+  const body = await boundedRequestBody(request, path);
   const explicitAuthorization = request.headers.has("authorization");
   const needsAuth = request.headers.get("x-marketplace-auth") === "required";
   const persistentHeader = request.headers.get("x-marketplace-persistent");
@@ -168,7 +147,8 @@ async function handle(request: NextRequest, context: RouteContext) {
   }
 
   const authPayload =
-    (path === "auth/login" || path === "auth/signup") && upstream.ok
+    (path === "auth/login" || path === "auth/signup") &&
+    upstream.ok
       ? ((await upstream
           .clone()
           .json()
@@ -194,7 +174,15 @@ async function handle(request: NextRequest, context: RouteContext) {
 async function safeHandle(request: NextRequest, context: RouteContext) {
   try {
     return await handle(request, context);
-  } catch {
+  } catch (error) {
+    if (error instanceof RequestSecurityError)
+      return NextResponse.json(
+        { error: { code: error.code, message: error.message } },
+        {
+          status: error.status,
+          headers: { "Cache-Control": "private, no-store" },
+        },
+      );
     return NextResponse.json(
       {
         error: {

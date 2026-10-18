@@ -21,6 +21,8 @@ export function loadTypeScript(entry, overrides = {}) {
     TextEncoder,
     TextDecoder,
     Event,
+    setTimeout,
+    clearTimeout,
     console,
     process: { env: { NODE_ENV: "test" } },
     ...overrides,

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 import { SessionBootstrap } from "@/components/auth/session-bootstrap";
 
@@ -16,7 +17,11 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
+export default async function RootLayout({
+  children,
+}: Readonly<RootLayoutProps>) {
+  // CSP nonces must be generated at request time, never baked into cached HTML.
+  await connection();
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className="font-sans antialiased">
