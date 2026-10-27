@@ -162,3 +162,154 @@ test("logout still reports non-authentication service failures", async () => {
   });
   assert.equal(api.getStoredAuth(), null);
 });
+
+test("forced session lookup refreshes a cached profile", async () => {
+  let calls = 0;
+  const { api } = client(async () =>
+    response({
+      user: { id: "same-user" },
+      profile: { role: ++calls === 1 ? "buyer" : "seller" },
+    }),
+  );
+
+  const first = await api.getCurrentAuth();
+  assert.equal(await api.getCurrentAuth(), first);
+  const refreshed = await api.getCurrentAuth(true);
+
+  assert.equal(calls, 2);
+  assert.equal(refreshed.profile.role, "seller");
+  assert.equal(api.getStoredAuth(), refreshed);
+});
+
+test("login sends the chosen role and persistence preference before publishing the new profile", async () => {
+  const events = [];
+  const { api, window } = client(async (url, init) => {
+    if (url.endsWith("/login")) {
+      assert.equal(init.headers.get("x-marketplace-persistent"), "false");
+      assert.deepEqual(JSON.parse(init.body), {
+        email: "seller@example.com",
+        password: "Password123!",
+        role: "seller",
+      });
+      return response({ user: { id: "seller" } });
+    }
+    assert.deepEqual(events, ["loading"]);
+    return response({ user: { id: "seller" }, profile: { role: "seller" } });
+  });
+  window.addEventListener("marketplace-auth-loading", () =>
+    events.push("loading"),
+  );
+  window.addEventListener("marketplace-auth", () =>
+    events.push("authenticated"),
+  );
+
+  await api.login("seller@example.com", "Password123!", false, "seller");
+
+  assert.deepEqual(events, ["loading", "authenticated"]);
+});
+
+test("login rejects a successful credential response if no authenticated session follows", async () => {
+  const { api } = client(async (url) =>
+    url.endsWith("/login")
+      ? response({ user: { id: "buyer" } })
+      : response(null, 401),
+  );
+
+  await assert.rejects(
+    api.login("buyer@example.com", "Password123!", true),
+    (error) => {
+      assert.ok(error instanceof api.ApiClientError);
+      assert.equal(error.status, 401);
+      assert.equal(error.code, "AUTH_SESSION_MISSING");
+      return true;
+    },
+  );
+  assert.equal(api.getStoredAuth(), null);
+});
+
+test("authenticated signup publishes the authoritative profile instead of signup metadata", async () => {
+  const { api } = client(async (url, init) => {
+    if (url.endsWith("/signup")) {
+      assert.equal(init.headers.get("x-marketplace-persistent"), "true");
+      assert.equal(JSON.parse(init.body).email, "buyer@example.com");
+      return response({
+        authenticated: true,
+        user: { id: "buyer" },
+        profile: { role: "seller" },
+      });
+    }
+    return response({ user: { id: "buyer" }, profile: { role: "buyer" } });
+  });
+
+  const result = await api.signup({ email: "buyer@example.com" });
+
+  assert.equal(result.authenticated, true);
+  assert.equal(result.profile.role, "buyer");
+  assert.equal(api.getStoredAuth().profile.role, "buyer");
+});
+
+test("role switching wins over an older pending session lookup", async () => {
+  let resolveSession;
+  const { api } = client((url) =>
+    url.endsWith("/switch-role")
+      ? Promise.resolve(
+          response({ user: { id: "user" }, profile: { role: "seller" } }),
+        )
+      : new Promise((resolve) => {
+          resolveSession = resolve;
+        }),
+  );
+  const pending = api.getCurrentAuth();
+
+  await api.switchRole("seller");
+  resolveSession(
+    response({ user: { id: "user" }, profile: { role: "buyer" } }),
+  );
+
+  assert.equal((await pending).profile.role, "seller");
+  assert.equal(api.getStoredAuth().profile.role, "seller");
+});
+
+for (const failure of ["expired", "offline"]) {
+  test(`a stale ${failure} session lookup cannot discard a successful role switch`, async () => {
+    let finishSession;
+    const { api, window } = client((url) =>
+      url.endsWith("/switch-role")
+        ? Promise.resolve(
+            response({ user: { id: "user" }, profile: { role: "seller" } }),
+          )
+        : new Promise((resolve, reject) => {
+            finishSession = () => {
+              if (failure === "expired") resolve(response(null, 401));
+              else reject(new Error("offline"));
+            };
+          }),
+    );
+    const pending = api.getCurrentAuth();
+    const switched = await api.switchRole("seller");
+    let changes = 0;
+    window.addEventListener("marketplace-auth", () => changes++);
+
+    finishSession();
+
+    assert.equal(await pending, switched);
+    assert.equal(api.getStoredAuth(), switched);
+    assert.equal(changes, 0);
+  });
+}
+
+test("logout clears an established session and notifies consumers even when the network fails", async () => {
+  const failure = new Error("offline");
+  const { api, window } = client(async (url) => {
+    if (url.endsWith("/logout")) throw failure;
+    return response({ user: { id: "seller" }, profile: { role: "seller" } });
+  });
+  await api.getCurrentAuth();
+  let changes = 0;
+  window.addEventListener("marketplace-auth", () => changes++);
+
+  await assert.rejects(api.logout(), (error) => error === failure);
+
+  assert.equal(api.getStoredAuth(), null);
+  assert.equal(changes, 1);
+});
