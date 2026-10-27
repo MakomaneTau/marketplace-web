@@ -53,3 +53,20 @@ test("login destinations respect role permissions and reject external redirects"
     "/cart?product=123",
   );
 });
+
+test("restored seller pages leave seller mode after an account switches to buying", () => {
+  for (const path of [
+    "/seller",
+    "/seller/orders",
+    "/seller/products/new",
+    "/products/new",
+    "/products/item/edit",
+  ]) {
+    assert.equal(roleRedirect({ role: "buyer", canSell: true }, path), "/");
+    assert.equal(roleRedirect({ role: "seller" }, path), null);
+    assert.equal(
+      roleRedirect({ role: "seller", isAdmin: true }, path),
+      "/admin",
+    );
+  }
+});

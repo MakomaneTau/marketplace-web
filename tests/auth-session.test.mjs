@@ -29,6 +29,28 @@ function response(data, status = 200) {
   );
 }
 
+test("mode switching publishes the server profile and preserves the session on failure", async () => {
+  let fail = false;
+  const { api } = client(async (url, init) => {
+    if (url.endsWith("/switch-role")) {
+      assert.equal(JSON.parse(init.body).role, "seller");
+      if (fail) return response(null, 503);
+      return response({
+        user: { id: "same-user" },
+        profile: { role: "seller" },
+      });
+    }
+    return response({ user: { id: "same-user" }, profile: { role: "buyer" } });
+  });
+  await api.getCurrentAuth();
+  await api.switchRole("seller");
+  assert.equal(api.getStoredAuth().user.id, "same-user");
+  assert.equal(api.getStoredAuth().profile.role, "seller");
+  fail = true;
+  await assert.rejects(api.switchRole("seller"));
+  assert.equal(api.getStoredAuth().profile.role, "seller");
+});
+
 test("concurrent consumers share one complete user/profile lookup", async () => {
   let calls = 0;
   const { api } = client(async () => {

@@ -57,10 +57,14 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
       if (event.persisted) load(true);
     };
     const loadAfterAuthChange = () => load();
+    const refreshVisibleTab = () => {
+      if (document.visibilityState === "visible") load(true);
+    };
 
     window.addEventListener("marketplace-auth", sync);
     window.addEventListener("marketplace-auth-loading", loadAfterAuthChange);
     window.addEventListener("pageshow", refreshAfterPageRestore);
+    document.addEventListener("visibilitychange", refreshVisibleTab);
     load();
 
     return () => {
@@ -71,6 +75,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
         loadAfterAuthChange,
       );
       window.removeEventListener("pageshow", refreshAfterPageRestore);
+      document.removeEventListener("visibilitychange", refreshVisibleTab);
     };
   }, []);
 

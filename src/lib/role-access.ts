@@ -51,6 +51,13 @@ export function isPublicBuyerPage(path: string) {
 
 export function roleRedirect(profile: Profile, path: string) {
   if (!profile) return null;
+  if (
+    (within(path, "/seller") ||
+      path === "/products/new" ||
+      path.endsWith("/edit")) &&
+    (profile.role !== "seller" || profile.isAdmin)
+  )
+    return roleHome(profile);
   if (isBuyerPage(path) && !isBuyer(profile))
     return roleHome(profile) === "/" ? "/access-denied" : roleHome(profile);
   return null;

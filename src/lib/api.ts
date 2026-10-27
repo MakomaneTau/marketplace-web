@@ -16,6 +16,7 @@ export interface AuthUser {
 
 export interface AuthProfile {
   role: "buyer" | "seller";
+  canSell?: boolean;
   isAdmin?: boolean;
   displayName?: string;
   verificationStatus?: "pending" | "verified" | "rejected";
@@ -197,11 +198,12 @@ export async function login(
   email: string,
   password: string,
   persistent: boolean,
+  role?: "buyer" | "seller",
 ) {
   const data = await apiRequest<{ user: AuthUser }>("/auth/login", {
     method: "POST",
     headers: { "x-marketplace-persistent": persistent ? "true" : "false" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, role }),
   });
   invalidateSession();
   window.dispatchEvent(new Event("marketplace-auth-loading"));
@@ -213,6 +215,17 @@ export async function login(
       SESSION_ERROR_MESSAGE,
     );
   return { ...data, ...auth };
+}
+
+export async function switchRole(role: "buyer" | "seller") {
+  const auth = await apiRequest<StoredAuth>("/auth/switch-role", {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ role }),
+  });
+  invalidateSession();
+  setCachedAuth(auth, true);
+  return auth;
 }
 
 export async function signup(input: Record<string, unknown>) {
