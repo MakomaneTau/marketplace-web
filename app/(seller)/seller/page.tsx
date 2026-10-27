@@ -103,7 +103,7 @@ export default function SellerDashboardPage() {
                 {product.title}
               </Link>{" "}
               <span className="text-muted">
-                — {product.stock_quantity} left
+                : {product.stock_quantity} left
               </span>
             </p>
           ))}
