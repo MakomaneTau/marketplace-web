@@ -53,7 +53,10 @@ src/
   data/                  Deliberate metadata/fallbacks
   styles/                Design tokens imported by app/globals.css
 public/                  Served static assets
-tests/                   Node regression tests for sessions, gateway, and models
+tests/                   Existing Node regression suite and shared DOM test setup
+  unit/                  Search and checkout model boundaries (Vitest)
+  components/            React interactions with mocked feature dependencies
+  integration/           React UI through the real API client to mocked HTTP
 proxy.ts                 Protected-page session and role guards
 ```
 
@@ -72,8 +75,23 @@ npm.cmd run audit:production
 ```
 
 Serve a successful production build with `npm.cmd start`. CI runs the check
-suite and production build on pushes and pull requests. Tests use controlled
-fetch responses; visual and click-level verification still require a browser.
+suite and production build on pushes and pull requests. `npm.cmd test` runs the
+existing Node regression suite and all new Vitest suites. Run each layer separately:
+
+```powershell
+npm.cmd run test:unit
+npm.cmd run test:components
+npm.cmd run test:integration
+npm.cmd run test:regression
+npm.cmd run test:watch
+```
+
+Component tests use React Testing Library, user-event, and jsdom. They cover seller
+menus, notifications and logout, the admin dashboard, and the MFA gate. Integration
+tests combine the seller UI with the real session client, with only HTTP and Next
+navigation mocked. Each DOM test unmounts its React tree and restores mocks; these
+tests do not require running Next or the API. They do not establish real-browser
+navigation, visual layout, or live database behavior.
 
 [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md) describes connected flows and
 manual acceptance. [docs/MAINTENANCE.md](docs/MAINTENANCE.md) records remaining
