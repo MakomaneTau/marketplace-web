@@ -45,7 +45,7 @@ export function SignupForm() {
   const [universitiesLoading, setUniversitiesLoading] = useState(true);
   const [universityError, setUniversityError] = useState<string | null>(null);
 
-  const isBuyer = role === "buyer";
+  const [isStudent, setIsStudent] = useState(false);
 
   useEffect(() => {
     void apiPublic<UniversityOption[]>("/universities")
@@ -90,6 +90,7 @@ export function SignupForm() {
       password,
 
       role,
+      isStudent,
 
       universitySlug: form.get("university") || null,
     };
@@ -152,7 +153,7 @@ export function SignupForm() {
 
       <fieldset>
         <legend className="text-sm font-semibold text-foreground">
-          What would you like to do?
+          How would you like to start?
         </legend>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -176,6 +177,9 @@ export function SignupForm() {
             }}
           />
         </div>
+        <p className="mt-2 text-xs text-muted">
+          Your account supports both buying and selling. Switch modes anytime.
+        </p>
       </fieldset>
 
       {/* ========================================
@@ -217,15 +221,23 @@ export function SignupForm() {
       ======================================== */}
 
       <div className="space-y-4 border-t border-border pt-6">
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={isStudent}
+            onChange={(event) => setIsStudent(event.target.checked)}
+            className="size-4 accent-primary"
+          />
+          I am a student (optional)
+        </label>
         <div>
           <h2 className="text-sm font-semibold text-foreground">
             Your university
           </h2>
 
           <p className="mt-1 text-xs text-muted">
-            {isBuyer
-              ? "Choose your university to help us show relevant items in your area."
-              : "Optionally select a university near your shop."}
+            Optionally select a university to find items and pickup spots
+            nearby.
           </p>
         </div>
 
@@ -235,13 +247,12 @@ export function SignupForm() {
               htmlFor="university"
               className="mb-1.5 block text-sm font-medium text-foreground"
             >
-              University{!isBuyer && " (optional)"}
+              University (optional)
             </label>
 
             <select
               id="university"
               name="university"
-              required={isBuyer}
               defaultValue=""
               disabled={universitiesLoading || Boolean(universityError)}
               className="
@@ -262,7 +273,7 @@ export function SignupForm() {
                   disabled:bg-surface-muted
                 "
             >
-              <option value="" disabled={isBuyer}>
+              <option value="">
                 {universitiesLoading
                   ? "Loading universities..."
                   : universityError
@@ -383,15 +394,7 @@ export function SignupForm() {
           SUBMIT
       ======================================== */}
 
-      <Button
-        type="submit"
-        size="lg"
-        fullWidth
-        disabled={
-          isSubmitting ||
-          (isBuyer && (universitiesLoading || Boolean(universityError)))
-        }
-      >
+      <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
         <UserPlus className="size-5" aria-hidden="true" />
         {isSubmitting ? "Creating account..." : "Create account"}
       </Button>

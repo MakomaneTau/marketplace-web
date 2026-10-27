@@ -14,6 +14,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { RoleSwitcher } from "@/components/auth/RoleSwitcher";
 import { apiRequest, SELLER_DATA_EVENT } from "@/lib/api";
 import { UnreadMessageBadge } from "@/components/messaging/unread-messages";
 import { cn } from "@/lib/utils";
@@ -138,6 +139,9 @@ export function SellerSidebar({ mobile = false, onClose }: SellerSidebarProps) {
         })}
       </nav>
 
+      <div className="border-t border-border p-3">
+        <RoleSwitcher />
+      </div>
       {shopHealth && shopHealth.percentage < 100 && (
         <div className="border-t border-border p-4">
           <div className="rounded-lg bg-foreground p-4 text-white">

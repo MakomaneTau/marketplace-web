@@ -18,6 +18,7 @@ import { Container } from "@/components/layout/Container";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { useAuth } from "@/hooks/use-auth";
 import { logout } from "@/lib/api";
+import { RoleSwitcher } from "@/components/auth/RoleSwitcher";
 
 export function Header() {
   const { auth, ready } = useAuth();
@@ -192,6 +193,8 @@ export function Header() {
               Admin
             </Link>
           )}
+
+          <RoleSwitcher />
 
           {ready && auth ? (
             <button

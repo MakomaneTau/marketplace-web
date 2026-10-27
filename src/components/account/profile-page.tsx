@@ -200,11 +200,6 @@ export default function ProfilePage() {
     event.preventDefault();
     if (!profile) return;
 
-    if (profile.role === "buyer" && !selectedUniversity) {
-      setSaveError("Choose your university before saving your profile.");
-      return;
-    }
-
     const data = new FormData(event.currentTarget);
     const payload: Record<string, string | null> = {
       firstName: String(data.get("firstName") || "").trim(),
@@ -462,12 +457,11 @@ export default function ProfilePage() {
                         htmlFor="profile-university"
                         className="mb-1.5 block text-sm font-medium"
                       >
-                        University{profile.role === "seller" && " (optional)"}
+                        University (optional)
                       </label>
                       <select
                         id="profile-university"
                         value={selectedUniversity}
-                        required={profile.role === "buyer"}
                         disabled={locationsLoading}
                         onChange={(event) => {
                           const slug = event.target.value;

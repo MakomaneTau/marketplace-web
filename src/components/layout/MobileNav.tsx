@@ -24,6 +24,7 @@ import { createPortal } from "react-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import { logout } from "@/lib/api";
+import { RoleSwitcher } from "@/components/auth/RoleSwitcher";
 import { cn } from "@/lib/utils";
 
 interface MenuItem {
@@ -339,7 +340,7 @@ export function MobileNav() {
 
                       <div className="mt-0.5 flex items-center gap-1 text-xs capitalize text-secondary">
                         <ShieldCheck className="size-3.5" />
-                        {auth.user.user_metadata?.role || "Member"} account
+                        {auth.profile?.role || "Member"} mode
                       </div>
                     </div>
                   </Link>
@@ -349,6 +350,9 @@ export function MobileNav() {
               {/* Scrollable menu */}
 
               <div className="flex-1 overflow-y-auto px-3 py-4">
+                <div className="mb-4">
+                  <RoleSwitcher />
+                </div>
                 <nav aria-label="Main mobile menu" className="space-y-1">
                   {auth?.profile?.isAdmin && (
                     <MobileMenuLink

@@ -23,6 +23,7 @@ export function LoginForm({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [role, setRole] = useState<"" | "buyer" | "seller">("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -37,7 +38,7 @@ export function LoginForm({
     try {
       setIsSubmitting(true);
 
-      const result = await login(email, password, remember);
+      const result = await login(email, password, remember, role || undefined);
       const requestedPath = new URLSearchParams(window.location.search).get(
         "next",
       );
@@ -52,6 +53,30 @@ export function LoginForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <div>
+        <label
+          htmlFor="login-role"
+          className="mb-1.5 block text-sm font-medium"
+        >
+          Sign in to
+        </label>
+        <select
+          id="login-role"
+          value={role}
+          disabled={isSubmitting}
+          onChange={(event) =>
+            setRole(event.target.value as "" | "buyer" | "seller")
+          }
+          className="h-11 w-full rounded-control border border-border bg-surface px-3 text-sm focus-visible:outline-2 focus-visible:outline-primary-text"
+        >
+          <option value="">My last used mode</option>
+          <option value="buyer">Buy items</option>
+          <option value="seller">Sell items</option>
+        </select>
+        <p className="mt-2 text-xs text-muted">
+          One account for buying and selling. You can switch anytime.
+        </p>
+      </div>
       {sessionExpired && !error && (
         <div
           role="status"
